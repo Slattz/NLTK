@@ -1,12 +1,15 @@
 # NLTK - New Leaf ToolKit
 
-A WIP ACNL Toolkit without the hassle of taking out your SD card.
+A WIP ACNL Toolkit without the hassle of taking out your SD card. 
 
 The main developers of this project are [Slattz](https://github.com/Slattz) and [Cuyler](https://github.com/Cuyler36). 
+
+  [![Discord](https://discordapp.com/api/guilds/437592048057450508/widget.png?style=banner2)](https://discord.gg/j2VUBBv)
 
 
 ## Features
 * WIP Save Editor
+* Fix the region of saves in the Save Editor. This allows you to boot out of region saves.
 * Hassle Free Auto-Updater
 
 
