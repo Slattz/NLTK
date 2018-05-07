@@ -11,8 +11,15 @@ class Save;
 
 extern s32 currentAcreId;
 
+typedef enum
+{
+    MODE_EXIT = 0,
+    MODE_GAMESELECT = 1,
+} Editor_ReturnMode;
+
+
 bool check_if_saving(void);
-void spawn_editor_main_menu(Save *saveFile);
+int spawn_editor_main_menu(Save *saveFile);
 u64 spawn_game_select_menu(FS_MediaType *mediaType);
 void spawn_player_menu(Save *saveFile);
 void spawn_player_menu_info(Save *saveFile);

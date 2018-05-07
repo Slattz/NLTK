@@ -14,6 +14,7 @@ void CleanupEditor(void) {
 		delete[] g_ItemBin;
 		g_ItemBin = NULL;
 	}
+    m_editorInitiated = false;
 }
 
 void init_editor(void) {
@@ -31,6 +32,7 @@ int editor_main(void) {
 		init_editor();
 	}
 
+GameSelect:
     Handle saveHandle;
     FS_Archive saveArch;
 
@@ -80,9 +82,13 @@ int editor_main(void) {
     // Update Region of the Save
     saveFile.UpdateSaveRegion();
 
-    spawn_editor_main_menu(&saveFile);
+    int mode = spawn_editor_main_menu(&saveFile);
 
-	saveFile.Close();
+    saveFile.Close();
+
+    if (mode == 1) //Game Select
+        goto GameSelect;
+
     CleanupEditor();
-    return 0;
+    return mode; //mode is always 0 when exiting the editor
 }

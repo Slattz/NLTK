@@ -22,7 +22,7 @@ bool check_if_saving() {
 	return confirmDisp(GFX_TOP, "Would you like to save changes\nmade to your save?");
 }
 
-void spawn_editor_main_menu(Save *saveFile)
+int spawn_editor_main_menu(Save *saveFile)
 {
     while (aptMainLoop())
     {
@@ -34,7 +34,7 @@ void spawn_editor_main_menu(Save *saveFile)
 
         if (hidKeysDown() & KEY_START)
         {
-            break;
+            return MODE_EXIT;
         }
 
         for (int i = 0; i < 2; i++)
@@ -81,14 +81,17 @@ void spawn_editor_main_menu(Save *saveFile)
 				else if (g_CheckX[i] >= 220 && g_CheckX[i] <= 300 && g_CheckY[i] >= 60 && g_CheckY[i] <= 99) //Options Column  
                     spawn_config_menu();
     
-				else if (g_CheckX[i] >= 20 && g_CheckX[i] <= 100 && g_CheckY[i] >= 10 && g_CheckY[i] <= 44) //Game Select Column  
-                    infoDisp(GFX_TOP, "Game Select Button Coming Soon!");
+				else if (g_CheckX[i] >= 20 && g_CheckX[i] <= 100 && g_CheckY[i] >= 10 && g_CheckY[i] <= 44) { //Game Select Column  
+                    return MODE_GAMESELECT;
+                }
+
     
 				else if (g_CheckX[i] >= 20 && g_CheckX[i] <= 100 && g_CheckY[i] >= 60 && g_CheckY[i] <= 99) //Town Manager Column  
                     infoDisp(GFX_TOP, "Town Manager Button Coming Soon!");
             }
         }
     }
+    return 0;
 }
 
 u64 spawn_game_select_menu(FS_MediaType *mediaType)
