@@ -10,17 +10,17 @@ Save::~Save() {
 		delete[] m_saveBuffer;*/
 }
 
-Save::Save(FS_Archive archive, Handle handle) {
+Save::Save(FS_Archive archive, Handle *handle) {
 	m_archive = archive;
 	m_handle = handle;
 	m_saveSize = 0;
 	FS_Path path = fsMakePath(PATH_ASCII, "/garden_plus.dat");
 
-	FSUSER_OpenFile(&handle, archive, path, FS_OPEN_READ | FS_OPEN_WRITE, 0);
-	FSFILE_GetSize(handle, &m_saveSize);
+	FSUSER_OpenFile(handle, archive, path, FS_OPEN_READ | FS_OPEN_WRITE, 0);
+	FSFILE_GetSize(*handle, &m_saveSize);
 	m_saveBuffer = new u8[m_saveSize];
 
-	FSFILE_Read(handle, NULL, 0, m_saveBuffer, m_saveSize);
+	FSFILE_Read(*handle, NULL, 0, m_saveBuffer, m_saveSize);
 
 	m_changesMade = false;
 
@@ -196,7 +196,7 @@ bool Save::Commit(bool close) {
 	// Update Checksums
 	FixCRC32s(this);
 
-	bool res = R_SUCCEEDED(FSFILE_Write(m_handle, NULL, 0, m_saveBuffer, m_saveSize, FS_WRITE_FLUSH));
+	bool res = R_SUCCEEDED(FSFILE_Write(*m_handle, NULL, 0, m_saveBuffer, m_saveSize, FS_WRITE_FLUSH));
 
 	if (res) {
 		m_changesMade = false;
@@ -216,7 +216,7 @@ void Save::Close(void) {
 		}
 	}
 
-	if (R_SUCCEEDED(FSFILE_Close(m_handle))) {
+	if (R_SUCCEEDED(FSFILE_Close(*m_handle))) {
 		FSUSER_ControlArchive(m_archive, ARCHIVE_ACTION_COMMIT_SAVE_DATA, NULL, 0, NULL, 0);
 	}
 
