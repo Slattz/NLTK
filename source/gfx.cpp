@@ -320,7 +320,7 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
             pp2d_draw_rectangle(170, 130, 44, 30, COLOR_GREY_FILTER);
     
         if (!mediaInstalled.InstalledTitles.ORIG_USA_installed) //Grey out USA Flag if no orig USA game is found
-            pp2d_draw_rectangle(106, 127, 44, 27, COLOR_GREY_FILTER);
+            pp2d_draw_rectangle(106, 130, 44, 27, COLOR_GREY_FILTER);
     
         if (!mediaInstalled.InstalledTitles.ORIG_EUR_installed) //Grey out EUR Flag if no orig EUR game is found
             pp2d_draw_rectangle(42, 130, 44, 30, COLOR_GREY_FILTER);
@@ -335,7 +335,7 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
             pp2d_draw_rectangle(170, 130, 44, 30, COLOR_GREY_FILTER);
     
         if (!mediaInstalled.InstalledTitles.WA_USA_installed) //Grey out USA Flag if no WA USA game is found
-            pp2d_draw_rectangle(106, 127, 44, 27, COLOR_GREY_FILTER);
+            pp2d_draw_rectangle(106, 130, 44, 27, COLOR_GREY_FILTER);
     
         if (!mediaInstalled.InstalledTitles.WA_EUR_installed) //Grey out EUR Flag if no WA EUR game is found
             pp2d_draw_rectangle(42, 130, 44, 30, COLOR_GREY_FILTER);
@@ -347,7 +347,7 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
     else
     {
         pp2d_draw_rectangle(170, 130, 44, 30, COLOR_GREY_FILTER); //JPN
-        pp2d_draw_rectangle(106, 127, 44, 27, COLOR_GREY_FILTER); //USA
+        pp2d_draw_rectangle(106, 130, 44, 27, COLOR_GREY_FILTER); //USA
         pp2d_draw_rectangle(42, 130, 44, 30, COLOR_GREY_FILTER); //EUR
         pp2d_draw_rectangle(234, 130, 44, 30, COLOR_GREY_FILTER); //KOR
     }
