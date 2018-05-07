@@ -289,16 +289,16 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
         pp2d_draw_rectangle(166, 63, 54, 54, COLOR_GREY);
 
     if (selectedregion == 0) //JPN
-        pp2d_draw_rectangle(167, 130, 50, 36, COLOR_GREY);
+        pp2d_draw_rectangle(167, 127, 50, 36, COLOR_GREY);
 
     else if (selectedregion == 1) //USA
-        pp2d_draw_rectangle(103, 130, 50, 33, COLOR_GREY);
+        pp2d_draw_rectangle(103, 127, 50, 33, COLOR_GREY);
 
     else if (selectedregion == 2) //EUR
-        pp2d_draw_rectangle(39, 130, 50, 36, COLOR_GREY);
+        pp2d_draw_rectangle(39, 127, 50, 36, COLOR_GREY);
 
     else if (selectedregion == 3) //KOR
-        pp2d_draw_rectangle(231, 130, 50, 36, COLOR_GREY);
+        pp2d_draw_rectangle(231, 127, 50, 36, COLOR_GREY);
 
     pp2d_draw_texture(ACNL_ICON, 101, 66);
     pp2d_draw_texture(ACNL_WA_ICON, 169, 66);
