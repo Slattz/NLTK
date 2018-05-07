@@ -54,6 +54,7 @@ void InitEditorGFX(void)
 
 	// Item Icon Sheet
     pp2d_load_texture_png(ITEM_SHEET, "romfs:/Icons/Items.png");
+    pp2d_load_texture_png(ITEM_HOLE, "romfs:/Menus/Common/ItemHole.png");
 
     //Pre-load all 215 acre pics
     for (int i = 0; i < 215; ++i)
@@ -307,7 +308,7 @@ void draw_player_menu_info(Save *saveFile, int selectedPlayer, u32 LColor, u32 R
 
 void draw_player_menu_inventory(Save *saveFile, int selectedplayer, u32 LColor, u32 RColor)
 {
-    int x = 20;
+    int x = 11;
     int y = 50;
 
 	draw_player_menu_top(saveFile, selectedplayer, LColor, RColor);
@@ -315,15 +316,16 @@ void draw_player_menu_inventory(Save *saveFile, int selectedplayer, u32 LColor, 
 
     for (int i = 0; i < 16; ++i)
     {
-        if (i % 8 == 0)
+        if (i % 8 == 0 && i != 0)
         {
-            y += 34;
-            x = 20;
+            y += 38;
+            x = 11;
         }
 
+        pp2d_draw_texture(ITEM_HOLE, x-16, y-16);
 		pp2d_draw_texture_part(ITEM_SHEET, x, y, g_InvItems[i].X, g_InvItems[i].Y, 32, 32);
 
-        x += 34;
+        x += 38;
     }
 
     draw_cursor();

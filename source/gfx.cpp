@@ -12,7 +12,6 @@ void InitCommonGFX(void)
     pp2d_load_texture_png(CHECKBOX_FILLED,     "romfs:/Menus/Common/checkbox_c.png");
     pp2d_load_texture_png(CURSOR_POINT,        "romfs:/Menus/Common/Hand/hand_point.png");
     pp2d_load_texture_png(CURSOR_SELECT,       "romfs:/Menus/Common/Hand/hand_select.png");
-    pp2d_load_texture_png(ITEM_COMMON,         "romfs:/Icons/Common/itm_default.png");
 }
 
 void ExitCommonGFX(void)
@@ -26,7 +25,6 @@ void ExitCommonGFX(void)
 	pp2d_free_texture(CHECKBOX_FILLED);
 	pp2d_free_texture(CURSOR_POINT);
 	pp2d_free_texture(CURSOR_SELECT);
-	pp2d_free_texture(ITEM_COMMON);
 }
 
 void draw_base_interface(void)

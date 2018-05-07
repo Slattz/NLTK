@@ -92,8 +92,8 @@ void draw_config_menu(void);
 #define CURSOR_SELECT       25
 
 /* Item Icons */
-#define ITEM_COMMON         450
-#define ITEM_SHEET          467
+#define ITEM_HOLE           450
+#define ITEM_SHEET          451
 
 /* Reserve each acre pic*/
 #define ACRE_PNG            500
