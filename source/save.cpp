@@ -211,7 +211,7 @@ bool Save::Commit(bool close) {
 
 void Save::Close(void) {
 	if (m_changesMade) {
-		if (confirmDisp(GFX_TOP, "Changes have been made to\nyour save file.\nWould you like to save\nthe changes made?")) {
+		if (confirmDisp(GFX_TOP, "Would you like to save all changes\nmade to your save before exiting?")) {
 			Commit(false);
 		}
 	}
