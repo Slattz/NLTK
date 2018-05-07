@@ -666,7 +666,7 @@ void spawn_acres_menu(Save *saveFile)
 			acreEditorSelectedAcre++;
 		}
 
-		if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre < ACRE_ID_MAX && hidKeysDown() & KEY_A) {
+		if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre <= ACRE_ID_MAX && hidKeysDown() & KEY_A) {
 			currentAcreButton->SetImageId(ACRE_PNG + acreEditorSelectedAcre);
 			u32 writeOffset = MAP_ACRES
 				+ std::distance(acreEditorControls.begin(), std::find(acreEditorControls.begin(), acreEditorControls.end(), currentAcreButton)) * 2;
