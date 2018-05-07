@@ -1,7 +1,7 @@
 #include "common.h"
-#include "editor\editor.h"
-#include "textbox.h"
-#include "imagebutton.h"
+#include "editor/editor.h"
+#include "core/textbox.h"
+#include "core/imagebutton.h"
 #include <algorithm>
 
 s16  g_CheckX[2];

@@ -4,7 +4,7 @@
 #define EGFX_H
 
 #include "common.h"
-#include "textbox.h"
+#include "core/textbox.h"
 
 void InitEditorGFX(void);
 void InitAcreGFX(Save *saveFile, const u8 LoopMax, const u8 GridXMax, const u8 GridXStartPos, const u8 GridYStartPos, const u8 ByteSkip, u32 Offset);

@@ -1,6 +1,6 @@
 #include "common.h"
-#include "label.h"
-#include "imagebutton.h"
+#include "core/label.h"
+#include "core/imagebutton.h"
 #include "editor/e_gfx.h"
 
 std::vector<Control*> editorPlayerInfoControls = {};

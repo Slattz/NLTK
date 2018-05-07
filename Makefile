@@ -20,13 +20,18 @@ OUTDIR              :=	out
 BUILD               :=	build
 
 SOURCES             :=	source \
+                        source/core \
                         source/editor \
 						source/libs/pp2d \
 						source/libs/jsmn \
                         source/libs/httpc-curl
                         
 INCLUDES            :=	include \
-                        include/editor
+                        include/core \
+                        include/editor \
+                        source/libs/pp2d \
+						source/libs/jsmn \
+                        source/libs/httpc-curl
                         
 ROMFS               :=	assets/romfs
 

@@ -1,7 +1,7 @@
 #include "updater.h"
 #include "utils.h"
-#include "libs/jsmn/jsmn.h"
-#include "libs/httpc-curl/httpc.h"
+#include "jsmn.h"
+#include "httpc.h"
 
 static char     newVerString[50];
 static char     newChangelog[2048];

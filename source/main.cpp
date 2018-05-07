@@ -1,6 +1,6 @@
 #include "common.h"
-#include "updater.h"
-#include "editor\editor.h"
+#include "core/updater.h"
+#include "editor/editor.h"
 #include "libs/httpc-curl/httpc.h"
 
 static BCFNT_s *g_acnlFont;

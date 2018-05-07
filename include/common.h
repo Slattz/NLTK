@@ -12,9 +12,9 @@
 #include "../source/libs/pp2d/pp2d.h"
 
 #include "structs.h"
-#include "config.h"
-#include "encryptedInt32.h"
-#include "nfs.h"
+#include "core/config.h"
+#include "editor/encryptedInt32.h"
+#include "core/nfs.h"
 #include "gfx.h"
 #include "editor/jpeg.h"
 #include "editor/menus.h"
@@ -22,7 +22,7 @@
 #include "offsets.h"
 #include "player.h"
 #include "save.h"
-#include "swkbd.h"
+#include "core/swkbd.h"
 #include "unicode.h"
 #include "utils.h"
 
