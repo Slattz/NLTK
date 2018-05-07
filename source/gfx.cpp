@@ -245,24 +245,24 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
     pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 
 	if (selectedmedia == -1 || selectedgame == -1 || selectedregion == -1) {
-		pp2d_draw_rectangle(75, 190, 170, 30, COLOR_BROWN);
+		pp2d_draw_rectangle(75, 190, 170, 30, COLOR_BROWN); //Confirm Button
 	}
 	else {
-		pp2d_draw_rectangle(75, 190, 170, 30, COLOR_LIGHT_BROWN);
+		pp2d_draw_rectangle(75, 190, 170, 30, COLOR_LIGHT_BROWN); //Confirm Button (Can Confirm)
 	}
 
 	// Media Type
-	if (selectedmedia == 1) {
-		pp2d_draw_rectangle(98, 3, 54, 54, COLOR_GREY);
-		pp2d_draw_texture(GAME_CART, 101, 6);
+	if (selectedmedia == 1) { //Game Card
+		pp2d_draw_rectangle(98, 3, 54, 54, COLOR_GREY); //Grey Outline
+		pp2d_draw_texture(GAME_CART, 101, 6); //Game Card is selected
 		pp2d_draw_texture_blend(SD_CARD, 169, 6, COLOR_GREY_FILTER);
 	}
-	else if (selectedmedia == 0) {
+	else if (selectedmedia == 0) { //SD Card
+        pp2d_draw_rectangle(166, 3, 54, 54, COLOR_GREY); //Grey Outline
+        pp2d_draw_texture(SD_CARD, 169, 6); //SD Card is selected
 		pp2d_draw_texture_blend(GAME_CART, 101, 6, COLOR_GREY_FILTER);
-		pp2d_draw_rectangle(166, 3, 54, 54, COLOR_GREY);
-		pp2d_draw_texture(SD_CARD, 169, 6);
 	}
-	else {
+	else { //No Media selected yet
 		if (MediaInfo.GameCartInfo.HasACNLData) {
 			pp2d_draw_texture(GAME_CART, 101, 6);
 		}
@@ -281,23 +281,23 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
 	NLTK_Media_Installed mediaInstalled = selectedmedia == 0
 		? MediaInfo.SDCardInfo : MediaInfo.GameCartInfo;
 
-    /* Outlines */
-    if (selectedgame == 1)
+    /* Grey Outlines */
+    if (selectedgame == 1) //Orig ACNL
         pp2d_draw_rectangle(98, 63, 54, 54, COLOR_GREY);
 
-    else if (selectedgame == 2)
+    else if (selectedgame == 2) //WA ACNL
         pp2d_draw_rectangle(166, 63, 54, 54, COLOR_GREY);
 
-    if (selectedregion == 0)
+    if (selectedregion == 0) //JPN
         pp2d_draw_rectangle(167, 130, 50, 36, COLOR_GREY);
 
-    else if (selectedregion == 1)
+    else if (selectedregion == 1) //USA
         pp2d_draw_rectangle(103, 130, 50, 33, COLOR_GREY);
 
-    else if (selectedregion == 2)
+    else if (selectedregion == 2) //EUR
         pp2d_draw_rectangle(39, 130, 50, 36, COLOR_GREY);
 
-    else if (selectedregion == 3)
+    else if (selectedregion == 3) //KOR
         pp2d_draw_rectangle(231, 130, 50, 36, COLOR_GREY);
 
     pp2d_draw_texture(ACNL_ICON, 101, 66);

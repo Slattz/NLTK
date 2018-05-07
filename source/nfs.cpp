@@ -45,9 +45,9 @@ NLTK_Media_Installed getInstalledTitles(FS_MediaType mediaType) {
 		u32  num_titles;
 		u64* titles;
 
-		AM_GetTitleCount(MEDIATYPE_SD, &num_titles); //Get how many titles are installed
+		AM_GetTitleCount(mediaType, &num_titles); //Get how many titles are installed
 		titles = new u64[num_titles]; //Allocate memory based on amount of titles
-		AM_GetTitleList(NULL, MEDIATYPE_SD, num_titles, titles); //Get all installed title ids
+		AM_GetTitleList(NULL, mediaType, num_titles, titles); //Get all installed title ids
 
 		if (num_titles > 0)
 		{
