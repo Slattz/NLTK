@@ -2,6 +2,7 @@
 #include "editor\editor.h"
 #include "textbox.h"
 #include "imagebutton.h"
+#include <algorithm>
 
 s16  g_CheckX[2];
 s16  g_CheckY[2];
@@ -11,6 +12,7 @@ static int g_selectedplayer = 0;
 static bool drawingMenu = false;
 static bool drawingSubmenu = false;
 s32 currentAcreId = -1;
+ImageButton *currentAcreButton;
 
 void checkIfCardInserted() {
 	if (currentMediaType == MEDIATYPE_GAME_CARD && !IsGameCartInserted()) {
@@ -633,6 +635,7 @@ void spawn_acres_menu(Save *saveFile)
 	drawingMenu = true;
 	acreEditorSelectedAcre = -1;
 	currentAcreId = -1;
+	currentAcreButton = nullptr;
 
 	// Init Acre Graphics
 	view_acres_town_full(saveFile);
@@ -653,11 +656,24 @@ void spawn_acres_menu(Save *saveFile)
 			break;
 		}
 
-		if (acreEditorSelectedAcre > 0 && hidKeysDown() & (KEY_DUP)) {
+		if (acreEditorSelectedAcre > 0 && hidKeysDown() & KEY_DUP) {
 			acreEditorSelectedAcre--;
 		}
-		else if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre < ACRE_ID_MAX && hidKeysDown() & (KEY_DDOWN)) {
+		else if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre < ACRE_ID_MAX && hidKeysDown() & KEY_DDOWN) {
 			acreEditorSelectedAcre++;
+		}
+
+		if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre < ACRE_ID_MAX && hidKeysDown() & KEY_A) {
+			currentAcreButton->SetImageId(ACRE_PNG + acreEditorSelectedAcre);
+			u32 writeOffset = MAP_ACRES
+				+ std::distance(acreEditorControls.begin(), std::find(acreEditorControls.begin(), acreEditorControls.end(), currentAcreButton)) * 2;
+			saveFile->Write(writeOffset, static_cast<u8>(acreEditorSelectedAcre));
+
+			// Clear selected acre
+			acreEditorSelectedAcre = -1;
+			currentAcreButton->SetActive(false);
+			currentAcreButton = nullptr;
+			currentAcreId = -1;
 		}
 
 		for (int i = 0; i < 2; i++)
@@ -680,9 +696,17 @@ void spawn_acres_menu(Save *saveFile)
 
 void onAcreClick(Button *sender) {
 	if (sender != nullptr) {
-		sender->SetActive(!sender->m_active);
-		currentAcreId = reinterpret_cast<ImageButton *>(sender)->GetImageId() - ACRE_PNG;
+
+		// Disable all buttons
+		if (currentAcreButton != nullptr) {
+			for (Control *c : acreEditorControls) {
+				reinterpret_cast<ImageButton *>(c)->SetActive(false);
+			}
+		}
+
+		sender->SetActive(true);
+		currentAcreButton = reinterpret_cast<ImageButton *>(sender);
+		currentAcreId = currentAcreButton->GetImageId() - ACRE_PNG;
 		acreEditorSelectedAcre = currentAcreId;
-		//infoDispF(GFX_TOP, "Acre Button Clicked!\nAcre Id: %04X", reinterpret_cast<ImageButton *>(sender)->GetImageId() - ACRE_PNG);
 	}
 }
