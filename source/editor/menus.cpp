@@ -611,7 +611,7 @@ void spawn_config_menu(void)
 
 void view_acres_town_full(Save *saveFile)
 {
-    InitAcreGFX(saveFile, 42, 7, 20, 8, 0, MAP_ACRES); // Ends at x = 230px (resized to 30x30 images)
+    InitAcreGFX(saveFile, 42, 7, 20, 0, 0, MAP_ACRES); // Ends at x = 230px (resized to 30x30 images)
 }
 
 void view_acres_island_full(Save *saveFile)
@@ -659,10 +659,10 @@ void spawn_acres_menu(Save *saveFile)
 			break;
 		}
 
-		if (acreEditorSelectedAcre > 0 && hidKeysDown() & KEY_DUP) {
+		if (acreEditorSelectedAcre > 0 && hidKeysDown() & KEY_DLEFT) {
 			acreEditorSelectedAcre--;
 		}
-		else if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre < ACRE_ID_MAX && hidKeysDown() & KEY_DDOWN) {
+		else if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre < ACRE_ID_MAX && hidKeysDown() & KEY_DRIGHT) {
 			acreEditorSelectedAcre++;
 		}
 

@@ -103,11 +103,12 @@ void InitAcreGFX(Save *saveFile, const u8 LoopMax, const u8 GridXMax,
 	*/
 
 	acreEditorControls.clear();
-	float scale = 0.75; // The scale of the acre editor image buttons
+	float scale = 1; // The scale of the acre editor image buttons
 
 	u8  acre = 0;           //acre ID
 	u32 GridX = 0;          //X position of acre     
 	u32 GridY = 0;          //Y position of acre
+	//u32 GridXOffset = (320 - (40 * scale) * GridXMax) / 2; // Offset to center the controls horizontally
 
 	for (u32 i = 0; i < LoopMax; i++)
 	{
@@ -131,8 +132,8 @@ void InitAcreGFX(Save *saveFile, const u8 LoopMax, const u8 GridXMax,
 
 void draw_acre_selection_panel(void) {
 	int numAcresShown = 5; // 5 acres shown at a time max
-	u32 xLocationStart = 230; // we have 90 px of space
-	u32 yLocation = 50;
+	u32 xLocation = 130;
+	u32 yLocation = 120;
 	s32 startAcreId = acreEditorSelectedAcre - 2;
 
 	for (int i = 0; i < numAcresShown; i++) {
@@ -142,15 +143,15 @@ void draw_acre_selection_panel(void) {
 		}
 
 		if (i == 2) {
-			pp2d_draw_texture(ACRE_PNG + acreId, xLocationStart + 25, yLocation);
-			yLocation += 45;
+			pp2d_draw_texture(ACRE_PNG + acreId, xLocation, yLocation - 20);
+			xLocation += 45;
 		}
 		else {
-			pp2d_texture_select(ACRE_PNG + acreId, xLocationStart + 35, yLocation);
+			pp2d_texture_select(ACRE_PNG + acreId, xLocation, yLocation - 10);
 			pp2d_texture_blend(0xFF666666);
 			pp2d_texture_scale(0.5, 0.5);
 			pp2d_texture_draw();
-			yLocation += 25;
+			xLocation += 25;
 		}
 	}
 }
@@ -209,18 +210,18 @@ void draw_save_acres(Save *saveFile)
     draw_base_interface();
 
 	// Draw selected acre (if one is selected)
-	if (currentAcreId > -1 && currentAcreId <= ACRE_ID_MAX) {
+	/*if (currentAcreId > -1 && currentAcreId <= ACRE_ID_MAX) {
 		pp2d_draw_texture(ACRE_PNG + currentAcreId, (400 / 2) - (40 / 2), (240 / 2) - (40 / 2));
+	}*/
+
+	if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre <= ACRE_ID_MAX) {
+		draw_acre_selection_panel();
 	}
 
     pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
 
 	for (Control *c : acreEditorControls) {
 		c->Draw();
-	}
-    
-	if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre <= ACRE_ID_MAX) {
-		draw_acre_selection_panel();
 	}
 
 	draw_cursor();
