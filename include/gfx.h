@@ -17,6 +17,7 @@ void DisplayCardError();
 
 void draw_base_interface(void);
 void draw_cursor(void);
+void draw_main_menu(void);
 void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmedia);
 void draw_about_menu(bool discord, bool twitter);
 void draw_config_menu(void);
@@ -57,8 +58,8 @@ void draw_config_menu(void);
 #define KOR_FLAG            13
 #define ACNL_ICON           14
 #define ACNL_WA_ICON        15
-#define GAME_CART			98
-#define SD_CARD				99
+#define GAME_CART			35
+#define SD_CARD				36
 //Town Menu
 //Players Menu
 #define PLAYER1_PIC         16
@@ -90,6 +91,8 @@ void draw_config_menu(void);
 #define CHECKBOX_FILLED     23
 #define CURSOR_POINT        24
 #define CURSOR_SELECT       25
+#define EDITOR_ICON         37
+#define MANAGER_ICON        38
 
 /* Item Icons */
 #define ITEM_HOLE           450

@@ -11,7 +11,7 @@ class Save {
 public:
 	Save();
 	~Save();
-	Save(FS_Archive archive, Handle *handle);
+	Save(FS_Archive archive, Handle *handle, bool init);
 
 	u8 ReadU8(u32 offset);
 	u16 ReadU16(u32 offset);

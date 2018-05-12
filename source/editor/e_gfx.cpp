@@ -32,7 +32,6 @@ void InitEditorGFX(void)
 	pp2d_load_texture_png(TOWN_ICON,           "romfs:/Menus/Main/Town.png");
 	pp2d_load_texture_png(VILLAGERS_ICON,      "romfs:/Menus/Main/Villagers.png");
 	pp2d_load_texture_png(ABOUT_ICON,          "romfs:/Menus/Main/About.png");
-	pp2d_load_texture_png(BUTTON_MAIN,         "romfs:/Menus/Main/Button.png");
     //Game Select Menu
     pp2d_load_texture_png(EUR_FLAG,            "romfs:/Menus/Game_Select/Europe.png");
     pp2d_load_texture_png(USA_FLAG,            "romfs:/Menus/Game_Select/USA.png");
@@ -191,7 +190,7 @@ void draw_editor_main_menu(void)
     }
     
     pp2d_draw_on(GFX_TOP, GFX_LEFT);
-    pp2d_draw_text_center(GFX_TOP, 80, 1.1, 1.1, COLOR_GREY, "Main Menu!");
+    pp2d_draw_text_center(GFX_TOP, 80, 1.1, 1.1, COLOR_GREY, "Editor Main Menu!");
 
     if (config.isdebug)
     {

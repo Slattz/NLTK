@@ -57,7 +57,7 @@ int main() {
 		}
     }
 
-    editor_main();
+    spawn_main_menu();
 
     PrepareToCloseApp();
     return 0;

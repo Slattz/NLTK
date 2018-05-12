@@ -66,7 +66,7 @@ GameSelect:
 	currentTitleId = g_tid;
 
 	// Initialize a new Save class
-	saveFile = Save(saveArch, &saveHandle);
+	saveFile = Save(saveArch, &saveHandle, true);
 
 	if (saveFile.GetSaveSize() != SIZE_SAVE) {
 		infoDisp(GFX_TOP, "Save file is the incorrect size!");

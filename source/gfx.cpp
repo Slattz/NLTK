@@ -12,6 +12,9 @@ void InitCommonGFX(void)
     pp2d_load_texture_png(CHECKBOX_FILLED,     "romfs:/Menus/Common/checkbox_c.png");
     pp2d_load_texture_png(CURSOR_POINT,        "romfs:/Menus/Common/Hand/hand_point.png");
     pp2d_load_texture_png(CURSOR_SELECT,       "romfs:/Menus/Common/Hand/hand_select.png");
+    pp2d_load_texture_png(BUTTON_MAIN,         "romfs:/Menus/Main/Button.png");
+    pp2d_load_texture_png(EDITOR_ICON,         "romfs:/Icons/Common/Editor.png");
+    pp2d_load_texture_png(MANAGER_ICON,        "romfs:/Icons/Common/Manager.png");
 }
 
 void ExitCommonGFX(void)
@@ -24,7 +27,10 @@ void ExitCommonGFX(void)
 	pp2d_free_texture(CHECKBOX_EMPTY);
 	pp2d_free_texture(CHECKBOX_FILLED);
 	pp2d_free_texture(CURSOR_POINT);
-	pp2d_free_texture(CURSOR_SELECT);
+    pp2d_free_texture(CURSOR_SELECT);
+    pp2d_free_texture(BUTTON_MAIN);
+    pp2d_free_texture(EDITOR_ICON);
+	pp2d_free_texture(MANAGER_ICON);
 }
 
 void draw_base_interface(void)
@@ -179,6 +185,28 @@ void DisplayCardError() {
 			show = !show;
 		}
 	}
+}
+
+void draw_main_menu(void)
+{
+    draw_base_interface();
+    pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
+    pp2d_draw_texture(NLTK_ICON, 126, 10); //NLTK's Icon
+
+    pp2d_draw_texture(EDITOR_ICON, 60, 50); //Editor Icon
+    pp2d_draw_texture_blend(MANAGER_ICON, 180, 50, COLOR_GREY_FILTER); //Manager Icon
+    pp2d_draw_text(60, 120, 1.0, 1.0, COLOR_GREY, "Editor");
+    pp2d_draw_text(180, 120, 1.0, 1.0, COLOR_GREY, "Manager");
+    
+    pp2d_draw_on(GFX_TOP, GFX_LEFT);
+    pp2d_draw_text_center(GFX_TOP, 80, 1.1, 1.1, COLOR_GREY, "Actual Main Menu!");
+
+    if (config.isdebug)
+    {
+        pp2d_draw_textf(100, 120, 0.5, 0.5, COLOR_GREY, "Cursor X: %d, Cursor Y: %d", g_cursorpos.x, g_cursorpos.y);
+    }
+    draw_cursor();
+    pp2d_end_draw();
 }
 
 void draw_config_menu(void)

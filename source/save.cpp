@@ -10,7 +10,7 @@ Save::~Save() {
 		delete[] m_saveBuffer;*/
 }
 
-Save::Save(FS_Archive archive, Handle *handle) {
+Save::Save(FS_Archive archive, Handle *handle, bool init) {
 	m_archive = archive;
 	m_handle = handle;
 	m_saveSize = 0;
@@ -23,6 +23,10 @@ Save::Save(FS_Archive archive, Handle *handle) {
 	FSFILE_Read(*handle, NULL, 0, m_saveBuffer, m_saveSize);
 
 	m_changesMade = false;
+
+    if (!init) {
+        return;
+    }
 
 	// Load Players
 	players = new Player[4];
