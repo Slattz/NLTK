@@ -22,6 +22,7 @@ BUILD               :=	build
 SOURCES             :=	source \
                         source/core \
                         source/editor \
+                        source/manager \
 						source/libs/pp2d \
 						source/libs/jsmn \
                         source/libs/httpc-curl
@@ -29,6 +30,7 @@ SOURCES             :=	source \
 INCLUDES            :=	include \
                         include/core \
                         include/editor \
+                        include/manager \
                         source/libs/pp2d \
 						source/libs/jsmn \
                         source/libs/httpc-curl

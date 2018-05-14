@@ -29,6 +29,11 @@ int spawn_editor_main_menu(Save *saveFile)
             return MODE_EXIT;
         }
 
+        else if (hidKeysDown() & KEY_B)
+        {
+            return MODE_MAINMENU;
+        }
+
         for (int i = 0; i < 2; i++)
         {
             if (hidKeysDown() & g_key[i] && g_disabled[i])
@@ -77,9 +82,8 @@ int spawn_editor_main_menu(Save *saveFile)
                     return MODE_GAMESELECT;
                 }
 
-    
 				else if (g_CheckX[i] >= 20 && g_CheckX[i] <= 100 && g_CheckY[i] >= 60 && g_CheckY[i] <= 99) //Town Manager Column  
-                    infoDisp(GFX_TOP, "Town Manager Button Coming Soon!");
+                    return MODE_MANAGER;
             }
         }
     }

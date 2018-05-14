@@ -1,12 +1,9 @@
 #include "common.h"
 #include "editor/editor.h"
 
-u64 g_tid = 0;
 u8* g_ItemBin;
 FILE* g_Items_en;
-Save saveFile;
 u64 currentTitleId;
-FS_MediaType currentMediaType;
 bool m_editorInitiated = false;
 
 void CleanupEditor(void) {
@@ -86,7 +83,7 @@ GameSelect:
 
     saveFile.Close();
 
-    if (mode == 1) //Game Select
+    if (mode == MODE_GAMESELECT) //Game Select
         goto GameSelect;
 
     CleanupEditor();

@@ -1,7 +1,8 @@
 #include "common.h"
-#include "editor/editor.h"
 #include "core/textbox.h"
 #include "core/imagebutton.h"
+#include "manager/manager.h"
+#include "editor/editor.h"
 #include <algorithm>
 
 s16  g_CheckX[2];
@@ -17,6 +18,8 @@ void checkIfCardInserted() {
 }
 
 int spawn_main_menu(void) {
+    static int ret = -1;
+
     while (aptMainLoop()) {
 		checkIfCardInserted();
 
@@ -33,12 +36,29 @@ int spawn_main_menu(void) {
             if (hidKeysDown() & g_key[i] && g_disabled[i])
             { 
 				if (g_CheckX[i] >= 60 && g_CheckX[i] <= 124 && g_CheckY[i] >= 50 && g_CheckY[i] <= 114) //Editor Icon
-                    editor_main();
+                    ret = editor_main();
     
 				else if (g_CheckX[i] >= 180 && g_CheckX[i] <= 244 && g_CheckY[i] >= 50 && g_CheckY[i] <= 114) //Manager Icon
-                    //manager_main();
-                    infoDisp(GFX_TOP, "Manager Coming Soon!");
+                    ret = manager_main();
+
+                else if (g_CheckX[i] >= 20 && g_CheckX[i] <= 100 && g_CheckY[i] >= 30 && g_CheckY[i] <= 66) //About Menu
+                    spawn_about_menu();
+
+                else if (g_CheckX[i] >= 220 && g_CheckX[i] <= 300 && g_CheckY[i] >= 30 && g_CheckY[i] <= 66) //Config Menu
+                    spawn_config_menu();
             }
+        }
+
+        if (ret == MODE_EXIT) {
+            break;
+        }
+
+        else if (ret == MODE_EDITOR) {
+            ret = editor_main();
+        }
+
+        else if (ret == MODE_MANAGER) {
+            ret = manager_main();
         }
     }
     return 0;

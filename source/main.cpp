@@ -4,6 +4,9 @@
 #include "libs/httpc-curl/httpc.h"
 
 static BCFNT_s *g_acnlFont;
+u64 g_tid = 0;
+Save saveFile;
+FS_MediaType currentMediaType;
 
 void InitApp(void) {
     romfsInit();

@@ -1,9 +1,6 @@
 #include "common.h"
 #include "manager/manager.h"
 
-u64 g_tid = 0;
-Save saveFile;
-FS_MediaType currentMediaType;
 bool m_ManagerInitiated = false;
 
 void InitManager(void) {
@@ -12,7 +9,7 @@ void InitManager(void) {
 }
 
 int manager_main(void) {
-    if (!m_editorInitiated) {
+    if (!m_ManagerInitiated) {
         InitManager();
     }
 
@@ -67,6 +64,5 @@ GameSelect:
     if (mode == 1) //Game Select
         goto GameSelect;
 
-    CleanupEditor();
     return mode; //mode is always 0 when exiting the editor
 }

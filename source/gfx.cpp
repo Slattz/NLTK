@@ -6,6 +6,15 @@ void InitCommonGFX(void)
     //About Menu
     pp2d_load_texture_png(TWITTER_ICON,        "romfs:/Icons/About/Twitter.png");
     pp2d_load_texture_png(DISCORD_ICON,        "romfs:/Icons/About/Discord.png");   
+    //Game Select Menu
+    pp2d_load_texture_png(EUR_FLAG,            "romfs:/Menus/Game_Select/Europe.png");
+    pp2d_load_texture_png(USA_FLAG,            "romfs:/Menus/Game_Select/USA.png");
+    pp2d_load_texture_png(JPN_FLAG,            "romfs:/Menus/Game_Select/Japan.png");
+    pp2d_load_texture_png(KOR_FLAG,            "romfs:/Menus/Game_Select/Korea.png");
+    pp2d_load_texture_png(ACNL_ICON,           "romfs:/Menus/Game_Select/Icon.png");
+    pp2d_load_texture_png(ACNL_WA_ICON,        "romfs:/Menus/Game_Select/IconWA.png");
+    pp2d_load_texture_png(GAME_CART,           "romfs:/Menus/Game_Select/GameCart.png");
+    pp2d_load_texture_png(SD_CARD,             "romfs:/Menus/Game_Select/SDCard.png");
     //Common
     pp2d_load_texture_png(NLTK_ICON,           "romfs:/Menus/Common/icon.png");
     pp2d_load_texture_png(CHECKBOX_EMPTY,      "romfs:/Menus/Common/checkbox.png");
@@ -192,11 +201,16 @@ void draw_main_menu(void)
     draw_base_interface();
     pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
     pp2d_draw_texture(NLTK_ICON, 126, 10); //NLTK's Icon
+    pp2d_draw_texture_scale(BUTTON_MAIN, 20,  30, 1.15, 0.6);  //w = 80, h = 33
+    pp2d_draw_texture_scale(BUTTON_MAIN, 220, 30, 1.15, 0.6);  //w = 80, h = 33
+    draw_centered_text(20,  80, 30, 33, 0.46, 0.46, COLOR_GREY, "About"); //Column 1 Text
+    draw_centered_text(220, 80, 30, 33, 0.48, 0.48, COLOR_GREY, "Options"); //Column 2 Text
+    
 
-    pp2d_draw_texture(EDITOR_ICON, 60, 50); //Editor Icon
-    pp2d_draw_texture_blend(MANAGER_ICON, 180, 50, COLOR_GREY_FILTER); //Manager Icon
-    pp2d_draw_text(60, 120, 1.0, 1.0, COLOR_GREY, "Editor");
-    pp2d_draw_text(180, 120, 1.0, 1.0, COLOR_GREY, "Manager");
+    pp2d_draw_texture(EDITOR_ICON, 60, 70); //Editor Icon
+    pp2d_draw_texture(MANAGER_ICON, 180, 70); //Manager Icon
+    pp2d_draw_text(60, 130, 0.5, 0.5, COLOR_GREY, "Editor");
+    pp2d_draw_text(180, 130, 0.5, 0.5, COLOR_GREY, "Manager");
     
     pp2d_draw_on(GFX_TOP, GFX_LEFT);
     pp2d_draw_text_center(GFX_TOP, 80, 1.1, 1.1, COLOR_GREY, "Actual Main Menu!");

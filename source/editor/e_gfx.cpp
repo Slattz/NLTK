@@ -31,16 +31,7 @@ void InitEditorGFX(void)
 	pp2d_load_texture_png(PWP_ICON,            "romfs:/Menus/Main/Pwp.png");
 	pp2d_load_texture_png(TOWN_ICON,           "romfs:/Menus/Main/Town.png");
 	pp2d_load_texture_png(VILLAGERS_ICON,      "romfs:/Menus/Main/Villagers.png");
-	pp2d_load_texture_png(ABOUT_ICON,          "romfs:/Menus/Main/About.png");
-    //Game Select Menu
-    pp2d_load_texture_png(EUR_FLAG,            "romfs:/Menus/Game_Select/Europe.png");
-    pp2d_load_texture_png(USA_FLAG,            "romfs:/Menus/Game_Select/USA.png");
-    pp2d_load_texture_png(JPN_FLAG,            "romfs:/Menus/Game_Select/Japan.png");
-    pp2d_load_texture_png(KOR_FLAG,            "romfs:/Menus/Game_Select/Korea.png");
-    pp2d_load_texture_png(ACNL_ICON,           "romfs:/Menus/Game_Select/Icon.png");
-    pp2d_load_texture_png(ACNL_WA_ICON,        "romfs:/Menus/Game_Select/IconWA.png");
-	pp2d_load_texture_png(GAME_CART,           "romfs:/Menus/Game_Select/GameCart.png");
-	pp2d_load_texture_png(SD_CARD,             "romfs:/Menus/Game_Select/SDCard.png");
+    pp2d_load_texture_png(ABOUT_ICON,          "romfs:/Menus/Main/About.png");
     //Town Menu
     //Players Menu
     pp2d_load_texture_png(PLYR_ABOUT,          "romfs:/Icons/Players/About.png");

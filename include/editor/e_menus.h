@@ -5,10 +5,6 @@
 
 #include "common.h"
 
-class ImageButton;
-class Button;
-class Save;
-
 extern s32 currentAcreId;
 
 bool check_if_saving(void);
