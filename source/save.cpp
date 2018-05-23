@@ -119,10 +119,11 @@ u8 Save::DeriveRegionLockID(u8 RegionID, u8 LanguageID) {
     return 0;
 }
 
-void Save::UpdateSaveRegion(void) {
+bool Save::UpdateSaveRegion(void) {
 	u8 SystemLanguage = 0xC; //0xC is ACNL default value || max+1
     u8 SystemRegion = 7; //7 is ACNL default value || max+1
 	u8 RegionByte;
+    bool ret = false;
 	CFGU_SecureInfoGetRegion(&SystemRegion);
 	CFGU_GetSystemLanguage(&SystemLanguage);
 
@@ -130,17 +131,24 @@ void Save::UpdateSaveRegion(void) {
     RegionByte = (SystemRegion << 4) | (DeriveID & 0xF);
 
     if (RegionLock.RawByte != RegionByte) {
-        m_changesMade = true;
+        ret = true;
+        RegionLock.RegionID = static_cast<CFG_Region>(SystemRegion);
+        RegionLock.DerivedID = DeriveID;
+        RegionLock.RawByte = RegionByte;
     }
 
-	RegionLock.RegionID = static_cast<CFG_Region>(SystemRegion);
-    RegionLock.DerivedID = DeriveID;
-	RegionLock.RawByte = RegionByte;
+    return ret;
 }
 
 void Save::FixSaveRegion(void) {
-	UpdateSaveRegion();
-	Write(0x621CE, RegionLock.RawByte);
+	bool diff = UpdateSaveRegion();
+    if (diff)
+    {
+        if (confirmDisp(GFX_TOP, "The region of the save you\nhave selected does not\nmatch your console.\nWould you like to fix it?")) {
+            Write(0x621CE, RegionLock.RawByte);
+            m_changesMade = true;
+        }
+    }
 }
 
 bool Save::Write(u32 offset, u8 *data, u32 count) {

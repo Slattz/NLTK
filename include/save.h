@@ -25,7 +25,7 @@ public:
 	u64 GetSaveSize(void);
 
 	u8 DeriveRegionLockID(u8 RegionID, u8 LanguageID);
-	void UpdateSaveRegion(void);
+	bool UpdateSaveRegion(void);
 	void FixSaveRegion(void);
 
 	bool Write(u32 offset, u8 *buffer, u32 count);

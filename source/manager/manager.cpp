@@ -55,7 +55,7 @@ GameSelect:
     }
 
     // Update Region of the Save
-    saveFile.UpdateSaveRegion();
+    saveFile.FixSaveRegion();
 
     int mode = spawn_manager_main_menu(&saveFile);
 
