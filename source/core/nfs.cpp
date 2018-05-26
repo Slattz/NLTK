@@ -144,7 +144,7 @@ int get_file_size(FILE *file)
     int size = 0;
     if (fseek(file, 0, SEEK_END) != 0)
     {
-        infoDisp(GFX_TOP, "Error in get_file_size: fseek");
+        infoDisp(top, "Error in get_file_size: fseek");
         return -1;
     }
     size = ftell(file);
@@ -212,8 +212,8 @@ void saveBackup(Save *saveFile, u64 tid)
     if (!fileExists(path))
     {
         if (!file_write(saveFile->GetRawSaveData() , path, SIZE_SAVE))
-            infoDisp(GFX_TOP, "Error:\nCouldn't write save backup!");
+            infoDisp(top, "Error:\nCouldn't write save backup!");
     }
     else
-        infoDisp(GFX_TOP, "Error:\nSave backup somehow already exists!");
+        infoDisp(top, "Error:\nSave backup somehow already exists!");
 }

@@ -13,15 +13,14 @@ ImageButton::ImageButton(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 a
 	: ImageButton(Point_t{ x, y }, Size_t{ width, height }, bgColor, activatorKeys, imageId) { }
 
 void ImageButton::Draw(void) {
+	C2D_ImageTint* tint;
+	C2D_PlainImageTint(tint, ActiveColor, 1.0);
 	if (Visible) {
 		if (m_active) {
-			pp2d_texture_select(m_imageId, Location.X, Location.Y);
-			pp2d_texture_scale(Scale, Scale);
-			pp2d_texture_blend(ActiveColor);
-			pp2d_texture_draw();
+			DrawSprite(m_imageId, Location.X, Location.Y, tint, Scale, Scale);
 		}
 		else {
-			pp2d_draw_texture_scale(m_imageId, Location.X, Location.Y, Scale, Scale);
+			DrawSprite(m_imageId, Location.X, Location.Y, nullptr, Scale, Scale);
 		}
 	}
 }

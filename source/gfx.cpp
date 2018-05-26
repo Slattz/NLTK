@@ -1,45 +1,39 @@
 #include "gfx.h"
 #include "about.h"
 
-void InitCommonGFX(void)
+void InitGFX(void)
 {
-    //About Menu
-    pp2d_load_texture_png(TWITTER_ICON,        "romfs:/Icons/About/Twitter.png");
-    pp2d_load_texture_png(DISCORD_ICON,        "romfs:/Icons/About/Discord.png");   
-    //Game Select Menu
-    pp2d_load_texture_png(EUR_FLAG,            "romfs:/Menus/Game_Select/Europe.png");
-    pp2d_load_texture_png(USA_FLAG,            "romfs:/Menus/Game_Select/USA.png");
-    pp2d_load_texture_png(JPN_FLAG,            "romfs:/Menus/Game_Select/Japan.png");
-    pp2d_load_texture_png(KOR_FLAG,            "romfs:/Menus/Game_Select/Korea.png");
-    pp2d_load_texture_png(ACNL_ICON,           "romfs:/Menus/Game_Select/Icon.png");
-    pp2d_load_texture_png(ACNL_WA_ICON,        "romfs:/Menus/Game_Select/IconWA.png");
-    pp2d_load_texture_png(GAME_CART,           "romfs:/Menus/Game_Select/GameCart.png");
-    pp2d_load_texture_png(SD_CARD,             "romfs:/Menus/Game_Select/SDCard.png");
-    //Common
-    pp2d_load_texture_png(NLTK_ICON,           "romfs:/Menus/Common/icon.png");
-    pp2d_load_texture_png(CHECKBOX_EMPTY,      "romfs:/Menus/Common/checkbox.png");
-    pp2d_load_texture_png(CHECKBOX_FILLED,     "romfs:/Menus/Common/checkbox_c.png");
-    pp2d_load_texture_png(CURSOR_POINT,        "romfs:/Menus/Common/Hand/hand_point.png");
-    pp2d_load_texture_png(CURSOR_SELECT,       "romfs:/Menus/Common/Hand/hand_select.png");
-    pp2d_load_texture_png(BUTTON_MAIN,         "romfs:/Menus/Main/Button.png");
-    pp2d_load_texture_png(EDITOR_ICON,         "romfs:/Icons/Common/Editor.png");
-    pp2d_load_texture_png(MANAGER_ICON,        "romfs:/Icons/Common/Manager.png");
+    gfxInitDefault();
+    C3D_Init(C3D_DEFAULT_CMDBUF_SIZE);
+    C2D_Init(C2D_DEFAULT_MAX_OBJECTS);
+    C2D_Prepare();
+    top = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
+    bottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
+
+    spriteSheet = C2D_SpriteSheetLoad("romfs:/gfx/sprites.t3x");
+    C2D_PlainImageTint(GreyFilter, COLOR_GREY_FILTER, 1.0);
 }
 
-void ExitCommonGFX(void)
+void ExitGFX(void)
 {
-	//About Menu
-	pp2d_free_texture(TWITTER_ICON);
-	pp2d_free_texture(DISCORD_ICON);
-	//Common 
-	pp2d_free_texture(NLTK_ICON);
-	pp2d_free_texture(CHECKBOX_EMPTY);
-	pp2d_free_texture(CHECKBOX_FILLED);
-	pp2d_free_texture(CURSOR_POINT);
-    pp2d_free_texture(CURSOR_SELECT);
-    pp2d_free_texture(BUTTON_MAIN);
-    pp2d_free_texture(EDITOR_ICON);
-	pp2d_free_texture(MANAGER_ICON);
+    C2D_SpriteSheetFree(spriteSheet);
+    C2D_Fini();
+    C3D_Fini();
+    gfxExit();
+}
+
+void DrawSprite(size_t imgindex, float x, float y, const C2D_ImageTint *tint, float scaleX, float scaleY)
+{
+    C2D_Image img;
+    img = C2D_SpriteSheetGetImage(spriteSheet, imgindex);
+    C2D_DrawImageAt(img, x, y, 1.0, tint, scaleX, scaleY);
+}
+
+void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text, bool atBaseline)
+{
+    Text* Txt = new Text(Color(color), text, scaleX, scaleY);
+    Txt->Draw(x, y, atBaseline);
+    delete Txt;
 }
 
 void draw_base_interface(void)
@@ -52,31 +46,37 @@ void draw_base_interface(void)
         titleX -= 15;
     }
 
-    pp2d_set_screen_color(GFX_TOP, COLOR_GREENBACKGROUND);
-    pp2d_set_screen_color(GFX_BOTTOM, COLOR_GREENBACKGROUND);
-    pp2d_begin_draw(GFX_TOP, GFX_LEFT);
-    pp2d_draw_rectangle(0, 0, 400, 20, COLOR_MENU_BARS);
-    pp2d_draw_text(titleX, 2, 0.5, 0.5, COLOR_GREY, title);
+
+    C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
+    C2D_TargetClear(top, COLOR_BG);
+    C2D_TargetClear(bottom, COLOR_BG);
+
+    C2D_SceneBegin(top);
+    C2D_DrawRectSolid(0, 0, 0, 400, 20, COLOR_MENU_BARS);
+    DrawText(titleX, 2, 0.5, 0.5, COLOR_GREY, title);
+
     if (config.isdebug)
-        pp2d_draw_text(3, 2, 0.5, 0.5, COLOR_ORANGE, "Debug: ON");
+        DrawText(3, 2, 0.5, 0.5, COLOR_ORANGE, "Debug: ON");
+    C2D_Flush();
 }
 
 void draw_cursor(void)
 {
-    pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
+    C2D_SceneBegin(bottom);
     updatePointerPosition();
 
     if (g_cursorpos.show)
     {
         if (g_cursorpos.A_held)
-            pp2d_draw_texture(CURSOR_SELECT, g_cursorpos.x, g_cursorpos.y);
+            DrawSprite(CURSOR_SELECT, g_cursorpos.x, g_cursorpos.y);
         
         else
-            pp2d_draw_texture(CURSOR_POINT, g_cursorpos.x, g_cursorpos.y);
-    } 
+            DrawSprite(CURSOR_POINT, g_cursorpos.x, g_cursorpos.y);
+    }
+    C2D_Flush();
 }
 
-void infoDisp(gfxScreen_t target, const char* message)
+void infoDisp(C3D_RenderTarget *target, const char* message)
 {
     char     temp[1024] = {0};
     strncpy(temp, message, 1023);
@@ -88,14 +88,14 @@ void infoDisp(gfxScreen_t target, const char* message)
         if (hidKeysDown() & KEY_A) break;
         
         draw_base_interface();
-        pp2d_draw_on(target, GFX_LEFT);
-        pp2d_draw_rectangle(50, 33.5, 300, 180, COLOR_BROWN);
-        pp2d_draw_text_center(target, 80, 0.7, 0.7, COLOR_GREY, temp);
-        pp2d_end_draw();
+        C2D_SceneBegin(target);
+        C2D_DrawRectSolid(50, 33.5, 0, 300, 180, COLOR_BROWN);
+        draw_centered_text(120, 280, 80, 0, 0.7f, 0.7f, COLOR_GREY, temp);
+        C3D_FrameEnd(0);
     }
 }
 
-void infoDispF(gfxScreen_t target, const char* string, ...)
+void infoDispF(C3D_RenderTarget *target, const char* string, ...)
 {
     char       buffer[1024];
     va_list    args;
@@ -105,7 +105,7 @@ void infoDispF(gfxScreen_t target, const char* string, ...)
     va_end(args);
 }
 
-bool confirmDisp(gfxScreen_t target, const char* message)
+bool confirmDisp(C3D_RenderTarget *target, const char* message)
 {
     char     temp[1024] = {0};
     strncpy(temp, message, 1023);
@@ -114,19 +114,19 @@ bool confirmDisp(gfxScreen_t target, const char* message)
     while (aptMainLoop())
     {
         hidScanInput();
-        if (hidKeysDown() & KEY_A) return 1;
-        if (hidKeysDown() & KEY_B) return 0;
+        if (hidKeysDown() & KEY_A) return true;
+        if (hidKeysDown() & KEY_B) return false;
         
         draw_base_interface();
-        pp2d_draw_on(target, GFX_LEFT);
-        pp2d_draw_rectangle(50, 33.5, 300, 180, COLOR_BROWN);
-        pp2d_draw_text_center(target, 80, 0.7, 0.7, COLOR_GREY, temp);
-        pp2d_end_draw();
+        C2D_SceneBegin(target);
+        C2D_DrawRectSolid(50, 33.5, 0, 300, 180, COLOR_BROWN);
+        draw_centered_text(120, 280, 80, 0, 0.7f, 0.7f, COLOR_GREY, temp);
+        C3D_FrameEnd(0);
     }
     return 0;
 }
 
-void confirmDispF(gfxScreen_t target, const char* string, ...)
+void confirmDispF(C3D_RenderTarget *target, const char* string, ...)
 {
     char       buffer[1024];
     va_list    args;
@@ -136,17 +136,17 @@ void confirmDispF(gfxScreen_t target, const char* string, ...)
     va_end(args);
 }
 
-void DisplayText(gfxScreen_t target, int x, int y, int width, int height, float textsize, const char* message)
+void DisplayText(C3D_RenderTarget *target, int x, int y, int width, int height, float textsize, const char* message)
 {
 	char     temp[1024] = { 0 };
 	strncpy(temp, message, 1023);
-	pp2d_draw_on(target, GFX_LEFT);
-	pp2d_draw_rectangle(x, y, width, height, COLOR_BROWN);
-	pp2d_draw_text_wrap(x + 5, y + 5, textsize, textsize, COLOR_GREY, width - 5, temp);
-	//Caller function must call pp2d_end_draw();
+	C2D_SceneBegin(target);
+	C2D_DrawRectSolid(x, y, 0, width, height, COLOR_BROWN);
+    draw_centered_text(x+5, 400-x-5, y+5, 0, textsize, textsize, COLOR_GREY, temp);
+	//Caller function must call C3D_FrameEnd(0);
 }
 
-void DisplayTextF(gfxScreen_t target, int x, int y, int width, int height, float textsize, const char* string, ...)
+void DisplayTextF(C3D_RenderTarget *target, int x, int y, int width, int height, float textsize, const char* string, ...)
 {
     char       buffer[1024];
     va_list    args;
@@ -175,18 +175,18 @@ void DisplayCardError() {
 		if (IsGameCartInserted() && checkGameCartIsACNL() && hidKeysDown() & KEY_A) break;
 
 		draw_base_interface();
-		pp2d_draw_on(GFX_TOP, GFX_LEFT);
-		pp2d_draw_rectangle(50, 33.5, 300, 180, COLOR_BROWN);
-		pp2d_draw_text_center(GFX_TOP, 100, 0.5, 0.5, COLOR_GREY, cardRemovedErrorMessage);
+		C2D_SceneBegin(top);
+		C2D_DrawRectSolid(50, 33.5, 0, 300, 180, COLOR_BROWN);
+		draw_centered_text(0, 400, 100, 0, 0.5, 0.5, COLOR_GREY, cardRemovedErrorMessage);
 
 		if (show || IsGameCartInserted()) {
-			pp2d_draw_texture(GAME_CART, 176, 40); // NOTE: Top Screen resolution 400x240, Bottom Screen Resolution: 320x240
+			DrawSprite(GAME_CART, 176, 40); // NOTE: Top Screen resolution 400x240, Bottom Screen Resolution: 320x240
 		}
 		else {
-			pp2d_draw_texture_blend(GAME_CART, 176, 40, COLOR_GREY_FILTER);
+			DrawSprite(GAME_CART, 176, 40, GreyFilter);
 		}
 
-		pp2d_end_draw();
+		C3D_FrameEnd(0);
 
 		timer++;
 		if (timer >= maxTimer) {
@@ -199,28 +199,28 @@ void DisplayCardError() {
 void draw_main_menu(void)
 {
     draw_base_interface();
-    pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
-    pp2d_draw_texture(NLTK_ICON, 126, 10); //NLTK's Icon
-    pp2d_draw_texture_scale(BUTTON_MAIN, 20,  30, 1.15, 0.6);  //w = 80, h = 33
-    pp2d_draw_texture_scale(BUTTON_MAIN, 220, 30, 1.15, 0.6);  //w = 80, h = 33
+    C2D_SceneBegin(bottom);
+    DrawSprite(NLTK_ICON, 126, 10); //NLTK's Icon
+    DrawSprite(BUTTON_MAIN, 20,  30, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
+    DrawSprite(BUTTON_MAIN, 220, 30, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
     draw_centered_text(20,  80, 30, 33, 0.46, 0.46, COLOR_GREY, "About"); //Column 1 Text
     draw_centered_text(220, 80, 30, 33, 0.48, 0.48, COLOR_GREY, "Options"); //Column 2 Text
     
 
-    pp2d_draw_texture(EDITOR_ICON, 60, 70); //Editor Icon
-    pp2d_draw_texture(MANAGER_ICON, 180, 70); //Manager Icon
-    pp2d_draw_text(60, 130, 0.5, 0.5, COLOR_GREY, "Editor");
-    pp2d_draw_text(180, 130, 0.5, 0.5, COLOR_GREY, "Manager");
+    DrawSprite(EDITOR_ICON, 60, 70); //Editor Icon
+    DrawSprite(MANAGER_ICON, 180, 70); //Manager Icon
+    DrawText(60, 130, 0.5, 0.5, COLOR_GREY, "Editor");
+    DrawText(180, 130, 0.5, 0.5, COLOR_GREY, "Manager");
     
-    pp2d_draw_on(GFX_TOP, GFX_LEFT);
-    pp2d_draw_text_center(GFX_TOP, 80, 1.1, 1.1, COLOR_GREY, "Actual Main Menu!");
+    C2D_SceneBegin(top);
+    draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Actual Main Menu!");
 
     if (config.isdebug)
     {
-        pp2d_draw_textf(100, 120, 0.5, 0.5, COLOR_GREY, "Cursor X: %d, Cursor Y: %d", g_cursorpos.x, g_cursorpos.y);
+        DrawText(100, 120, 0.5, 0.5, COLOR_GREY, Format("Cursor X: %d, Cursor Y: %d", g_cursorpos.x, g_cursorpos.y).c_str());
     }
     draw_cursor();
-    pp2d_end_draw();
+    C3D_FrameEnd(0);
 }
 
 void draw_config_menu(void)
@@ -231,90 +231,91 @@ void draw_config_menu(void)
     u32 configmax = sizeof(ConfigBools)/sizeof(ConfigBools[0]);
 
     draw_base_interface();
-    pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
+    C2D_SceneBegin(bottom);
 
     u32 i;
     for (i = 0; i < configmax-1; i++) //configmax-1: exclude Debug
     {
         if (ConfigBools[i])
-            pp2d_draw_texture(CHECKBOX_FILLED, 20, 20+(28*i));
+            DrawSprite(CHECKBOX_FILLED, 20, 20+(28*i));
 
         else
-            pp2d_draw_texture(CHECKBOX_EMPTY, 20, 20+(28*i));
+            DrawSprite(CHECKBOX_EMPTY, 20, 20+(28*i));
 
-        pp2d_draw_text(52, 21+(28*i), 0.6, 0.6, COLOR_GREY, ConfigText[i]); //ConfigText
+        DrawText(52, 21+(28*(configmax-1)), 0.6, 0.6, COLOR_GREY, ConfigText[configmax-1]); //ConfigText
     }
 
     if (config.isdebug)
     {
-        pp2d_draw_texture(CHECKBOX_FILLED, 20, 20+(28*(configmax-1)));
-        pp2d_draw_text(52, 21+(28*(configmax-1)), 0.6, 0.6, COLOR_GREY, ConfigText[configmax-1]);
+        DrawSprite(CHECKBOX_FILLED, 20, 20+(28*(configmax-1)));
+        DrawText(52, 21+(28*(configmax-1)), 0.6, 0.6, COLOR_GREY, ConfigText[configmax-1]);
     }
     draw_cursor();
-    pp2d_end_draw();
+    C3D_FrameEnd(0);
 }
 
 void draw_about_menu(bool discord, bool twitter)
 {
     draw_base_interface();
-    pp2d_draw_text(175, 30, 0.6, 0.6, COLOR_GREY, "Credits:");
+    DrawText(175, 30, 0.6, 0.6, COLOR_GREY, "Credits:");
+
     for (int i = 0; i < creditsCount; i++)
     {
-        pp2d_draw_text(10, 55+(i*20), 0.46, 0.46, COLOR_GREY, credits[i*2]); //Name
-        pp2d_draw_text(120, 55+(i*20), 0.45, 0.45, COLOR_GREY, credits[1+i*2]); //Description
+        DrawText(10, 55+(i*20), 0.46, 0.46, COLOR_GREY, credits[i*2]); //Name
+        DrawText(120, 55+(i*20), 0.45, 0.45, COLOR_GREY, credits[1+i*2]); //Description
     }
-    pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
-    pp2d_draw_texture(NLTK_ICON, 126, 10); //NLTK's Icon
-    pp2d_draw_texture(DISCORD_ICON, 55, 180); //Discord Icon
-    pp2d_draw_texture(TWITTER_ICON, 215, 180); //Twitter Icon
+    C2D_SceneBegin(bottom);
+    DrawSprite(NLTK_ICON, 126, 10); //NLTK's Icon
+    DrawSprite(DISCORD_ICON, 55, 180); //Discord Icon
+    DrawSprite(TWITTER_ICON, 215, 180); //Twitter Icon
     /* L:55, M:135, R:215 */
 
     if (discord)
-        DisplayText(GFX_BOTTOM, 60, 100, 200, 70, 0.5, discordtext);
+        DisplayText(bottom, 60, 100, 200, 70, 0.5, discordtext);
 
     if (twitter)
-        DisplayText(GFX_BOTTOM, 60, 100, 200, 70, 0.5, twittertext);
+        DisplayText(bottom, 60, 100, 200, 70, 0.5, twittertext);
 
     draw_cursor();
-    pp2d_end_draw();
+    C3D_FrameEnd(0);
 }
 
 void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmedia)
 {
     draw_base_interface();
-    pp2d_draw_on(GFX_BOTTOM, GFX_LEFT);
+    C2D_SceneBegin(bottom);
 
 	if (selectedmedia == -1 || selectedgame == -1 || selectedregion == -1) {
-		pp2d_draw_rectangle(75, 190, 170, 30, COLOR_BROWN); //Confirm Button
+		C2D_DrawRectSolid(75, 190, 0, 170, 30, COLOR_BROWN); //Confirm Button
 	}
 	else {
-		pp2d_draw_rectangle(75, 190, 170, 30, COLOR_LIGHT_BROWN); //Confirm Button (Can Confirm)
+		C2D_DrawRectSolid(75, 190, 0, 170, 30, COLOR_LIGHT_BROWN); //Confirm Button (Can Confirm)
 	}
 
 	// Media Type
 	if (selectedmedia == 1) { //Game Card
-		pp2d_draw_rectangle(98, 3, 54, 54, COLOR_GREY); //Grey Outline
-		pp2d_draw_texture(GAME_CART, 101, 6); //Game Card is selected
-		pp2d_draw_texture_blend(SD_CARD, 169, 6, COLOR_GREY_FILTER);
+		C2D_DrawRectSolid(98, 3, 0, 54, 54, COLOR_GREY); //Grey Outline
+		DrawSprite(GAME_CART, 101, 6); //Game Card is selected
+		DrawSprite(SD_CARD, 169, 6, GreyFilter); //Grey filter over SD card
 	}
 	else if (selectedmedia == 0) { //SD Card
-        pp2d_draw_rectangle(166, 3, 54, 54, COLOR_GREY); //Grey Outline
-        pp2d_draw_texture(SD_CARD, 169, 6); //SD Card is selected
-		pp2d_draw_texture_blend(GAME_CART, 101, 6, COLOR_GREY_FILTER);
+        C2D_DrawRectSolid(166, 3, 0, 54, 54, COLOR_GREY); //Grey Outline
+        DrawSprite(SD_CARD, 169, 6); //SD Card is selected
+		DrawSprite(GAME_CART, 101, 6, GreyFilter); //Grey Filter over Game Cart
 	}
 	else { //No Media selected yet
 		if (MediaInfo.GameCartInfo.HasACNLData) {
-			pp2d_draw_texture(GAME_CART, 101, 6);
+			DrawSprite(GAME_CART, 101, 6);
 		}
 		else {
-			pp2d_draw_texture_blend(GAME_CART, 101, 6, COLOR_GREY_FILTER);
+			DrawSprite(GAME_CART, 101, 6, GreyFilter);
 		}
 
 		if (MediaInfo.SDCardInfo.HasACNLData) {
-			pp2d_draw_texture(SD_CARD, 169, 6);
+			DrawSprite(SD_CARD, 169, 6);
 		}
 		else {
-			pp2d_draw_texture_blend(SD_CARD, 169, 6, COLOR_GREY_FILTER);
+			DrawSprite(SD_CARD, 169, 6, GreyFilter);
 		}
 	}
 
@@ -323,77 +324,77 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
 
     /* Grey Outlines */
     if (selectedgame == 1) //Orig ACNL
-        pp2d_draw_rectangle(98, 63, 54, 54, COLOR_GREY);
+        C2D_DrawRectSolid(98, 63, 0, 54, 54, COLOR_GREY);
 
     else if (selectedgame == 2) //WA ACNL
-        pp2d_draw_rectangle(166, 63, 54, 54, COLOR_GREY);
+        C2D_DrawRectSolid(166, 63, 0, 54, 54, COLOR_GREY);
 
     if (selectedregion == 0) //JPN
-        pp2d_draw_rectangle(167, 127, 50, 36, COLOR_GREY);
+        C2D_DrawRectSolid(167, 127, 0, 50, 36, COLOR_GREY);
 
     else if (selectedregion == 1) //USA
-        pp2d_draw_rectangle(103, 127, 50, 33, COLOR_GREY);
+        C2D_DrawRectSolid(103, 127, 0, 50, 33, COLOR_GREY);
 
     else if (selectedregion == 2) //EUR
-        pp2d_draw_rectangle(39, 127, 50, 36, COLOR_GREY);
+        C2D_DrawRectSolid(39, 127, 0, 50, 36, COLOR_GREY);
 
     else if (selectedregion == 3) //KOR
-        pp2d_draw_rectangle(231, 127, 50, 36, COLOR_GREY);
+        C2D_DrawRectSolid(231, 127, 0, 50, 36, COLOR_GREY);
 
-    pp2d_draw_texture(ACNL_ICON, 101, 66);
-    pp2d_draw_texture(ACNL_WA_ICON, 169, 66);
-    pp2d_draw_texture(EUR_FLAG, 42, 130);
-    pp2d_draw_texture(USA_FLAG, 106, 127);
-    pp2d_draw_texture(JPN_FLAG, 170, 130);
-    pp2d_draw_texture(KOR_FLAG, 234, 130);
-    pp2d_draw_text(128, 195, 0.7, 0.7, COLOR_GREY, "Confirm"); //Confirm Button Text
+    DrawSprite(ACNL_ICON, 101, 66);
+    DrawSprite(ACNL_WA_ICON, 169, 66);
+    DrawSprite(EUR_FLAG, 42, 130);
+    DrawSprite(USA_FLAG, 106, 127);
+    DrawSprite(JPN_FLAG, 170, 130);
+    DrawSprite(KOR_FLAG, 234, 130);
+    DrawText(128, 195, 0.7, 0.7, COLOR_GREY, "Confirm"); //Confirm Button Text
 
     if (selectedmedia == -1 || !mediaInstalled.InstalledTitles.ORIG_installed) //Grey out Orig ACNL Icon if no ORIG ACNL game is found
-    pp2d_draw_rectangle(101, 66, 48, 48, COLOR_GREY_FILTER);
+    C2D_DrawRectSolid(101, 66, 0, 48, 48, COLOR_GREY_FILTER);
 
     if (selectedmedia == -1 || !mediaInstalled.InstalledTitles.WA_installed) //Grey out WA ACNL Icon if no WA ACNL game is found
-    pp2d_draw_rectangle(169, 66, 48, 48, COLOR_GREY_FILTER);
+    C2D_DrawRectSolid(169, 66, 0, 48, 48, COLOR_GREY_FILTER);
 
     if (selectedgame == 1)
     {
         if (!mediaInstalled.InstalledTitles.ORIG_JPN_installed) //Grey out JPN Flag if no orig JPN game is found
-            pp2d_draw_rectangle(170, 130, 44, 30, COLOR_GREY_FILTER);
+            C2D_DrawRectSolid(170, 130, 0, 44, 30, COLOR_GREY_FILTER);
     
         if (!mediaInstalled.InstalledTitles.ORIG_USA_installed) //Grey out USA Flag if no orig USA game is found
-            pp2d_draw_rectangle(106, 130, 44, 27, COLOR_GREY_FILTER);
+            C2D_DrawRectSolid(106, 130, 0, 44, 27, COLOR_GREY_FILTER);
     
         if (!mediaInstalled.InstalledTitles.ORIG_EUR_installed) //Grey out EUR Flag if no orig EUR game is found
-            pp2d_draw_rectangle(42, 130, 44, 30, COLOR_GREY_FILTER);
+            C2D_DrawRectSolid(42, 130, 0, 44, 30, COLOR_GREY_FILTER);
     
         if (!mediaInstalled.InstalledTitles.ORIG_KOR_installed) //Grey out KOR Flag if no orig KOR game is found
-            pp2d_draw_rectangle(234, 130, 44, 30, COLOR_GREY_FILTER);
+            C2D_DrawRectSolid(234, 130, 0, 44, 30, COLOR_GREY_FILTER);
     }
 
     else if (selectedgame == 2)
     {
         if (!mediaInstalled.InstalledTitles.WA_JPN_installed) //Grey out JPN Flag if no WA JPN game is found
-            pp2d_draw_rectangle(170, 130, 44, 30, COLOR_GREY_FILTER);
+            C2D_DrawRectSolid(170, 130, 0, 44, 30, COLOR_GREY_FILTER);
     
         if (!mediaInstalled.InstalledTitles.WA_USA_installed) //Grey out USA Flag if no WA USA game is found
-            pp2d_draw_rectangle(106, 130, 44, 27, COLOR_GREY_FILTER);
+            C2D_DrawRectSolid(106, 130, 0, 44, 27, COLOR_GREY_FILTER);
     
         if (!mediaInstalled.InstalledTitles.WA_EUR_installed) //Grey out EUR Flag if no WA EUR game is found
-            pp2d_draw_rectangle(42, 130, 44, 30, COLOR_GREY_FILTER);
+            C2D_DrawRectSolid(42, 130, 0, 44, 30, COLOR_GREY_FILTER);
     
         if (!mediaInstalled.InstalledTitles.WA_KOR_installed) //Grey out KOR Flag if no WA KOR game is found
-            pp2d_draw_rectangle(234, 130, 44, 30, COLOR_GREY_FILTER);
+            C2D_DrawRectSolid(234, 130, 0, 44, 30, COLOR_GREY_FILTER);
     }
 
     else
     {
-        pp2d_draw_rectangle(170, 130, 44, 30, COLOR_GREY_FILTER); //JPN
-        pp2d_draw_rectangle(106, 130, 44, 27, COLOR_GREY_FILTER); //USA
-        pp2d_draw_rectangle(42, 130, 44, 30, COLOR_GREY_FILTER); //EUR
-        pp2d_draw_rectangle(234, 130, 44, 30, COLOR_GREY_FILTER); //KOR
+        C2D_DrawRectSolid(170, 130, 0, 44, 30, COLOR_GREY_FILTER); //JPN
+        C2D_DrawRectSolid(106, 130, 0, 44, 27, COLOR_GREY_FILTER); //USA
+        C2D_DrawRectSolid(42, 130, 0, 44, 30, COLOR_GREY_FILTER); //EUR
+        C2D_DrawRectSolid(234, 130, 0, 44, 30, COLOR_GREY_FILTER); //KOR
     }
 
-    pp2d_draw_on(GFX_TOP, GFX_LEFT);
-    pp2d_draw_text_center(GFX_TOP, 90, 0.8, 0.8, COLOR_BLACK, "Select your installed ACNL game:");
+    C2D_SceneBegin(top);
+    draw_centered_text(0, 400, 90, 0, 0.8, 0.8, COLOR_BLACK, "Select your installed ACNL game:");
     draw_cursor();
-    pp2d_end_draw();
+    C3D_FrameEnd(0);
 }

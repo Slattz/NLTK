@@ -7,10 +7,14 @@
 #include <cstdio>
 #include <stdlib.h>
 #include <cstring>
+#include <string>
+#include <vector>
 #include <sys/stat.h>
 #include <stdarg.h>
-#include "../source/libs/pp2d/pp2d.h"
+#include <citro2d.h>
 
+
+#include "CTRFont.hpp"
 #include "structs.h"
 #include "core/config.h"
 #include "editor/encryptedInt32.h"

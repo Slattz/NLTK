@@ -23,7 +23,7 @@ SOURCES             :=	source \
                         source/core \
                         source/editor \
                         source/manager \
-						source/libs/pp2d \
+						source/libs/CTRFont/source \
 						source/libs/jsmn \
                         source/libs/httpc-curl
                         
@@ -31,7 +31,7 @@ INCLUDES            :=	include \
                         include/core \
                         include/editor \
                         include/manager \
-                        source/libs/pp2d \
+                        source/libs/CTRFont/include \
 						source/libs/jsmn \
                         source/libs/httpc-curl
                         
@@ -77,7 +77,7 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:=  -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lz -lturbojpeg -lcitro2d -lcitro3d -lctrud
+LIBS	:=  -lfreetype -lpng -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lz -lturbojpeg -lcitro2d -lcitro3d -lctrud
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing

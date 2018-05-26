@@ -31,8 +31,8 @@ TextBox::TextBox(u32 x, u32 y, u32 width, u32 height, std::string text, std::str
 
 void TextBox::Draw() {
 	if (Visible) {
-		pp2d_draw_rectangle(Location.X, Location.Y, Size.Width, Size.Height, BackgroundColor);
-		pp2d_draw_text(Location.X + 2, Location.Y + 1, 0.5, 0.5, TextColor, Text.c_str()); // TODO: Adjust font scale & Y offset based on font character size
+		C2D_DrawRectSolid(Location.X, Location.Y, 0, Size.Width, Size.Height, BackgroundColor);
+		DrawText(Location.X + 2, Location.Y, 0.5f, 0.5f, TextColor, Text.c_str());
 	}
 }
 

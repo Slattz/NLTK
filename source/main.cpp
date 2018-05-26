@@ -3,7 +3,7 @@
 #include "editor/editor.h"
 #include "libs/httpc-curl/httpc.h"
 
-static BCFNT_s *g_acnlFont;
+static FontHandle g_acnlFont;
 u64 g_tid = 0;
 Save saveFile;
 FS_MediaType currentMediaType;
@@ -13,9 +13,8 @@ void InitApp(void) {
 	mkdir(WORKDIR, 777);
     amInit();
     httpc.Init(0);
-    pp2d_init();
 	cfguInit();
-	InitCommonGFX();
+	InitGFX();
     g_cursorpos.x = 160;
     g_cursorpos.y = 120;
 }
@@ -26,9 +25,8 @@ void PrepareToCloseApp(void) {
 	}
 
     saveConfig();
-	ExitCommonGFX();
+	ExitGFX();
 	cfguExit();
-    pp2d_exit();
     httpc.Exit();
     amExit();
     romfsExit();
@@ -36,15 +34,13 @@ void PrepareToCloseApp(void) {
 
 int main() {
     InitApp();
-	g_acnlFont = (BCFNT_s *)malloc(sizeof(BCFNT_s));
+	g_acnlFont = Font::Open("romfs:/ACNL_font.bcfnt");
 
-	if (R_SUCCEEDED(bcfnt_load_font(g_acnlFont, "romfs:/ACNL_font.bcfnt"))) {
-		pp2d_use_font(g_acnlFont);
-	}
-    else {
-        infoDisp(GFX_TOP, "Error: Font load failed.\nUsing System Font.");
-        delete g_acnlFont;
+	if (g_acnlFont->IsLoaded()) {
+        infoDisp(top, "Error: ACNL font failed to open.\n");
     }
+
+    Text::SetDefaultFont(g_acnlFont);
 
     hidScanInput();
     u32 keys = (hidKeysDown() | hidKeysHeld());

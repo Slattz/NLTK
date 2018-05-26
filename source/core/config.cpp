@@ -9,7 +9,7 @@ void saveConfig(void)
         remove((char *)configPath);
 
     if (!file_write(&config, (char *)configPath, sizeof(NLTK_config)))
-        infoDisp(GFX_TOP, "Error writing the configuration file");
+        infoDisp(top, "Error writing the configuration file");
 
 }
 

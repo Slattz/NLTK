@@ -11,7 +11,7 @@ s32 currentAcreId = -1;
 ImageButton *currentAcreButton;
 
 bool check_if_saving() {
-	return confirmDisp(GFX_TOP, "Would you like to save changes\nmade to your save?");
+	return confirmDisp(top, "Would you like to save changes\nmade to your save?");
 }
 
 int spawn_editor_main_menu(Save *saveFile)
@@ -40,26 +40,26 @@ int spawn_editor_main_menu(Save *saveFile)
             { 
                 /* Menu Buttons */
                 if (g_CheckX[i] >= 15 && g_CheckX[i] <= 85 && g_CheckY[i] >= 110 && g_CheckY[i] <= 165) //Town Menu
-                    infoDisp(GFX_TOP, "Town Menu Coming Soon!");
+                    infoDisp(top, "Town Menu Coming Soon!");
     
 				else if (g_CheckX[i] >= 89 && g_CheckX[i] <= 159 && g_CheckY[i] >= 110 && g_CheckY[i] <= 165) { //Acres Menu
-					//infoDisp(GFX_TOP, "Acres Menu Coming Soon!");
+					//infoDisp(top, "Acres Menu Coming Soon!");
 					spawn_acres_menu(saveFile);
 				}
                 else if (g_CheckX[i] >= 163 && g_CheckX[i] <= 233 && g_CheckY[i] >= 110 && g_CheckY[i] <= 165) //Player Menu
                     spawn_player_menu(saveFile);
     
                 else if (g_CheckX[i] >= 237 && g_CheckX[i] <= 307 && g_CheckY[i] >= 110 && g_CheckY[i] <= 165) //Villagers Menu
-                    infoDisp(GFX_TOP, "Villagers Menu Coming Soon!");
+                    infoDisp(top, "Villagers Menu Coming Soon!");
     
 				else if (g_CheckX[i] >= 15 && g_CheckX[i] <= 85 && g_CheckY[i] >= 180 && g_CheckY[i] <= 235) //Pwps Menu
-                    infoDisp(GFX_TOP, "PWP Menu Coming Soon!");
+                    infoDisp(top, "PWP Menu Coming Soon!");
     
 				else if (g_CheckX[i] >= 89 && g_CheckX[i] <= 159 && g_CheckY[i] >= 180 && g_CheckY[i] <= 235) //Island Menu
-                    infoDisp(GFX_TOP, "Island Menu Coming Soon!");
+                    infoDisp(top, "Island Menu Coming Soon!");
     
 				else if (g_CheckX[i] >= 163 && g_CheckX[i] <= 233 && g_CheckY[i] >= 180 && g_CheckY[i] <= 235) //Main Street Menu
-                    infoDisp(GFX_TOP, "Main Street Menu Coming Soon!");
+                    infoDisp(top, "Main Street Menu Coming Soon!");
     
 				else if (g_CheckX[i] >= 237 && g_CheckX[i] <= 307 && g_CheckY[i] >= 180 && g_CheckY[i] <= 235) //About Menu
                     spawn_about_menu();
@@ -68,10 +68,10 @@ int spawn_editor_main_menu(Save *saveFile)
 				else if (g_CheckX[i] >= 220 && g_CheckX[i] <= 300 && g_CheckY[i] >= 10 && g_CheckY[i] <= 44) { //Save Column  
 					if (check_if_saving()) {
 						if (saveFile->Commit(false)) {
-							infoDisp(GFX_TOP, "Save Succeeded!");
+							infoDisp(top, "Save Succeeded!");
 						}
 						else {
-							infoDisp(GFX_TOP, "Save Failed!");
+							infoDisp(top, "Save Failed!");
 						}
 					}
 				}

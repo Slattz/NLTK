@@ -3,12 +3,11 @@
 #ifndef CREDITS_H
 #define CREDITS_H
 
-static const int creditsCount = 7;
+static const int creditsCount = 6;
 static const char* credits[] =
 {
     "Slattz & Cuyler:", "Creators of NLTK.",
     "Candyce & Gina:", "For Ideas, Testing & Feedback.",
-    "BernardoGiordano:", "For pp2d, the Citro3D Wrapper.",
     "Marc_Max:", "For 'ACNL Save Editor' & Documentation.",
     "WemI0:", "For updated NLSE, Documentation & Acre Images.",
     "Nanquitas:", "For helping out a ton, especially with font loading.",

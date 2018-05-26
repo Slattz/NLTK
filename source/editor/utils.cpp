@@ -153,16 +153,16 @@ void load_player_invitems(Save *saveFile , int selectedplayer)
     }
 }
 
-float getCenterText_X(const char* text, float scaleX, float scaleY, float StartX, float WidthX)
+float getCenterText_X(Text* msg, float StartX, float WidthX)
 {
-    float CharWidth = pp2d_get_text_width(text, scaleX, scaleY);
+    float CharWidth = msg.Width();
     float CenterX = StartX+(WidthX - CharWidth) /2;
     return CenterX;
 }
 
-float getCenterText_Y(const char* text, float scaleX, float scaleY, float StartY, float HeightY)
+float getCenterText_Y(Text* msg, float StartY, float HeightY)
 {
-    float CharHeight = pp2d_get_text_height(text, scaleX, scaleY);
+    float CharHeight = msg.GetHeight();
     float CenterY = StartY+(HeightY-CharHeight) /2;
     return CenterY;
 }
@@ -170,9 +170,10 @@ float getCenterText_Y(const char* text, float scaleX, float scaleY, float StartY
 void draw_centered_text(float StartX, float WidthX, float StartY, float HeightY,
                         float scaleX, float scaleY, u32 color, const char* text)
 {
-    float XCoord = getCenterText_X(text, scaleX, scaleY, StartX, WidthX);
-    float YCoord = getCenterText_Y(text, scaleX, scaleY, StartY, HeightY);
-    pp2d_draw_text(XCoord, YCoord, scaleX, scaleY, color, text);
+    Text* Msg = Text(Color(color), text, scaleX, scaleY);
+    float XCoord = getCenterText_X(Msg, StartX, WidthX);
+    float YCoord = getCenterText_Y(Msg, StartY, HeightY);
+    Msg.Draw(XCoord, YCoord, true);
 }
 
 void draw_centered_textf(float StartX, float WidthX, float StartY, float HeightY,
@@ -424,4 +425,16 @@ bool checkGameCartIsACNL() {
 	else {
 		return checkGameCartTitleSame(currentTitleId);
 	}
+}
+
+std::string Format(const char* fmt, ...)
+{
+    char        buffer[0x100] = { 0 };
+    va_list     argList;
+
+    va_start(argList, fmt);
+    vsnprintf(buffer, sizeof(buffer), fmt, argList);
+    va_end(argList);
+
+    return (std::string(buffer));
 }

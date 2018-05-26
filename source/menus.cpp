@@ -74,7 +74,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
 
     if (MediaInfo.GameCartInfo.HasACNLData == false && MediaInfo.SDCardInfo.HasACNLData == false)
     {
-        infoDisp(GFX_TOP, "Error:\nACNL could not be found!");
+        infoDisp(top, "Error:\nACNL could not be found!");
         return 0;
     }
 
@@ -155,13 +155,13 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
 				else if (g_CheckX[i] >= 75 && g_CheckX[i] <= 245 && g_CheckY[i] >= 190 && g_CheckY[i] <= 220) //Confirm Button
                 {
 					if (selectedmedia == -1)
-						infoDisp(GFX_TOP, "Please select a media type!");
+						infoDisp(top, "Please select a media type!");
 
                     else if (selectedgame == -1)
-                        infoDisp(GFX_TOP, "Please select a game!");
+                        infoDisp(top, "Please select a game!");
     
                     else if (selectedregion == -1)
-                        infoDisp(GFX_TOP, "Please select a region!");
+                        infoDisp(top, "Please select a region!");
     
                     else
                     {
@@ -176,7 +176,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
     
                         else
                         {
-                            infoDispF(GFX_TOP, "Error:\nSelected Media Type is: %d\nSelected Game is: %d\nSelected Region is: %d",
+                            infoDispF(top, "Error:\nSelected Media Type is: %d\nSelected Game is: %d\nSelected Region is: %d",
 								selectedmedia, selectedgame, selectedregion);
                             return 0;
                         }

@@ -144,7 +144,7 @@ void Save::FixSaveRegion(void) {
 	bool diff = UpdateSaveRegion();
     if (diff)
     {
-        if (confirmDisp(GFX_TOP, "The region of the save you\nhave selected does not\nmatch your console.\nWould you like to fix it?")) {
+        if (confirmDisp(top, "The region of the save you\nhave selected does not\nmatch your console.\nWould you like to fix it?")) {
             Write(0x621CE, RegionLock.RawByte);
             m_changesMade = true;
         }
@@ -223,7 +223,7 @@ bool Save::Commit(bool close) {
 
 void Save::Close(void) {
 	if (m_changesMade) {
-		if (confirmDisp(GFX_TOP, "Would you like to save all changes\nmade to your save before exiting?")) {
+		if (confirmDisp(top, "Would you like to save all changes\nmade to your save before exiting?")) {
 			Commit(false);
 		}
 	}

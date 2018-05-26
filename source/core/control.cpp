@@ -21,6 +21,6 @@ Control::Control(u32 x, u32 y, u32 width, u32 height, u32 bgColor)
 
 void Control::Draw() {
 	if (Visible) {
-		pp2d_draw_rectangle(Location.X, Location.Y, Size.Width, Size.Height, BackgroundColor);
+		C2D_DrawRectSolid(Location.X, Location.Y, 0, Size.Width, Size.Height, BackgroundColor);
 	}
 }

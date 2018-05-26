@@ -18,8 +18,8 @@ bool    DebugCode(bool complete);
 void    Sleep(u64 nanoseconds);
 s64     Seconds(float amount);
 void    load_player_invitems(Save *saveFile, int selectedplayer);
-float   getCenterText_X(const char* text, float scaleX, float scaleY, float StartX, float WidthX);
-float   getCenterText_Y(const char* text, float scaleX, float scaleY, float StartY, float HeightY);
+float   getCenterText_X(Text* msg, float StartX, float WidthX);
+float   getCenterText_Y(Text* msg, float StartY, float HeightY);
 void    draw_centered_text(float StartX, float WidthX, float StartY, float HeightY,
                         float scaleX, float scaleY, u32 color, const char* text);
 void draw_centered_textf(float StartX, float WidthX, float StartY, float HeightY,
@@ -36,5 +36,6 @@ std::string GetItemName(Item *item);
 std::string u16tou8(std::u16string src);
 std::u16string u8tou16(const char* src);
 bool checkGameCartIsACNL();
+std::string Format(const char* fmt, ...);
 
 #endif

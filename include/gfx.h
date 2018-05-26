@@ -5,14 +5,27 @@
 
 #include "common.h"
 
-void InitCommonGFX(void);
-void ExitCommonGFX(void);
-void infoDisp(gfxScreen_t target, const char* message);
-bool confirmDisp(gfxScreen_t target, const char* message);
-void DisplayText(gfxScreen_t target, int x, int y, int width, int height, float textsize, const char* message);
-void infoDispF(gfxScreen_t target, const char* string, ...);
-void confirmDispF(gfxScreen_t target, const char* string, ...);
-void DisplayTextF(gfxScreen_t target, int x, int y, int width, int height, float textsize, const char* string, ...);
+typedef struct
+{
+    C2D_Sprite spr;
+    float dx, dy; // velocity
+} Sprite;
+
+C2D_SpriteSheet spriteSheet;
+C3D_RenderTarget* top;
+C3D_RenderTarget* bottom;
+C2D_ImageTint* GreyFilter;
+
+void InitGFX(void);
+void ExitGFX(void);
+void DrawSprite(size_t imgindex, float x, float y, const C2D_ImageTint *tint = nullptr, float scaleX = 1.0, float scaleY = 1.0);
+void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text, bool atBaseline = false);
+void infoDisp(C3D_RenderTarget *target, const char* message);
+bool confirmDisp(C3D_RenderTarget *target, const char* message);
+void DisplayText(C3D_RenderTarget *target, int x, int y, int width, int height, float textsize, const char* message);
+void infoDispF(C3D_RenderTarget *target, const char* string, ...);
+void confirmDispF(C3D_RenderTarget *target, const char* string, ...);
+void DisplayTextF(C3D_RenderTarget *target, int x, int y, int width, int height, float textsize, const char* string, ...);
 void DisplayCardError();
 
 void draw_base_interface(void);
@@ -23,21 +36,19 @@ void draw_about_menu(bool discord, bool twitter);
 void draw_config_menu(void);
 
 //Colors
-//#define COLOR_BOTTOMBACKGROUND  ABGR8(255,142,255,124) //Light Green
-//#define COLOR_TOPBACKGROUND     ABGR8(255,45,78,80) //Brown
-#define COLOR_GREENBACKGROUND   ABGR8(255,105,188,92)
-#define COLOR_MENU_BARS         RGBA8(33,139,43,255)
-#define COLOR_WHITE             RGBA8(255,255,255,255)
-#define COLOR_BLACK             RGBA8(0,0,0,255)
-#define COLOR_GREEN             RGBA8(124,255,142,255)
-#define COLOR_BROWN             RGBA8(80,78,45,255)
-#define COLOR_LIGHT_BROWN       RGBA8(99,93,31,255)
-#define COLOR_GREY_FILTER       RGBA8(0,0,0,170)
-#define COLOR_GREY              RGBA8(210,210,210,255)
-#define COLOR_RED               RGBA8(255,0,0,255)
-#define COLOR_YELLOW			RGBA8(255, 255, 0, 255)
-#define COLOR_ORANGE            RGBA8(255,106,0,255)
-#define COLOR_TRANSPARENT		RGBA8(0, 0, 0, 0)
+#define COLOR_BG                C2D_Color32(92,188,105,255)
+#define COLOR_MENU_BARS         C2D_Color32(33,139,43,255)
+#define COLOR_WHITE             C2D_Color32(255,255,255,255)
+#define COLOR_BLACK             C2D_Color32(0,0,0,255)
+#define COLOR_GREEN             C2D_Color32(124,255,142,255)
+#define COLOR_BROWN             C2D_Color32(80,78,45,255)
+#define COLOR_LIGHT_BROWN       C2D_Color32(99,93,31,255)
+#define COLOR_GREY_FILTER       C2D_Color32(0,0,0,170)
+#define COLOR_GREY              C2D_Color32(210,210,210,255)
+#define COLOR_RED               C2D_Color32(255,0,0,255)
+#define COLOR_YELLOW			C2D_Color32(255, 255, 0, 255)
+#define COLOR_ORANGE            C2D_Color32(255,106,0,255)
+#define COLOR_TRANSPARENT		C2D_Color32(0, 0, 0, 0)
 
 /* Texture IDs */
 

@@ -14,5 +14,5 @@ TextButton::TextButton(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 act
 
 void TextButton::Draw(void) {
 	Button::Draw();
-	pp2d_draw_text_wrap(Location.X + 2, Location.Y + 2, FontScale, FontScale, TextColor, Size.Width - 4, Text.c_str());
+    DrawText(Location.X + 2, Location.Y, FontScale, FontScale, TextColor, Text.c_str());
 }
