@@ -60,9 +60,11 @@ u8* Player::RefreshTPC(Save *save) {
 
 	if (save->ReadU16(m_offset + 0x5738) == 0xD8FF) { // 0xFFD8 = JPEG File Marker
 		save->ReadArray(m_TPCData, m_offset + 0x5738, 0x1400);
+		m_TPCPic = LoadPlayerPicture(m_TPCData);
 	}
-	else {
+	else { //No TPC
 		m_TPCData = nullptr;
+		m_TPCPic = C2D_SpriteSheetGetImage(spriteSheet, NO_TPC_PIC);
 	}
 
 	return m_TPCData;

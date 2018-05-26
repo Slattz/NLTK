@@ -100,21 +100,6 @@ void spawn_player_menu(Save *saveFile)
     static int selectedmode = 0;
     static u32 LColor, RColor;
 
-	for (int i = 0; i < 4; ++i) {
-		u8 *TPCData = saveFile->players[i].m_TPCData;
-		bool loadedTPCImage = false;
-
-		if (TPCData != nullptr) {
-			loadedTPCImage = load_texture_jpeg_memory(PLAYER1_PIC + i, TPCData, 0x1400, 64, 104);
-			continue;
-		}
-
-		// If loadedTPCImage is false, either the TPC didn't exist or it was invalid. Fall back to the NOTPC for now.
-		if (!loadedTPCImage) {
-			pp2d_load_texture_png(PLAYER1_PIC + i, "romfs:/Menus/Players/NoTPC.png"); // This was still triggering before, so the continue above is needed.
-		}
-	}
-
     while (aptMainLoop())
     {
 		checkIfCardInserted();

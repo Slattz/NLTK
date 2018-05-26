@@ -1,6 +1,12 @@
 #include "gfx.h"
 #include "about.h"
 
+C2D_SpriteSheet spriteSheet;
+C3D_RenderTarget* top;
+C3D_RenderTarget* bottom;
+C2D_ImageTint* GreyFilter;
+C2D_ImageTint* GreenFilter;
+
 void InitGFX(void)
 {
     gfxInitDefault();
@@ -12,6 +18,7 @@ void InitGFX(void)
 
     spriteSheet = C2D_SpriteSheetLoad("romfs:/gfx/sprites.t3x");
     C2D_PlainImageTint(GreyFilter, COLOR_GREY_FILTER, 1.0);
+    C2D_PlainImageTint(GreenFilter, COLOR_GREEN, 1.0);
 }
 
 void ExitGFX(void)

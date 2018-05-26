@@ -36,7 +36,22 @@ namespace CTRFontImpl
             struct
             {
                 float left, top, right, bottom;
-            } texcoord; 
+            } texcoord;
+
+            operator C2D_Glyph() const
+            {
+                C2D_Glyph   glyph;
+
+                glyph.sheet = sheet;
+                glyph.xPos = xOffset;
+                glyph.width = width;
+                glyph.texcoord.left = texcoord.left;
+                glyph.texcoord.top = texcoord.top;
+                glyph.texcoord.right = texcoord.right;
+                glyph.texcoord.bottom = texcoord.bottom;
+
+                return glyph;
+            }
         };
 
         struct Sheet

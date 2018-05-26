@@ -38,4 +38,5 @@ std::u16string u8tou16(const char* src);
 bool checkGameCartIsACNL();
 std::string Format(const char* fmt, ...);
 
+
 #endif

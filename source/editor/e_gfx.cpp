@@ -3,6 +3,8 @@
 #include "core/imagebutton.h"
 #include "editor/e_gfx.h"
 
+C2D_ImageTint* AcreTint;
+
 std::vector<Control*> editorPlayerInfoControls = {};
 std::vector<Control*> acreEditorControls = {};
 
@@ -137,8 +139,8 @@ void draw_editor_main_menu(void)
     {
         DrawSprite(BUTTON_MAIN, 15+(74*i), 110); //Row 1 Buttons
         DrawSprite(BUTTON_MAIN, 15+(74*i), 180); //Row 2 Buttons
-        DrawSprite(ButtonIcon[i], 39+(74*i), 114, COLOR_GREEN); //Row 1 Icons
-        DrawSprite(ButtonIcon[4+i], 39+(74*i), 184, COLOR_GREEN); //Row 2 Icons
+        DrawSprite(ButtonIcon[i], 39+(74*i), 114, GreenFilter); //Row 1 Icons
+        DrawSprite(ButtonIcon[4+i], 39+(74*i), 184, GreenFilter); //Row 2 Icons
         DrawText(37+(71*i), 147, 0.46, 0.46, COLOR_GREY, ButtonText[i]); //Row 1 Text
         if (i==2) //Fit Main Street Text
             DrawText(26+(71*i), 216, 0.44, 0.44, COLOR_GREY, ButtonText[4+i]); //Row 2 MS Text
@@ -152,10 +154,10 @@ void draw_editor_main_menu(void)
 
     if (config.isdebug)
     {
-        DrawText(100, 120, 0.5, 0.5, COLOR_GREY, Format("Cursor X: %d, Cursor Y: %d", g_cursorpos.x, g_cursorpos.y));
-        DrawText(100, 140, 0.5, 0.5, COLOR_GREY, Format("Game + Region: 0x%016llX", g_tid));
-        DrawText(100, 160, 0.5, 0.5, COLOR_GREY, Format("Is ACNL: %d", is_ACNL(g_tid)));
-        DrawText(100, 180, 0.5, 0.5, COLOR_GREY, Format("ItemBin allocated: %d", (g_ItemBin==NULL) ? 0:1));
+        DrawText(100, 120, 0.5, 0.5, COLOR_GREY, Format("Cursor X: %d, Cursor Y: %d", g_cursorpos.x, g_cursorpos.y).c_str());
+        DrawText(100, 140, 0.5, 0.5, COLOR_GREY, Format("Game + Region: 0x%016llX", g_tid).c_str());
+        DrawText(100, 160, 0.5, 0.5, COLOR_GREY, Format("Is ACNL: %d", is_ACNL(g_tid)).c_str());
+        DrawText(100, 180, 0.5, 0.5, COLOR_GREY, Format("ItemBin allocated: %d", (g_ItemBin==NULL) ? 0:1).c_str());
     }
     draw_cursor();
     C3D_FrameEnd(0);
@@ -193,7 +195,7 @@ void draw_player_menu_top(Save *saveFile, int selectedplayer, u32 LColor, u32 RC
 
 	for (int i = 0; i < 4; i++) {
 		if (saveFile->players[i].Exists(saveFile)) {
-			DrawSprite(PLAYER1_PIC + i, 100 * i + 18, 45);  //WxH: 64x104
+			C2D_DrawImageAt(saveFile->players[i].m_TPCPic, 100 * i + 18, 45, 1.0, nullptr, 1.0, 1.0);  //WxH: 64x104
 
 			if (i == selectedplayer)
 				Ptext_colour = COLOR_WHITE;

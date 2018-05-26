@@ -1,4 +1,4 @@
-#include "Text.hpp"
+#include "CTRFont/Text.hpp"
 #include <3ds/util/utf.h>
 #include "Citro2dInternal.h"
 #include <algorithm>
@@ -94,7 +94,7 @@ Text::Text(const std::string &src)
 
 Text::Text(const std::string &src, const FontHandle &font) :
     _font{font}
-{    
+{
     _glyphs = GetGlyphsFromString(_font, src, _width, _lines);
 }
 

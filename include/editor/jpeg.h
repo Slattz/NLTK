@@ -4,7 +4,8 @@
 #define JPEG_H
 
 struct jpeg_info decompress_jpeg(const void* buffer, long jpegSize);
-bool load_texture_jpeg_memory(size_t id, void* buf, size_t buf_size, u32 maxwidth, u32 maxheight);
+C2D_Image LoadPlayerPicture(const void *tpcData);
+void C2D_Image_Destroy(C2D_Image image);
 
 
 #endif

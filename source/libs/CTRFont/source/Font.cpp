@@ -1,8 +1,8 @@
-#include "Font.hpp"
+#include "CTRFont/Font.hpp"
 #include "FontInternal.hpp"
 
 extern "C"
-CFNT_s *    g_sharedFont;   ///< ctrulib
+CFNT_s *    g_sharedFont;   ///< defined in ctrulib
 FontHandle  Font::_sysfont;
 
 using CTRFontImpl::Bcfnt;
@@ -76,7 +76,7 @@ Font::~Font(void)
         if (bcfnt->glyphSheets)
         {
             delete[] bcfnt->glyphSheets;
-            bcfnt->glyphSheets = nullptr; 
+            bcfnt->glyphSheets = nullptr;
         }
 
         if (bcfnt->cfnt && bcfnt->cfnt != g_sharedFont)

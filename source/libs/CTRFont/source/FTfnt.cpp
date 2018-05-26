@@ -1,6 +1,6 @@
 #include <3ds/types.h>
 extern "C" {
-#include <3ds/synchronization.h> 
+#include <3ds/synchronization.h>
 }
 #include <citro3d.h>
 
@@ -130,7 +130,7 @@ FTfnt::FTFace::FTFace(const std::string &path)
 
     // Force glyph size to 32px*32px max
     if (IsScalable())
-    {   
+    {
         u32 obj = 32;
         u32 size = obj;
         while (error == 0 && size > 10)
@@ -254,22 +254,13 @@ C2D_Glyph   FTfnt::GetGlyph(const u32 code, float& xAdvance)
 
     // Search in map
     {
-        auto glyph = glyphs.find(code);
+        auto pair = glyphs.find(code);
 
-        if (glyph != glyphs.end())
+        if (pair != glyphs.end())
         {
-            Glyph&      _glyph = glyph->second;
-            C2D_Glyph   glyph;
+            Glyph &    glyph = pair->second;
 
-            glyph.sheet = _glyph.sheet;
-            glyph.xPos = _glyph.xOffset;
-            glyph.width = _glyph.width;
-            glyph.texcoord.left = _glyph.texcoord.left;         
-            glyph.texcoord.top = _glyph.texcoord.top;
-            glyph.texcoord.right = _glyph.texcoord.right;
-            glyph.texcoord.bottom = _glyph.texcoord.bottom;
-
-            xAdvance = _glyph.xAdvance;
+            xAdvance = glyph.xAdvance;
 
             return glyph;
         }
@@ -296,6 +287,7 @@ C2D_Glyph   FTfnt::GetGlyph(const u32 code, float& xAdvance)
                  + PosToFloat(smetrics.ascender) ///< Go to baseline
                  - PosToFloat(metrics.horiBearingY); ///< Adjust glyph position
 
+    // Don't waste texture space on empty glyphs
     if (bitmap.width > 0)
     {
         // Write the new glyph data
@@ -322,7 +314,7 @@ C2D_Glyph   FTfnt::GetGlyph(const u32 code, float& xAdvance)
         // Set textures coordinates
         glyph.texcoord.left = Normalize(texX, texWidth);
         glyph.texcoord.top =  Normalize(rowIdx * cellHeight, texHeight);
-        glyph.texcoord.right = glyph.texcoord.left + Normalize(bitmap.width, texWidth);    
+        glyph.texcoord.right = glyph.texcoord.left + Normalize(bitmap.width, texWidth);
         glyph.texcoord.bottom = glyph.texcoord.top + Normalize(cellHeight, texHeight);
     }
     else
@@ -334,18 +326,7 @@ C2D_Glyph   FTfnt::GetGlyph(const u32 code, float& xAdvance)
     // Store the glyph
     glyphs.insert(std::make_pair(code, glyph));
 
-    // Create the glyph to return
-    C2D_Glyph   _glyph;
-
-    _glyph.sheet = glyph.sheet;
-    _glyph.xPos = glyph.xOffset;
-    _glyph.width = glyph.width;
-    _glyph.texcoord.left = glyph.texcoord.left;         
-    _glyph.texcoord.top = glyph.texcoord.top;
-    _glyph.texcoord.right = glyph.texcoord.right;
-    _glyph.texcoord.bottom = glyph.texcoord.bottom;
-
     xAdvance = glyph.xAdvance;
 
-    return _glyph;
+    return glyph;
 }

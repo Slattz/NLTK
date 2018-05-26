@@ -11,10 +11,11 @@ typedef struct
     float dx, dy; // velocity
 } Sprite;
 
-C2D_SpriteSheet spriteSheet;
-C3D_RenderTarget* top;
-C3D_RenderTarget* bottom;
-C2D_ImageTint* GreyFilter;
+extern C2D_SpriteSheet spriteSheet;
+extern C3D_RenderTarget* top;
+extern C3D_RenderTarget* bottom;
+extern C2D_ImageTint* GreyFilter;
+extern C2D_ImageTint* GreenFilter;
 
 void InitGFX(void);
 void ExitGFX(void);
@@ -36,21 +37,21 @@ void draw_about_menu(bool discord, bool twitter);
 void draw_config_menu(void);
 
 //Colors
-#define COLOR_BG                C2D_Color32(92,188,105,255)
-#define COLOR_MENU_BARS         C2D_Color32(33,139,43,255)
-#define COLOR_WHITE             C2D_Color32(255,255,255,255)
-#define COLOR_BLACK             C2D_Color32(0,0,0,255)
-#define COLOR_GREEN             C2D_Color32(124,255,142,255)
-#define COLOR_BROWN             C2D_Color32(80,78,45,255)
-#define COLOR_LIGHT_BROWN       C2D_Color32(99,93,31,255)
-#define COLOR_GREY_FILTER       C2D_Color32(0,0,0,170)
-#define COLOR_GREY              C2D_Color32(210,210,210,255)
-#define COLOR_RED               C2D_Color32(255,0,0,255)
-#define COLOR_YELLOW			C2D_Color32(255, 255, 0, 255)
-#define COLOR_ORANGE            C2D_Color32(255,106,0,255)
-#define COLOR_TRANSPARENT		C2D_Color32(0, 0, 0, 0)
+static const u32 COLOR_BG              =    C2D_Color32(92,188,105,255);
+static const u32 COLOR_MENU_BARS       =    C2D_Color32(33,139,43,255);
+static const u32 COLOR_WHITE           =    C2D_Color32(255,255,255,255);
+static const u32 COLOR_BLACK           =    C2D_Color32(0,0,0,255);
+static const u32 COLOR_GREEN           =    C2D_Color32(124,255,142,255);
+static const u32 COLOR_BROWN           =    C2D_Color32(80,78,45,255);
+static const u32 COLOR_LIGHT_BROWN     =    C2D_Color32(99,93,31,255);
+static const u32 COLOR_GREY_FILTER     =    C2D_Color32(0,0,0,170);
+static const u32 COLOR_GREY            =    C2D_Color32(210,210,210,255);
+static const u32 COLOR_RED             =    C2D_Color32(255,0,0,255);
+static const u32 COLOR_YELLOW          =    C2D_Color32(255,255,0,255);
+static const u32 COLOR_ORANGE          =    C2D_Color32(255,106,0,255);
+static const u32 COLOR_TRANSPARENT     =    C2D_Color32(0,0,0,0);
 
-/* Texture IDs */
+/* Texture IDs */;
 
 //Main Menu
 #define TOWN_ICON           1

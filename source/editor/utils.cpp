@@ -155,14 +155,14 @@ void load_player_invitems(Save *saveFile , int selectedplayer)
 
 float getCenterText_X(Text* msg, float StartX, float WidthX)
 {
-    float CharWidth = msg.Width();
+    float CharWidth = msg->GetWidth();
     float CenterX = StartX+(WidthX - CharWidth) /2;
     return CenterX;
 }
 
 float getCenterText_Y(Text* msg, float StartY, float HeightY)
 {
-    float CharHeight = msg.GetHeight();
+    float CharHeight = msg->GetHeight();
     float CenterY = StartY+(HeightY-CharHeight) /2;
     return CenterY;
 }
@@ -170,10 +170,10 @@ float getCenterText_Y(Text* msg, float StartY, float HeightY)
 void draw_centered_text(float StartX, float WidthX, float StartY, float HeightY,
                         float scaleX, float scaleY, u32 color, const char* text)
 {
-    Text* Msg = Text(Color(color), text, scaleX, scaleY);
+    Text* Msg = new Text(Color(color), text, scaleX, scaleY);
     float XCoord = getCenterText_X(Msg, StartX, WidthX);
     float YCoord = getCenterText_Y(Msg, StartY, HeightY);
-    Msg.Draw(XCoord, YCoord, true);
+    Msg->Draw(XCoord, YCoord, true);
 }
 
 void draw_centered_textf(float StartX, float WidthX, float StartY, float HeightY,
