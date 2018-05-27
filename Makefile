@@ -77,13 +77,13 @@ CXXFLAGS	:= $(CFLAGS) -fno-rtti -fno-exceptions -std=gnu++11
 ASFLAGS	:=	-g $(ARCH)
 LDFLAGS	=	-specs=3dsx.specs -g $(ARCH) -Wl,-Map,$(notdir $*.map)
 
-LIBS	:=  -lfreetype -lpng -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lz -lturbojpeg -lcitro2d -lcitro3d -lctrud
+LIBS	:=  -lfreetype -lpng -lbz2 -lcurl -lmbedtls -lmbedx509 -lmbedcrypto -lz -lturbojpeg -lcitro2d -lcitro3d -lctrud
 
 #---------------------------------------------------------------------------------
 # list of directories containing libraries, this must be the top level containing
 # include and lib
 #---------------------------------------------------------------------------------
-LIBDIRS	:= $(CTRULIB) $(DEVKITPRO)/portlibs/armv6k $(DEVKITPRO)/portlibs/3ds
+LIBDIRS	:= $(CTRULIB) $(PORTLIBS) $(PORTLIBS)/include/freetype2
 
 
 #---------------------------------------------------------------------------------
@@ -134,6 +134,7 @@ export OFILES := $(OFILES_BIN) $(OFILES_SOURCES)
 
 export INCLUDE	:=	$(foreach dir,$(INCLUDES),-I$(CURDIR)/$(dir)) \
 			$(foreach dir,$(LIBDIRS),-I$(dir)/include) \
+            $(foreach dir,$(LIBDIRS),-I$(dir)) \
 			-I$(CURDIR)/$(BUILD)
 
 export LIBPATHS	:=	$(foreach dir,$(LIBDIRS),-L$(dir)/lib)
