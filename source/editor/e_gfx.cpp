@@ -83,7 +83,7 @@ void InitAcreGFX(Save *saveFile, const u8 LoopMax, const u8 GridXMax,
 
 		acre = saveFile->ReadU8(Offset + i * 2);
 		ImageButton *acreButton = new ImageButton(GridXStartPos + (40 * scale * GridX), GridYStartPos + GridY, 40 * scale, 40 * scale,
-			COLOR_TRANSPARENT, KEY_A | KEY_TOUCH, ACRE_PNG + acre);
+			COLOR_TRANSPARENT, KEY_A | KEY_TOUCH, ACRE_PNG + acre, Acres_ss);
 		acreButton->Scale = scale;
 		acreButton->ActiveColor = COLOR_YELLOW;
 
@@ -105,11 +105,11 @@ void draw_acre_selection_panel(void) {
 		}
 
 		if (i == 2) {
-			DrawSprite(ACRE_PNG + acreId, xLocation, yLocation - 20);
+			DrawSprite(Acres_ss, ACRE_PNG + acreId, xLocation, yLocation - 20);
 			xLocation += 45;
 		}
 		else {
-			DrawSprite(ACRE_PNG + acreId, xLocation, yLocation - 10, AcreTint, 0.5, 0.5);
+			DrawSprite(Acres_ss, ACRE_PNG + acreId, xLocation, yLocation - 10, AcreTint, 0.5, 0.5);
 			xLocation += 25;
 		}
 	}
@@ -125,22 +125,22 @@ void draw_editor_main_menu(void)
 
     draw_base_interface();
     C2D_SceneBegin(bottom);
-    DrawSprite(NLTK_ICON, 126, 10); //NLTK's Icon
+    DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
 
     for (int i = 0; i < 2; i++)
     {
-        DrawSprite(BUTTON_MAIN, 20,  10+(50*i), nullptr, 1.15, 0.6);  //w = 80, h = 33
-        DrawSprite(BUTTON_MAIN, 220, 10+(50*i), nullptr, 1.15, 0.6);  //w = 80, h = 33
+        DrawSprite(Editor_ss, BUTTON_MAIN, 20,  10+(50*i), nullptr, 1.15, 0.6);  //w = 80, h = 33
+        DrawSprite(Editor_ss, BUTTON_MAIN, 220, 10+(50*i), nullptr, 1.15, 0.6);  //w = 80, h = 33
         draw_centered_text(20,  80, 10+(50*i), 33, 0.46, 0.46, COLOR_GREY, ColumnText[i]); //Column 1 Text
         draw_centered_text(220, 80, 10+(50*i), 33, 0.48, 0.48, COLOR_GREY, ColumnText[2+i]); //Column 2 Text
     }
 
     for (int i = 0; i < 4; i++)
     {
-        DrawSprite(BUTTON_MAIN, 15+(74*i), 110); //Row 1 Buttons
-        DrawSprite(BUTTON_MAIN, 15+(74*i), 180); //Row 2 Buttons
-        DrawSprite(ButtonIcon[i], 39+(74*i), 114, GreenFilter); //Row 1 Icons
-        DrawSprite(ButtonIcon[4+i], 39+(74*i), 184, GreenFilter); //Row 2 Icons
+        DrawSprite(Editor_ss, BUTTON_MAIN, 15+(74*i), 110); //Row 1 Buttons
+        DrawSprite(Editor_ss, BUTTON_MAIN, 15+(74*i), 180); //Row 2 Buttons
+        DrawSprite(Editor_ss, ButtonIcon[i], 39+(74*i), 114, GreenFilter); //Row 1 Icons
+        DrawSprite(Editor_ss, ButtonIcon[4+i], 39+(74*i), 184, GreenFilter); //Row 2 Icons
         DrawText(37+(71*i), 147, 0.46, 0.46, COLOR_GREY, ButtonText[i]); //Row 1 Text
         if (i==2) //Fit Main Street Text
             DrawText(26+(71*i), 216, 0.44, 0.44, COLOR_GREY, ButtonText[4+i]); //Row 2 MS Text
@@ -170,7 +170,7 @@ void draw_save_acres(Save *saveFile)
 
 	// Draw selected acre (if one is selected)
 	/*if (currentAcreId > -1 && currentAcreId <= ACRE_ID_MAX) {
-		DrawSprite(ACRE_PNG + currentAcreId, (400 / 2) - (40 / 2), (240 / 2) - (40 / 2));
+		DrawSprite(Acres_ss, ACRE_PNG + currentAcreId, (400 / 2) - (40 / 2), (240 / 2) - (40 / 2));
 	}*/
 
 	if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre <= ACRE_ID_MAX) {
@@ -233,10 +233,10 @@ void draw_player_menu(Save *saveFile, int selectedplayer, int selectedmode, u32 
     {
         /* Icons */
         if (i == 5 && CheckUnreadMail(selectedplayer))
-            DrawSprite(ButtonIcon[i+1], 15, 4+(40*i)); //If Unread Mail
+            DrawSprite(Players_ss, ButtonIcon[i+1], 15, 4+(40*i)); //If Unread Mail
 
         else
-            DrawSprite(ButtonIcon[i], 15, 4+(40*i));
+            DrawSprite(Players_ss, ButtonIcon[i], 15, 4+(40*i));
 
         /* Text */
         if (i == 1)
@@ -283,9 +283,9 @@ void draw_player_menu_inventory(Save *saveFile, int selectedplayer, u32 LColor, 
         }
 
         Item item = saveFile->players[selectedplayer].Pockets[i];
-        DrawSprite(ITEM_HOLE, x-16, y-16);
-        //DrawSprite(GetIndex(item.Icon), x, y);
-        DrawSprite(10, x, y);
+        DrawSprite(Common_ss, ITEM_HOLE, x-16, y-16);
+        //DrawSprite(Items_ss, GetIndex(item.Icon), x, y);
+        DrawSprite(Items_ss, 0, x, y);
 
         x += 38;
     }

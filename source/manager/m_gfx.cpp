@@ -8,7 +8,7 @@ void draw_manager_main_menu(void)
 {
     draw_base_interface();
     C2D_SceneBegin(bottom);
-    DrawSprite(NLTK_ICON, 126, 10); //NLTK's Icon
+    DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
     C2D_SceneBegin(top);
     draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Manager Main Menu!");
 

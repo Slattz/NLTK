@@ -1,11 +1,18 @@
 #include "gfx.h"
 #include "about.h"
 
-C2D_SpriteSheet spriteSheet;
 C3D_RenderTarget* top;
 C3D_RenderTarget* bottom;
 C2D_ImageTint* GreyFilter;
 C2D_ImageTint* GreenFilter;
+
+C2D_SpriteSheet About_ss;
+C2D_SpriteSheet Acres_ss;
+C2D_SpriteSheet Common_ss;
+C2D_SpriteSheet GameSelect_ss;
+C2D_SpriteSheet Editor_ss;
+C2D_SpriteSheet Items_ss;
+C2D_SpriteSheet Players_ss;
 
 void InitGFX(void)
 {
@@ -16,23 +23,38 @@ void InitGFX(void)
     top = C2D_CreateScreenTarget(GFX_TOP, GFX_LEFT);
     bottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
-    spriteSheet = C2D_SpriteSheetLoad("romfs:/gfx/sprites.t3x");
+    /* Load Spritesheets */
+    About_ss = C2D_SpriteSheetLoad("romfs:/gfx/About.t3x");
+    Acres_ss = C2D_SpriteSheetLoad("romfs:/gfx/Acres.t3x");
+    Common_ss = C2D_SpriteSheetLoad("romfs:/gfx/Common.t3x");
+    GameSelect_ss = C2D_SpriteSheetLoad("romfs:/gfx/GameSelect.t3x");
+    Editor_ss = C2D_SpriteSheetLoad("romfs:/gfx/Editor.t3x");
+    Items_ss = C2D_SpriteSheetLoad("romfs:/gfx/Items.t3x");
+    Players_ss = C2D_SpriteSheetLoad("romfs:/gfx/Players.t3x");
+
+    /* Init Tints */
     C2D_PlainImageTint(GreyFilter, COLOR_GREY_FILTER, 1.0);
     C2D_PlainImageTint(GreenFilter, COLOR_GREEN, 1.0);
 }
 
 void ExitGFX(void)
 {
-    C2D_SpriteSheetFree(spriteSheet);
+    C2D_SpriteSheetFree(About_ss);
+    C2D_SpriteSheetFree(Acres_ss);
+    C2D_SpriteSheetFree(Common_ss);
+    C2D_SpriteSheetFree(GameSelect_ss);
+    C2D_SpriteSheetFree(Editor_ss);
+    C2D_SpriteSheetFree(Items_ss);
+    C2D_SpriteSheetFree(Players_ss);
     C2D_Fini();
     C3D_Fini();
     gfxExit();
 }
 
-void DrawSprite(size_t imgindex, float x, float y, const C2D_ImageTint *tint, float scaleX, float scaleY)
+void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const C2D_ImageTint *tint, float scaleX, float scaleY)
 {
     C2D_Image img;
-    img = C2D_SpriteSheetGetImage(spriteSheet, imgindex);
+    img = C2D_SpriteSheetGetImage(sheet, imgindex);
     C2D_DrawImageAt(img, x, y, 1.0, tint, scaleX, scaleY);
 }
 
@@ -75,10 +97,10 @@ void draw_cursor(void)
     if (g_cursorpos.show)
     {
         if (g_cursorpos.A_held)
-            DrawSprite(CURSOR_SELECT, g_cursorpos.x, g_cursorpos.y);
+            DrawSprite(Common_ss, CURSOR_SELECT, g_cursorpos.x, g_cursorpos.y);
         
         else
-            DrawSprite(CURSOR_POINT, g_cursorpos.x, g_cursorpos.y);
+            DrawSprite(Common_ss, CURSOR_POINT, g_cursorpos.x, g_cursorpos.y);
     }
     C2D_Flush();
 }
@@ -187,10 +209,10 @@ void DisplayCardError() {
 		draw_centered_text(0, 400, 100, 0, 0.5, 0.5, COLOR_GREY, cardRemovedErrorMessage);
 
 		if (show || IsGameCartInserted()) {
-			DrawSprite(GAME_CART, 176, 40); // NOTE: Top Screen resolution 400x240, Bottom Screen Resolution: 320x240
+			DrawSprite(GameSelect_ss, GAME_CART, 176, 40); // NOTE: Top Screen resolution 400x240, Bottom Screen Resolution: 320x240
 		}
 		else {
-			DrawSprite(GAME_CART, 176, 40, GreyFilter);
+			DrawSprite(GameSelect_ss, GAME_CART, 176, 40, GreyFilter);
 		}
 
 		C3D_FrameEnd(0);
@@ -207,15 +229,15 @@ void draw_main_menu(void)
 {
     draw_base_interface();
     C2D_SceneBegin(bottom);
-    DrawSprite(NLTK_ICON, 126, 10); //NLTK's Icon
-    DrawSprite(BUTTON_MAIN, 20,  30, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
-    DrawSprite(BUTTON_MAIN, 220, 30, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
+    DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
+    DrawSprite(Editor_ss, BUTTON_MAIN, 20,  30, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
+    DrawSprite(Editor_ss, BUTTON_MAIN, 220, 30, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
     draw_centered_text(20,  80, 30, 33, 0.46, 0.46, COLOR_GREY, "About"); //Column 1 Text
     draw_centered_text(220, 80, 30, 33, 0.48, 0.48, COLOR_GREY, "Options"); //Column 2 Text
     
 
-    DrawSprite(EDITOR_ICON, 60, 70); //Editor Icon
-    DrawSprite(MANAGER_ICON, 180, 70); //Manager Icon
+    DrawSprite(Common_ss, EDITOR_ICON, 60, 70); //Editor Icon
+    DrawSprite(Common_ss, MANAGER_ICON, 180, 70); //Manager Icon
     DrawText(60, 130, 0.5, 0.5, COLOR_GREY, "Editor");
     DrawText(180, 130, 0.5, 0.5, COLOR_GREY, "Manager");
     
@@ -244,17 +266,17 @@ void draw_config_menu(void)
     for (i = 0; i < configmax-1; i++) //configmax-1: exclude Debug
     {
         if (ConfigBools[i])
-            DrawSprite(CHECKBOX_FILLED, 20, 20+(28*i));
+            DrawSprite(Common_ss, CHECKBOX_FILLED, 20, 20+(28*i));
 
         else
-            DrawSprite(CHECKBOX_EMPTY, 20, 20+(28*i));
+            DrawSprite(Common_ss, CHECKBOX_EMPTY, 20, 20+(28*i));
 
         DrawText(52, 21+(28*(configmax-1)), 0.6, 0.6, COLOR_GREY, ConfigText[configmax-1]); //ConfigText
     }
 
     if (config.isdebug)
     {
-        DrawSprite(CHECKBOX_FILLED, 20, 20+(28*(configmax-1)));
+        DrawSprite(Common_ss, CHECKBOX_FILLED, 20, 20+(28*(configmax-1)));
         DrawText(52, 21+(28*(configmax-1)), 0.6, 0.6, COLOR_GREY, ConfigText[configmax-1]);
     }
     draw_cursor();
@@ -272,9 +294,9 @@ void draw_about_menu(bool discord, bool twitter)
         DrawText(120, 55+(i*20), 0.45, 0.45, COLOR_GREY, credits[1+i*2]); //Description
     }
     C2D_SceneBegin(bottom);
-    DrawSprite(NLTK_ICON, 126, 10); //NLTK's Icon
-    DrawSprite(DISCORD_ICON, 55, 180); //Discord Icon
-    DrawSprite(TWITTER_ICON, 215, 180); //Twitter Icon
+    DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
+    DrawSprite(About_ss, DISCORD_ICON, 55, 180); //Discord Icon
+    DrawSprite(About_ss, TWITTER_ICON, 215, 180); //Twitter Icon
     /* L:55, M:135, R:215 */
 
     if (discord)
@@ -302,27 +324,27 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
 	// Media Type
 	if (selectedmedia == 1) { //Game Card
 		C2D_DrawRectSolid(98, 3, 0, 54, 54, COLOR_GREY); //Grey Outline
-		DrawSprite(GAME_CART, 101, 6); //Game Card is selected
-		DrawSprite(SD_CARD, 169, 6, GreyFilter); //Grey filter over SD card
+		DrawSprite(GameSelect_ss, GAME_CART, 101, 6); //Game Card is selected
+		DrawSprite(GameSelect_ss, SD_CARD, 169, 6, GreyFilter); //Grey filter over SD card
 	}
 	else if (selectedmedia == 0) { //SD Card
         C2D_DrawRectSolid(166, 3, 0, 54, 54, COLOR_GREY); //Grey Outline
-        DrawSprite(SD_CARD, 169, 6); //SD Card is selected
-		DrawSprite(GAME_CART, 101, 6, GreyFilter); //Grey Filter over Game Cart
+        DrawSprite(GameSelect_ss, SD_CARD, 169, 6); //SD Card is selected
+		DrawSprite(GameSelect_ss, GAME_CART, 101, 6, GreyFilter); //Grey Filter over Game Cart
 	}
 	else { //No Media selected yet
 		if (MediaInfo.GameCartInfo.HasACNLData) {
-			DrawSprite(GAME_CART, 101, 6);
+			DrawSprite(GameSelect_ss, GAME_CART, 101, 6);
 		}
 		else {
-			DrawSprite(GAME_CART, 101, 6, GreyFilter);
+			DrawSprite(GameSelect_ss, GAME_CART, 101, 6, GreyFilter);
 		}
 
 		if (MediaInfo.SDCardInfo.HasACNLData) {
-			DrawSprite(SD_CARD, 169, 6);
+			DrawSprite(GameSelect_ss, SD_CARD, 169, 6);
 		}
 		else {
-			DrawSprite(SD_CARD, 169, 6, GreyFilter);
+			DrawSprite(GameSelect_ss, SD_CARD, 169, 6, GreyFilter);
 		}
 	}
 
@@ -348,12 +370,12 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
     else if (selectedregion == 3) //KOR
         C2D_DrawRectSolid(231, 127, 0, 50, 36, COLOR_GREY);
 
-    DrawSprite(ACNL_ICON, 101, 66);
-    DrawSprite(ACNL_WA_ICON, 169, 66);
-    DrawSprite(EUR_FLAG, 42, 130);
-    DrawSprite(USA_FLAG, 106, 127);
-    DrawSprite(JPN_FLAG, 170, 130);
-    DrawSprite(KOR_FLAG, 234, 130);
+    DrawSprite(GameSelect_ss, ACNL_ICON, 101, 66);
+    DrawSprite(GameSelect_ss, ACNL_WA_ICON, 169, 66);
+    DrawSprite(GameSelect_ss, EUR_FLAG, 42, 130);
+    DrawSprite(GameSelect_ss, USA_FLAG, 106, 127);
+    DrawSprite(GameSelect_ss, JPN_FLAG, 170, 130);
+    DrawSprite(GameSelect_ss, KOR_FLAG, 234, 130);
     DrawText(128, 195, 0.7, 0.7, COLOR_GREY, "Confirm"); //Confirm Button Text
 
     if (selectedmedia == -1 || !mediaInstalled.InstalledTitles.ORIG_installed) //Grey out Orig ACNL Icon if no ORIG ACNL game is found

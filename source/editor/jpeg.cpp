@@ -27,18 +27,18 @@ static inline u32 Pow2(u32 x)
 
 static JPEGInfo DecompressJPEG(const void * jpegSrc, const u32 jpegSize)
 {
-    JPEGInfo    jpeg = {0};
+    JPEGInfo    jpeg = {0, 0, nullptr};
     int         jpegSubsamp;
     tjhandle    jpegDecompressor = tjInitDecompress();
 
     // Get the dimensions of the image
-    tjDecompressHeader2(jpegDecompressor, (u8 *)jpegSrc, jpegSize, &jpeg.width, &jpeg.height, &jpegSubsamp);
+    tjDecompressHeader2(jpegDecompressor, (u8 *)jpegSrc, jpegSize, (int*)&jpeg.width, (int*)&jpeg.height, &jpegSubsamp);
 
     // Allocate the temporary buffer
     jpeg.image = linearAlloc(TJBUFSIZE(Pow2(jpeg.width), Pow2(jpeg.height)));
 
     // Decompress the image
-    tjDecompress2(jpegDecompressor, (u8 *)jpegSrc, jpegSize, jpeg.image, jpeg.width, 0, jpeg.height, TJPF_ABGR, TJFLAG_FASTDCT);
+    tjDecompress2(jpegDecompressor, (u8 *)jpegSrc, jpegSize, (u8*)jpeg.image, jpeg.width, 0, jpeg.height, TJPF_ABGR, TJFLAG_FASTDCT);
 
     tjDestroy(jpegDecompressor);
 
@@ -68,7 +68,7 @@ static int  LoadJPEG(C3D_Tex **out, u16& width, u16& height, const void *tpcData
 
     // Copy the data to texture tiled
     C3D_SyncTextureCopy((u32 *)jpeg.image, GX_BUFFER_DIM(tex->width, tex->height), \
-        (u32 *)tex->data, GX_BUFFER_DIM(tex->width, tex->height), TEXTURE_TRANSFER_FLAGS);
+        (u32 *)tex->data, GX_BUFFER_DIM(tex->width, tex->height), tex->size, TEXTURE_TRANSFER_FLAGS);
     C3D_TexFlush(tex);
 
     // Release temporary buffer

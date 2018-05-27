@@ -4,6 +4,7 @@
 #define GFX_H
 
 #include "common.h"
+#include "SpriteIDs.h"
 
 typedef struct
 {
@@ -11,15 +12,22 @@ typedef struct
     float dx, dy; // velocity
 } Sprite;
 
-extern C2D_SpriteSheet spriteSheet;
 extern C3D_RenderTarget* top;
 extern C3D_RenderTarget* bottom;
 extern C2D_ImageTint* GreyFilter;
 extern C2D_ImageTint* GreenFilter;
 
+extern C2D_SpriteSheet About_ss;
+extern C2D_SpriteSheet Acres_ss;
+extern C2D_SpriteSheet Common_ss;
+extern C2D_SpriteSheet GameSelect_ss;
+extern C2D_SpriteSheet Editor_ss;
+extern C2D_SpriteSheet Items_ss;
+extern C2D_SpriteSheet Players_ss;
+
 void InitGFX(void);
 void ExitGFX(void);
-void DrawSprite(size_t imgindex, float x, float y, const C2D_ImageTint *tint = nullptr, float scaleX = 1.0, float scaleY = 1.0);
+void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const C2D_ImageTint *tint = nullptr, float scaleX = 1.0, float scaleY = 1.0);
 void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text, bool atBaseline = false);
 void infoDisp(C3D_RenderTarget *target, const char* message);
 bool confirmDisp(C3D_RenderTarget *target, const char* message);
@@ -51,41 +59,37 @@ static const u32 COLOR_YELLOW          =    C2D_Color32(255,255,0,255);
 static const u32 COLOR_ORANGE          =    C2D_Color32(255,106,0,255);
 static const u32 COLOR_TRANSPARENT     =    C2D_Color32(0,0,0,0);
 
-/* Texture IDs */;
+/* Image IDs */;
 
 //Main Menu
-#define TOWN_ICON           1
-#define ACRES_ICON          2
-#define PROFILE_ICON        3
-#define VILLAGERS_ICON      4
-#define PWP_ICON            5
-#define ISLAND_ICON         6
-#define MAIN_STREET_ICON    7
-#define ABOUT_ICON          8
-#define BUTTON_MAIN         9
+#define TOWN_ICON           Editor_Town_idx
+#define ACRES_ICON          Editor_Acres_idx
+#define PROFILE_ICON        Editor_Profile_idx
+#define VILLAGERS_ICON      Editor_Villagers_idx
+#define PWP_ICON            Editor_Pwp_idx
+#define ISLAND_ICON         Editor_Island_idx
+#define MAIN_STREET_ICON    Editor_Main_Street_idx
+#define ABOUT_ICON          Editor_About_idx
+#define BUTTON_MAIN         Editor_Button_idx
 //Game Select Menu
-#define EUR_FLAG            10
-#define USA_FLAG            11
-#define JPN_FLAG            12
-#define KOR_FLAG            13
-#define ACNL_ICON           14
-#define ACNL_WA_ICON        15
-#define GAME_CART			35
-#define SD_CARD				36
+#define EUR_FLAG            GameSelect_Europe_idx
+#define USA_FLAG            GameSelect_USA_idx
+#define JPN_FLAG            GameSelect_Japan_idx
+#define KOR_FLAG            GameSelect_Korea_idx
+#define ACNL_ICON           GameSelect_Icon_idx
+#define ACNL_WA_ICON        GameSelect_IconWA_idx
+#define GAME_CART			GameSelect_GameCart_idx
+#define SD_CARD				GameSelect_SDCard_idx
 //Town Menu
 //Players Menu
-#define PLAYER1_PIC         16
-#define PLAYER2_PIC         17
-#define PLAYER3_PIC         18
-#define PLAYER4_PIC         19
-#define NO_TPC_PIC          20
-#define PLYR_ABOUT          26
-#define PLYR_INVENTORY      27
-#define PLYR_APPEARANCE     28
-#define PLYR_HOUSE          29
-#define PLYR_PATTERN        30
-#define PLYR_MAILBOX        31
-#define PLYR_MAILBOX_UNREAD 32
+#define NO_TPC_PIC          Players_NoTPC_idx
+#define PLYR_ABOUT          Players_About_idx
+#define PLYR_INVENTORY      Players_Inventory_idx
+#define PLYR_APPEARANCE     Players_Appearance_idx
+#define PLYR_HOUSE          Players_House_idx
+#define PLYR_PATTERN        Players_Patterns_idx
+#define PLYR_MAILBOX        Players_Mailbox_idx
+#define PLYR_MAILBOX_UNREAD Players_Mailbox_Unread_idx
 
 //Pwps Menu
 //Main Street Menu
@@ -94,25 +98,24 @@ static const u32 COLOR_TRANSPARENT     =    C2D_Color32(0,0,0,0);
 //Island Menu
 
 //About Menu
-#define TWITTER_ICON        33
-#define DISCORD_ICON        34
+#define TWITTER_ICON        About_Twitter_idx
+#define DISCORD_ICON        About_Discord_idx
 
 //Others
-#define NLTK_ICON           21
-#define CHECKBOX_EMPTY      22
-#define CHECKBOX_FILLED     23
-#define CURSOR_POINT        24
-#define CURSOR_SELECT       25
-#define EDITOR_ICON         37
-#define MANAGER_ICON        38
+#define NLTK_ICON           Common_icon_idx
+#define CHECKBOX_EMPTY      Common_checkbox_idx
+#define CHECKBOX_FILLED     Common_checkbox_c_idx
+#define CURSOR_POINT        Common_hand_point_idx
+#define CURSOR_SELECT       Common_hand_select_idx
+#define EDITOR_ICON         Common_Editor_idx
+#define MANAGER_ICON        Common_Manager_idx
 
 /* Item Icons */
-#define ITEM_HOLE           450
-#define ITEM_SHEET          451
+#define ITEM_HOLE           Common_ItemHole_idx
 
 /* Reserve each acre pic*/
-#define ACRE_PNG            500
-#define LAST_ACRE_PIC       714
+#define ACRE_PNG            Acres_acre_0_idx
+#define LAST_ACRE_PIC       Acres_acre_214_idx
 
 
 #endif

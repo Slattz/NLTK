@@ -1,0 +1,14 @@
+--atlas -f rgba8888 -z auto
+.\Common\Bell.png
+.\Common\checkbox.png
+.\Common\checkbox_c.png
+.\Common\edit.png
+.\Common\Editor.png
+.\Common\hand_grab.png
+.\Common\hand_pan.png
+.\Common\hand_point.png
+.\Common\hand_select.png
+.\Common\icon.png
+.\Common\ItemHole.png
+.\Common\Letter.png
+.\Common\Manager.png

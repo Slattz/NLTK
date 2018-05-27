@@ -1,0 +1,9 @@
+--atlas -f rgba8888 -z auto
+.\Players\About.png
+.\Players\Appearance.png
+.\Players\House.png
+.\Players\Inventory.png
+.\Players\Mailbox.png
+.\Players\Mailbox_Unread.png
+.\Players\NoTPC.png
+.\Players\Patterns.png

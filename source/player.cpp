@@ -64,7 +64,7 @@ u8* Player::RefreshTPC(Save *save) {
 	}
 	else { //No TPC
 		m_TPCData = nullptr;
-		m_TPCPic = C2D_SpriteSheetGetImage(spriteSheet, NO_TPC_PIC);
+		m_TPCPic = C2D_SpriteSheetGetImage(Players_ss, NO_TPC_PIC);
 	}
 
 	return m_TPCData;
