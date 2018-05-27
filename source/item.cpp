@@ -11,5 +11,6 @@ Item::Item(u16 id, u8 flag1, u8 flag2) {
 	Id = id;
 	Flag1 = flag1;
 	Flag2 = flag2;
-	Name = GetItemName(this);
+    Name = GetItemName(this);
+	Icon = GetItemIcon(this);
 }

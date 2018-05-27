@@ -9,5 +9,6 @@ public:
 	u16 Id;
 	u8 Flag1;
 	u8 Flag2;
-	std::string Name;
+    std::string Name;
+	std::string Icon;
 };

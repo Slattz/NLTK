@@ -282,8 +282,10 @@ void draw_player_menu_inventory(Save *saveFile, int selectedplayer, u32 LColor, 
             x = 11;
         }
 
+        Item item = saveFile->players[selectedplayer].Pockets[i];
         DrawSprite(ITEM_HOLE, x-16, y-16);
-		pp2d_draw_texture_part(ITEM_SHEET, x, y, g_InvItems[i].X, g_InvItems[i].Y, 32, 32);
+        //DrawSprite(GetIndex(item.Icon), x, y);
+        DrawSprite(10, x, y);
 
         x += 38;
     }

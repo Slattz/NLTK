@@ -32,6 +32,7 @@ int   CheckItemValidity(Item *item);
 u32   CheckIfValidItem(Item *item);
 u8    GetItemCategory(Item *item);
 u16   GetIconID(Item *item, LoadItem_s *itemData);
+std::string GetItemIcon(Item *item);
 std::string GetItemName(Item *item);
 std::string u16tou8(std::u16string src);
 std::u16string u8tou16(const char* src);
