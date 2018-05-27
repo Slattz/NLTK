@@ -14,7 +14,7 @@ ImageButton::ImageButton(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 a
 	: ImageButton(Point_t{ x, y }, Size_t{ width, height }, bgColor, activatorKeys, imageId, sheet) { }
 
 void ImageButton::Draw(void) {
-	C2D_ImageTint* tint;
+	C2D_ImageTint* tint = new C2D_ImageTint[sizeof(C2D_ImageTint)];
 	C2D_PlainImageTint(tint, ActiveColor, 1.0);
 	if (Visible) {
 		if (m_active) {

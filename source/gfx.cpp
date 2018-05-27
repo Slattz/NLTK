@@ -3,8 +3,8 @@
 
 C3D_RenderTarget* top;
 C3D_RenderTarget* bottom;
-C2D_ImageTint* GreyFilter;
-C2D_ImageTint* GreenFilter;
+C2D_ImageTint* GreyFilter = new C2D_ImageTint[sizeof(C2D_ImageTint)];
+C2D_ImageTint* GreenFilter = new C2D_ImageTint[sizeof(C2D_ImageTint)];
 
 C2D_SpriteSheet About_ss;
 C2D_SpriteSheet Acres_ss;

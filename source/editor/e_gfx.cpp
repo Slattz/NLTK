@@ -3,7 +3,7 @@
 #include "core/imagebutton.h"
 #include "editor/e_gfx.h"
 
-C2D_ImageTint* AcreTint;
+C2D_ImageTint* AcreTint = new C2D_ImageTint[sizeof(C2D_ImageTint)];
 
 std::vector<Control*> editorPlayerInfoControls = {};
 std::vector<Control*> acreEditorControls = {};
