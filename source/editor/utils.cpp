@@ -442,3 +442,28 @@ std::string Format(const char* fmt, ...)
 
     return (std::string(buffer));
 }
+
+std::vector<u32> findPlayerReferences(Save *saveFile, Player *player) {
+	// Read u16 ID + Name
+	u16 *dataArray = new u16[11];
+	for (u32 i = 0; i < 11; i++) {
+		dataArray[i] = saveFile->ReadU16(player->m_offset + 0x55A6 + i * 2);
+	}
+
+	std::vector<u32> references = std::vector<u32>();
+	for (u32 i = 0; i < saveFile->GetSaveSize() - 22; i += 2) { // subtract 22 so we don't read past the end of the file
+		bool foundMatch = true;
+		for (int x = 0; x < 11; x++) {
+			if (saveFile->ReadU16(i + x * 2) != dataArray[i]) {
+				foundMatch = false;
+				break;
+			}
+		}
+		// add the offset to the vector
+		if (foundMatch) {
+			references.push_back(i);
+		}
+	}
+
+	return references;
+}

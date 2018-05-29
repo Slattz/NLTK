@@ -278,7 +278,17 @@ void spawn_player_menu_info(Save *saveFile) {
 			{
 				// Check for input in the info menu
 				if (playerNameBox.CheckActivate(g_CheckX[i], g_CheckY[i])) { // Player Name Box
-					saveFile->players[g_selectedplayer].Name = u8tou16(playerNameBox.Activate().c_str());
+					// Find all references to the Player's id/name
+					Player ThisPlayer = saveFile->players[g_selectedplayer];
+					std::vector<u32> m_PlayerIdReferences = findPlayerReferences(saveFile, &ThisPlayer);
+					ThisPlayer.Name = u8tou16(playerNameBox.Activate().c_str());
+
+					// Replace all references to Player's id/name
+					for (u32 offset : m_PlayerIdReferences) {
+						saveFile->Write(offset, ThisPlayer.PlayerId);
+						saveFile->Write(offset + 2, ThisPlayer.Name, 8);
+					}
+
 					saveFile->SetChangesMade(true);
 				}
 				else if (playerWalletBox.CheckActivate(g_CheckX[i], g_CheckY[i])) {
