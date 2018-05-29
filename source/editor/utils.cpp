@@ -451,10 +451,11 @@ std::vector<u32> findPlayerReferences(Save *saveFile, Player *player) {
 	}
 
 	std::vector<u32> references = std::vector<u32>();
-	for (u32 i = 0; i < saveFile->GetSaveSize() - 22; i += 2) { // subtract 22 so we don't read past the end of the file
+	u32 Size = saveFile->GetSaveSize() - 22;
+	for (u32 i = 0; i < Size; i += 2) { // subtract 22 so we don't read past the end of the file
 		bool foundMatch = true;
 		for (int x = 0; x < 11; x++) {
-			if (saveFile->ReadU16(i + x * 2) != dataArray[i]) {
+			if (saveFile->ReadU16(i + x * 2) != dataArray[x]) {
 				foundMatch = false;
 				break;
 			}
@@ -462,8 +463,10 @@ std::vector<u32> findPlayerReferences(Save *saveFile, Player *player) {
 		// add the offset to the vector
 		if (foundMatch) {
 			references.push_back(i);
+			i += 20; // skip the rest of this data
 		}
 	}
 
+	delete[] dataArray;
 	return references;
 }
