@@ -132,6 +132,16 @@ float   Font::GetBaselinePos(void) const
     return 0.f;
 }
 
+float   Font::GetUnderlinePos(void) const
+{
+    if (_bcfnt != nullptr)
+        return 0.f; ///< TODO
+    if (_ftfnt != nullptr)
+        return reinterpret_cast<FTfnt *>(_ftfnt)->underlinePos;
+
+    return 0.f;
+}
+
 float   Font::GetTextScale(void) const
 {
     return _textScale;

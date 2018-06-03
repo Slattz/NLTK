@@ -202,11 +202,11 @@ void spawn_player_menu(Save *saveFile)
 }
 
 void refreshInfoMenu(Save *saveFile) {
-	playerNameBox.Text = u16tou8(saveFile->players[g_selectedplayer].Name); // TODO: Change player name to utf8? Or at least create a utf8 equivalent
-	playerWalletBox.Text = std::to_string(saveFile->players[g_selectedplayer].Wallet.value);
-	playerSavingsBox.Text = std::to_string(saveFile->players[g_selectedplayer].Savings.value);
-	playerMedalsBox.Text = std::to_string(saveFile->players[g_selectedplayer].IslandMedals.value);
-	playerCouponsBox.Text = std::to_string(saveFile->players[g_selectedplayer].MeowCoupons.value);
+	playerNameBox.myText = u16tou8(saveFile->players[g_selectedplayer].Name); // TODO: Change player name to utf8? Or at least create a utf8 equivalent
+	playerWalletBox.myText = std::to_string(saveFile->players[g_selectedplayer].Wallet.value);
+	playerSavingsBox.myText = std::to_string(saveFile->players[g_selectedplayer].Savings.value);
+	playerMedalsBox.myText = std::to_string(saveFile->players[g_selectedplayer].IslandMedals.value);
+	playerCouponsBox.myText = std::to_string(saveFile->players[g_selectedplayer].MeowCoupons.value);
 }
 
 void spawn_player_menu_info(Save *saveFile) {

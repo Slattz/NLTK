@@ -10,10 +10,10 @@ struct C2D_Glyph
     C3D_Tex *sheet{nullptr};
     float   xPos{0.f};
     float   width{0.f};
-        struct
-        {
-            float left, top, right, bottom;
-        } texcoord{ .left = 0.f, .top = 0.f, .right = 0.f, .bottom = 0.f };
+    struct
+    {
+        float left{0.f}, top{0.f}, right{0.f}, bottom{0.f};
+    } texcoord;
 };
 
 class Font;
@@ -33,6 +33,7 @@ class Font
         float       GetCellHeight(void) const;
         float       GetLineFeed(void) const;
         float       GetBaselinePos(void) const;
+        float       GetUnderlinePos(void) const;
         float       GetTextScale(void) const;
         C2D_Glyph   GetGlyph(const u32 code, float& xAdvance) const;
 

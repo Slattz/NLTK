@@ -12,11 +12,10 @@ void    Text::SetDefaultFont(const FontHandle &font)
     _defaultFont = font;
 }
 
-static GlyphVector  GetGlyphsFromString(const FontHandle &font, const std::string &src, float &outWidth, u16 &outLines)
+static GlyphVector  GetGlyphsFromString(const FontHandle &font, const std::string &src, float &outWidth,
+                                        u16 &outLines, u32 line = 0, float width = 0.f)
 {
     u32         code;
-    u32         line = 0;
-    float       width = 0.f;
     ssize_t     units;
     const u8 *  str = reinterpret_cast<const u8 *>(src.data());
     GlyphVector glyphs;
@@ -67,14 +66,6 @@ static GlyphVector  GetGlyphsFromString(const FontHandle &font, const std::strin
 
     } while (true);
 
-    // Optimize the glyphs
-    std::sort(glyphs.begin(), glyphs.end(),
-        [](const C2D_Glyph &g1, const C2D_Glyph &g2)
-        {
-            return (int)g1.sheet - (int)g2.sheet < 0;
-        }
-    );
-
     if (width > outWidth)
         outWidth = width;
 
@@ -83,66 +74,135 @@ static GlyphVector  GetGlyphsFromString(const FontHandle &font, const std::strin
     return glyphs;
 }
 
-Text::Text(const std::string &src)
+Text::Text(void)
+{
+    if (!_defaultFont)
+        _defaultFont = Font::GetSysfont();
+
+    _font = _defaultFont;
+}
+
+Text::Text(const Text &text)
+{
+    _lines = text._lines;
+    _posX = text._posX;
+    _posY = text._posY;
+    _scaleX = text._scaleX;
+    _scaleY = text._scaleY;
+    _width = text._width;
+    _color.raw = text._color.raw;
+    _outlineColor.raw = text._outlineColor.raw;
+    _text = text._text;
+    _font = text._font;
+    _glyphs = text._glyphs;
+
+    Style.bold = text.Style.bold;
+    Style.italic = text.Style.italic;
+    Style.underline = text.Style.underline;
+    Style.outline = text.Style.outline;
+    Style.strikethrough = text.Style.strikethrough;
+
+}
+
+Text::Text(Text &&text)
+{
+    _lines = text._lines;
+    _posX = text._posX;
+    _posY = text._posY;
+    _scaleX = text._scaleX;
+    _scaleY = text._scaleY;
+    _width = text._width;
+    _color.raw = text._color.raw;
+    _outlineColor.raw = text._outlineColor.raw;
+    _text = std::move(text._text);
+    _font = text._font;
+    _glyphs = std::move(text._glyphs);
+
+    Style.bold = text.Style.bold;
+    Style.italic = text.Style.italic;
+    Style.underline = text.Style.underline;
+    Style.outline = text.Style.outline;
+    Style.strikethrough = text.Style.strikethrough;
+}
+
+Text::Text(const std::string &src) : _text{src}
 {
     if (!_defaultFont)
         _defaultFont = Font::GetSysfont();
 
     _font = _defaultFont;
     _glyphs = GetGlyphsFromString(_font, src, _width, _lines);
+    _OptimizeGlyphs();
 }
 
 Text::Text(const std::string &src, const FontHandle &font) :
-    _font{font}
+    _text{src}, _font{font}
 {
     _glyphs = GetGlyphsFromString(_font, src, _width, _lines);
+    _OptimizeGlyphs();
 }
 
 Text::Text(const Color &color, const std::string &src) :
-    _color{color}
+    _color{color}, _text{src}
 {
     if (!_defaultFont)
         _defaultFont = Font::GetSysfont();
 
     _font = _defaultFont;
     _glyphs = GetGlyphsFromString(_font, src, _width, _lines);
+    _OptimizeGlyphs();
 }
 
 Text::Text(const Color &color, const std::string &src, const FontHandle &font) :
-    _color{color}, _font{font}
+    _color{color}, _text{src}, _font{font}
 {
     _glyphs = GetGlyphsFromString(_font, src, _width, _lines);
+    _OptimizeGlyphs();
 }
 
 Text::Text(const std::string &src, float scaleX, float scaleY) :
-    _scaleX{scaleX}, _scaleY{scaleY}
+    _scaleX{scaleX}, _scaleY{scaleY}, _text{src}
 {
     if (!_defaultFont)
         _defaultFont = Font::GetSysfont();
 
     _font = _defaultFont;
     _glyphs = GetGlyphsFromString(_font, src, _width, _lines);
+    _OptimizeGlyphs();
 }
 
 Text::Text(const Color &color, const std::string &src, float scaleX, float scaleY) :
-    _scaleX{scaleX}, _scaleY{scaleY}, _color{color}
+    _scaleX{scaleX}, _scaleY{scaleY}, _color{color}, _text{src}
 {
     if (!_defaultFont)
         _defaultFont = Font::GetSysfont();
 
     _font = _defaultFont;
     _glyphs = GetGlyphsFromString(_font, src, _width, _lines);
+    _OptimizeGlyphs();
 }
 
 Text::Text(const Color &color, const std::string &src, float scaleX, float scaleY, const FontHandle &font) :
-    _scaleX{scaleX}, _scaleY{scaleY}, _color{color}, _font{font}
+    _scaleX{scaleX}, _scaleY{scaleY}, _color{color}, _text{src}, _font{font}
 {
     _glyphs = GetGlyphsFromString(_font, src, _width, _lines);
+    _OptimizeGlyphs();
 }
 
 Text::~Text(void)
 {
     // Nothing to do, default dtors do the job
+}
+
+void    Text::_OptimizeGlyphs(void)
+{
+    // Optimize the glyphs
+    std::sort(_glyphs.begin(), _glyphs.end(),
+        [](const C2D_Glyph &g1, const C2D_Glyph &g2)
+        {
+            return (int)g1.sheet - (int)g2.sheet < 0;
+        }
+    );
 }
 
 u32     Text::GetCount(void) const
@@ -157,7 +217,12 @@ float   Text::GetWidth(void) const
 
 float   Text::GetHeight(void) const
 {
-    return (float)_lines * (_scaleY * _font->GetLineFeed());
+    return static_cast<float>(_lines) * (_scaleY * _font->GetLineFeed());
+}
+
+const std::string&   Text::GetText(void) const
+{
+    return _text;
 }
 
 Text&   Text::SetSize(float scaleX, float scaleY)
@@ -186,68 +251,168 @@ Text&   Text::SetColor(const Color &color)
     return *this;
 }
 
-float     Text::Draw(bool atBaseline) const
+Text&   Text::SetOutlineColor(const Color &color)
 {
-    float   glyphH = _scaleY * _font->GetCellHeight();
+    _outlineColor = color;
+
+    return *this;
+}
+
+Text&   Text::SetStyle(const u32 style)
+{
+    Style.bold = style & BOLD;
+    Style.italic = style & ITALIC;
+    Style.underline = style & UNDERLINE;
+    Style.outline = style & OUTLINE;
+    Style.strikethrough = style & STRIKETHROUGH;
+
+    return *this;
+}
+
+static void  AppendVtx(C2Di_Context* ctx, float x, float y, float u, float v, u32 color)
+{
+    C2Di_Vertex* vtx = &ctx->vtxBuf[ctx->vtxBufPos++];
+    vtx->pos[0]      = x;
+    vtx->pos[1]      = y;
+    vtx->pos[2]      = 0.5f;
+    vtx->texcoord[0] = u;
+    vtx->texcoord[1] = v;
+    vtx->blend[0]    = 0.0f;
+    vtx->blend[1]    = 1.0f;
+    vtx->color       = color;
+}
+
+void      Text::_Draw(const u32 color, float posX, float posY, const bool atBaseline, const bool outline) const
+{
+    C2Di_Context* ctx = C2Di_GetContext();
+
+    float   scalePixY = outline ? 2.f / _font->GetCellHeight() * _scaleY: 0.f;
+    float   scaleY = _scaleY + scalePixY;
+    float   glyphH = scaleY * _font->GetCellHeight();
     float   dispY = _scaleY * _font->GetLineFeed();
-    float   blend = 1.f;
-    float   glyphZ = 0.5f;
-    float   posY = _posY;
-    u32     line = 1;
+    float   italic = Style.italic ? 0.245f * glyphH : 0.f;
+    float   centerY = _font->GetCellHeight() / 2.f;
 
     if (atBaseline)
-        posY -= _scaleY * _font->GetBaselinePos();
+        posY -= _scaleY * _font->GetBaselinePos() + scaleY * _font->GetBaselinePos();
+    else
+        posY += _scaleY * centerY - scaleY * centerY;
 
     for (const C2D_Glyph &glyph : _glyphs)
     {
-        float   glyphW = _scaleX * glyph.width;
-        float   glyphX = _posX + _scaleX * glyph.xPos;
+        float   scaleX = _scaleX + (outline ? 2.f / glyph.width * _scaleX : 0.f);
+        float   centerX = glyph.width / 2.f;
+        float   glyphW = scaleX * glyph.width;
+        float   glyphX = posX + _scaleX * glyph.xPos + _scaleX * centerX - scaleX * centerX;
         float   glyphY = posY + dispY * glyph.lineNo;
 
-        line = std::max(line, glyph.lineNo);
+        float   glyphXW = glyphX + glyphW;
+        float   glyphYH = glyphY + glyphH;
 
         C2Di_SetTex(glyph.sheet);
         C2Di_Update();
-        C2Di_AppendVtx(glyphX,        glyphY,        glyphZ, glyph.texcoord.left,  glyph.texcoord.top,    blend, _color.raw);
-        C2Di_AppendVtx(glyphX,        glyphY+glyphH, glyphZ, glyph.texcoord.left,  glyph.texcoord.bottom, blend, _color.raw);
-        C2Di_AppendVtx(glyphX+glyphW, glyphY,        glyphZ, glyph.texcoord.right, glyph.texcoord.top,    blend, _color.raw);
-        C2Di_AppendVtx(glyphX+glyphW, glyphY,        glyphZ, glyph.texcoord.right, glyph.texcoord.top,    blend, _color.raw);
-        C2Di_AppendVtx(glyphX,        glyphY+glyphH, glyphZ, glyph.texcoord.left,  glyph.texcoord.bottom, blend, _color.raw);
-        C2Di_AppendVtx(glyphX+glyphW, glyphY+glyphH, glyphZ, glyph.texcoord.right, glyph.texcoord.bottom, blend, _color.raw);
+        AppendVtx(ctx, glyphX + italic,  glyphY,  glyph.texcoord.left,  glyph.texcoord.top,    color);
+        AppendVtx(ctx, glyphX,           glyphYH, glyph.texcoord.left,  glyph.texcoord.bottom, color);
+        AppendVtx(ctx, glyphXW + italic, glyphY,  glyph.texcoord.right, glyph.texcoord.top,    color);
+        AppendVtx(ctx, glyphXW + italic, glyphY,  glyph.texcoord.right, glyph.texcoord.top,    color);
+        AppendVtx(ctx, glyphX,           glyphYH, glyph.texcoord.left,  glyph.texcoord.bottom, color);
+        AppendVtx(ctx, glyphXW,          glyphYH, glyph.texcoord.right, glyph.texcoord.bottom, color);
     }
+}
 
-    return posY + dispY * line;
+float     Text::Draw(bool atBaseline) const
+{
+    if (Style.outline)
+        _Draw(_outlineColor.raw, _posX, _posY, atBaseline, true);
+
+    _Draw(_color.raw, _posX, _posY, atBaseline, false);
+
+    return _posY + _scaleY * _font->GetLineFeed() * _lines;
 }
 
 float     Text::Draw(float posX, float posY, bool atBaseline) const
 {
-    float   glyphH = _scaleY * _font->GetCellHeight();
-    float   dispY = _scaleY * _font->GetLineFeed();
-    float   blend = 1.f;
-    float   glyphZ = 0.5f;
-    float   posYY = posY;
-    u32     line = 1;
+    if (Style.outline)
+        _Draw(_outlineColor.raw, posX, posY, atBaseline, true);
 
-    if (atBaseline)
-        posYY -= _scaleY * _font->GetBaselinePos();
+    _Draw(_color.raw, _posX, posY, atBaseline, false);
 
-    for (const C2D_Glyph &glyph : _glyphs)
-    {
-        float   glyphW = _scaleX * glyph.width;
-        float   glyphX = posX + _scaleX * glyph.xPos;
-        float   glyphY = posYY + dispY * glyph.lineNo;
+    return posY + _scaleY * _font->GetLineFeed() * _lines;
+}
 
-        line = std::max(line, glyph.lineNo);
+/*
+** Operators
+*/
 
-        C2Di_SetTex(glyph.sheet);
-        C2Di_Update();
-        C2Di_AppendVtx(glyphX,        glyphY,        glyphZ, glyph.texcoord.left,  glyph.texcoord.top,    blend, _color.raw);
-        C2Di_AppendVtx(glyphX,        glyphY+glyphH, glyphZ, glyph.texcoord.left,  glyph.texcoord.bottom, blend, _color.raw);
-        C2Di_AppendVtx(glyphX+glyphW, glyphY,        glyphZ, glyph.texcoord.right, glyph.texcoord.top,    blend, _color.raw);
-        C2Di_AppendVtx(glyphX+glyphW, glyphY,        glyphZ, glyph.texcoord.right, glyph.texcoord.top,    blend, _color.raw);
-        C2Di_AppendVtx(glyphX,        glyphY+glyphH, glyphZ, glyph.texcoord.left,  glyph.texcoord.bottom, blend, _color.raw);
-        C2Di_AppendVtx(glyphX+glyphW, glyphY+glyphH, glyphZ, glyph.texcoord.right, glyph.texcoord.bottom, blend, _color.raw);
-    }
+Text&   Text::operator=(const Text &text)
+{
+    _lines = text._lines;
+    _posX = text._posX;
+    _posY = text._posY;
+    _scaleX = text._scaleX;
+    _scaleY = text._scaleY;
+    _width = text._width;
+    _color.raw = text._color.raw;
+    _outlineColor.raw = text._outlineColor.raw;
+    _text = text._text;
+    _font = text._font;
+    _glyphs = text._glyphs;
 
-    return posY + dispY * line;
+    return *this;
+}
+
+Text&   Text::operator=(const std::string &string)
+{
+    _text = string;
+    _glyphs = GetGlyphsFromString(_font, string, _width, _lines);
+    _OptimizeGlyphs();
+
+    return *this;
+}
+
+Text&   Text::operator+=(const Text &text)
+{
+    _text += text._text;
+    _glyphs = GetGlyphsFromString(_font, _text, _width, _lines);
+    _OptimizeGlyphs();
+
+    // Optimize the glyphs
+    _OptimizeGlyphs();
+
+    return *this;
+}
+
+Text&   Text::operator+=(const std::string &string)
+{
+    _text += string;
+    _glyphs = GetGlyphsFromString(_font, _text, _width, _lines);
+    _OptimizeGlyphs();
+
+    // Optimize the glyphs
+    _OptimizeGlyphs();
+
+    return *this;
+}
+
+Text    Text::operator+(const Text &right) const
+{
+    Text    ret(*this);
+
+    ret += right;
+    return ret;
+}
+
+Text    Text::operator+(const std::string &right) const
+{
+    Text    ret(*this);
+
+    ret += right;
+    return ret;
+}
+
+Text    operator+(const std::string &left, const Text &right)
+{
+    Text    text(right._color, left + right._text, right._scaleX, right._scaleY, right._font);
+
+    return text;
 }

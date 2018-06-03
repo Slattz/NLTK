@@ -1,11 +1,11 @@
 #include "common.h"
 
-std::string getKeyboardInput(const char *text, const char *hintText, u32 maxLength, SwkbdType keyboardType) {
+std::string getKeyboardInput(Text myText, const char *hintText, u32 maxLength, SwkbdType keyboardType) {
 	SwkbdState swkbdState;
 	SwkbdButton button = SWKBD_BUTTON_NONE;
 	swkbdInit(&swkbdState, keyboardType, 2, maxLength);
 	swkbdSetHintText(&swkbdState, hintText);
-	swkbdSetInitialText(&swkbdState, text);
+	swkbdSetInitialText(&swkbdState, myText.GetText().c_str());
 
 	char *outputBuffer = new char[maxLength + 1];
 	button = swkbdInputText(&swkbdState, outputBuffer, maxLength + 1);

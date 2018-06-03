@@ -60,9 +60,8 @@ void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const 
 
 void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text, bool atBaseline)
 {
-    Text* Txt = new Text(Color(color), text, scaleX, scaleY);
-    Txt->Draw(x, y, atBaseline);
-    delete Txt;
+    Text Txt(Color(color), text, scaleX, scaleY);
+    Txt.Draw(x, y, atBaseline);
 }
 
 void draw_base_interface(void)

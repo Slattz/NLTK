@@ -1,19 +1,20 @@
 #include "textbox.h"
 
 TextBox::TextBox() {
-	Text = std::string(" ");
 	Hint = std::string("Enter some text.");
 
 	Location = { 0, 0 };
 	Size = { 0, 0 };
 
 	BackgroundColor = COLOR_WHITE;
-	TextColor = COLOR_BLACK;
+	SetTextColor(COLOR_BLACK);
+	SetTextSize(FontScale, FontScale);
 	Visible = true;
 }
 
-TextBox::TextBox(Point_t location, Size_t size, std::string text, std::string hint, u32 maxLength, SwkbdType type, u32 bgColor, u32 textColor) {
-	Text = text;
+TextBox::TextBox(Point_t location, Size_t size, std::string text, std::string hint, u32 maxLength, SwkbdType type, u32 bgColor, u32 textColor) 
+	: myText(text) {
+
 	Hint = hint;
 	MaxLength = maxLength;
 	Type = type;
@@ -22,7 +23,8 @@ TextBox::TextBox(Point_t location, Size_t size, std::string text, std::string hi
 	Size = size;
 
 	BackgroundColor = bgColor;
-	TextColor = textColor;
+    SetTextColor(textColor);
+    SetTextSize(FontScale, FontScale);
 	Visible = true;
 }
 
@@ -32,7 +34,7 @@ TextBox::TextBox(u32 x, u32 y, u32 width, u32 height, std::string text, std::str
 void TextBox::Draw() {
 	if (Visible) {
 		C2D_DrawRectSolid(Location.X, Location.Y, 0, Size.Width, Size.Height, BackgroundColor);
-		DrawText(Location.X + 2, Location.Y, 0.5f, 0.5f, TextColor, Text.c_str());
+		myText.Draw(Location.X + 2, Location.Y + 1);
 	}
 }
 
@@ -41,10 +43,22 @@ bool TextBox::CheckActivate(u32 x, u32 y) {
 }
 
 std::string TextBox::Activate() {
-	std::string result = getKeyboardInput(Text.c_str(), Hint.c_str(), MaxLength, Type);
+	std::string result = getKeyboardInput(myText, Hint.c_str(), MaxLength, Type);
 	if (result.compare(std::string(" ")) != 0) {
-		Text = result;
+		myText = result;
 	}
 
-	return Text;
+	return myText.GetText();
+}
+
+void TextBox::SetVisibility(bool visibility) {
+    Visible = visibility;
+}
+
+void TextBox::SetTextSize(float scaleX, float scaleY) {
+    myText.SetSize(scaleX, scaleY);
+}
+
+void TextBox::SetTextColor(u32 color) {
+    myText.SetColor(color);
 }

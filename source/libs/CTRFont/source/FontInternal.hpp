@@ -82,12 +82,14 @@ namespace CTRFontImpl
             float   GetCellHeight(void);
             float   GetLineFeed(void);
             float   GetBaseLinePos(void);
+            float   GetUnderlinePos(void);
             int     LoadGlyph(const u32 code);
         };
 
         float                       lineFeed{0.f};
         float                       cellHeight{32.f};
         float                       baselinePos{0.f};
+        float                       underlinePos{0.f};
         FTFace                      face;
         LightLock                   lock;
         std::vector<Sheet *>        sheets;

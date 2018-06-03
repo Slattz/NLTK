@@ -11,10 +11,14 @@ public:
 	bool CheckActivate(u32 x, u32 y);
 	std::string Activate();
 
-	std::string Text;
+	void SetVisibility(bool visibility);
+    void SetTextSize(float scaleX, float scaleY);
+    void SetTextColor(u32 color);
+
+	Text myText;
 	std::string Hint;
 	u32 MaxLength = 0;
 	SwkbdType Type = SWKBD_TYPE_NORMAL;
 
-	u32 TextColor;
+	float FontScale = 0.5f;
 };

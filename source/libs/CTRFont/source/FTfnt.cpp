@@ -12,8 +12,8 @@ struct C2D_Glyph
     float   width{0.f};
     struct
     {
-        float left, top, right, bottom;
-    } texcoord{0.f};
+        float left{0.f}, top{0.f}, right{0.f}, bottom{0.f};
+    } texcoord;
 };
 
 #include "FontInternal.hpp"
@@ -136,7 +136,7 @@ FTfnt::FTFace::FTFace(const std::string &path)
         while (error == 0 && size > 10)
         {
             error = FT_Set_Pixel_Sizes(face, 0, size--);
-            if ((u32)PosToFloat(face->size->metrics.height) <= obj)
+            if (static_cast<u32>(PosToFloat(face->size->metrics.height)) <= obj)
                 break;
         }
     }
@@ -151,6 +151,7 @@ bool    FTfnt::FTFace::IsScalable(void) { return face->face_flags & FT_FACE_FLAG
 float   FTfnt::FTFace::GetCellHeight(void) { return PosToFloat(face->size->metrics.height); }
 float   FTfnt::FTFace::GetLineFeed(void) { return PosToFloat(face->size->metrics.height); }
 float   FTfnt::FTFace::GetBaseLinePos(void) { return PosToFloat(face->size->metrics.ascender); }
+float   FTfnt::FTFace::GetUnderlinePos(void) { return static_cast<float>(face->underline_position); }
 int     FTfnt::FTFace::LoadGlyph(u32 code)
 {
     u32 glyphIndex = FT_Get_Char_Index(face, code);
@@ -170,6 +171,7 @@ int     FTfnt::FTFace::LoadGlyph(u32 code)
 ** FTfnt
 */
 
+// From citra
 static inline u32   MortonInterleave(u32 posX, u32 posY)
 {
     u32 i = (posX & 7) | ((posY & 7) << 8); // ---- -210
@@ -220,6 +222,7 @@ FTfnt::FTfnt(const std::string &path)
     lineFeed = face.GetLineFeed();
     //cellHeight = face.GetCellHeight();
     baselinePos = face.GetBaseLinePos();
+    underlinePos = face.GetUnderlinePos();
 
     // Init first texture
     sheets.push_back(new Sheet());
@@ -315,7 +318,7 @@ C2D_Glyph   FTfnt::GetGlyph(const u32 code, float& xAdvance)
         glyph.texcoord.left = Normalize(texX, texWidth);
         glyph.texcoord.top =  Normalize(rowIdx * cellHeight, texHeight);
         glyph.texcoord.right = glyph.texcoord.left + Normalize(bitmap.width, texWidth);
-        glyph.texcoord.bottom = glyph.texcoord.top + Normalize(cellHeight, texHeight);
+        glyph.texcoord.bottom = glyph.texcoord.top + Normalize(cellHeight - 1.f, texHeight);
     }
     else
     {

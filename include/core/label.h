@@ -9,8 +9,11 @@ public:
 	Label(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 textColor, std::string text);
 
 	void Draw(void);
+    
+    void SetVisibility(bool visibility);
+    void SetTextSize(float scaleX, float scaleY);
+    void SetTextColor(u32 color);
 
-	std::string Text;
+	Text myText;
 	float FontScale = 0.5;
-	u32 TextColor;
 };

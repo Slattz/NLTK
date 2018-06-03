@@ -11,6 +11,6 @@ typedef struct
     int maxLength;
 } SWKBD_s;
 
-std::string getKeyboardInput(const char *text, const char *hintText, u32 maxLength, SwkbdType keyboardType);
+std::string getKeyboardInput(Text myText, const char *hintText, u32 maxLength, SwkbdType keyboardType);
 
 #endif
