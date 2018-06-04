@@ -30,6 +30,7 @@
 #include "core/swkbd.h"
 #include "unicode.h"
 #include "utils.h"
+#include "e_utils.h"
 
 extern Save saveFile;
 extern u64 g_tid;

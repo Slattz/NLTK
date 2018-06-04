@@ -124,7 +124,6 @@ void draw_editor_main_menu(void)
     static int ButtonIcon[] = {TOWN_ICON, ACRES_ICON, PROFILE_ICON, VILLAGERS_ICON, 
                           PWP_ICON, ISLAND_ICON, MAIN_STREET_ICON, ABOUT_ICON};
 
-
     if (!TextInit) {
         ButtonText.push_back(Text(COLOR_GREY, "Town", TextSize, TextSize, 37.f, 147.f));
         ButtonText.push_back(Text(COLOR_GREY, "Acres", TextSize, TextSize, 110.f, 147.f));

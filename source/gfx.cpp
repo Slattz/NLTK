@@ -15,6 +15,27 @@ C2D_SpriteSheet Editor_ss;
 C2D_SpriteSheet Items_ss;
 C2D_SpriteSheet Players_ss;
 
+struct C2D_SpriteSheet_s
+{
+    Tex3DS_Texture t3x;
+    C3D_Tex        tex;
+};
+
+//std::vector<Text> DebugText;
+/*
+    if (!TextInit) {
+        ButtonText.push_back(Text(COLOR_GREY, "Town", TextSize, TextSize, 37.f, 147.f));
+    }
+
+    if (config.isdebug)
+    {
+        Text Cursor()
+        DrawText(100, 120, 0.5, 0.5, COLOR_GREY, Format("Cursor X: %d, Cursor Y: %d", g_cursorpos.x, g_cursorpos.y).c_str());
+        DrawText(100, 140, 0.5, 0.5, COLOR_GREY, Format("Game + Region: 0x%016llX", g_tid).c_str());
+        DrawText(100, 160, 0.5, 0.5, COLOR_GREY, Format("Is ACNL: %d", is_ACNL(g_tid)).c_str());
+        DrawText(100, 180, 0.5, 0.5, COLOR_GREY, Format("ItemBin allocated: %d", (g_ItemBin==NULL) ? 0:1).c_str());
+    }*/
+
 void InitGFX(void)
 {
     gfxInitDefault();
@@ -32,6 +53,13 @@ void InitGFX(void)
     Editor_ss = C2D_SpriteSheetLoad("romfs:/gfx/Editor.t3x");
     Items_ss = C2D_SpriteSheetLoad("romfs:/gfx/Items.t3x");
     Players_ss = C2D_SpriteSheetLoad("romfs:/gfx/Players.t3x");
+    C3D_TexSetFilter(&About_ss->tex, GPU_LINEAR, GPU_LINEAR);
+    C3D_TexSetFilter(&Acres_ss->tex, GPU_LINEAR, GPU_LINEAR);
+    C3D_TexSetFilter(&Common_ss->tex, GPU_LINEAR, GPU_LINEAR);
+    C3D_TexSetFilter(&GameSelect_ss->tex, GPU_LINEAR, GPU_LINEAR);
+    C3D_TexSetFilter(&Editor_ss->tex, GPU_LINEAR, GPU_LINEAR);
+    C3D_TexSetFilter(&Items_ss->tex, GPU_LINEAR, GPU_LINEAR);
+    C3D_TexSetFilter(&Players_ss->tex, GPU_LINEAR, GPU_LINEAR);
 
     /* Init Tints */
     C2D_PlainImageTint(GreyFilter, COLOR_GREY_FILTER, 1.0f);
@@ -67,14 +95,21 @@ void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const cha
 
 void draw_base_interface(void)
 {
-    static char title[50] = TITLE " " VERSION;
-    int titleX = 315;
-    if (BETA_VERSION > 0)
-    {
-        strcat(title, " B" TOSTRING(BETA_VERSION));
-        titleX -= 15;
-    }
+    static bool Init = false;
+    static std::vector<Text> BarText;
+    static std::string title = TITLE " " VERSION;
+    static int titleX = 315;
 
+    if (!Init) {
+        if (BETA_VERSION > 0) {
+            title += " B" TOSTRING(BETA_VERSION);
+            titleX -= 20;
+        }
+
+        BarText.push_back(Text(COLOR_GREY, title, 0.65, 0.65, titleX, 2.f));
+        BarText.push_back(Text(COLOR_ORANGE, "Debug: ON", 0.65, 0.65, 3.f, 2.f));
+        Init = true;
+    }
 
     C3D_FrameBegin(C3D_FRAME_SYNCDRAW);
     C2D_TargetClear(top, COLOR_BG);
@@ -82,10 +117,10 @@ void draw_base_interface(void)
 
     C2D_SceneBegin(top);
     C2D_DrawRectSolid(0, 0, 0, 400, 20, COLOR_MENU_BARS);
-    DrawText(titleX, 2, 0.5, 0.5, COLOR_GREY, title);
+    BarText[0].Draw();
 
     if (config.isdebug)
-        DrawText(3, 2, 0.5, 0.5, COLOR_ORANGE, "Debug: ON");
+        BarText[1].Draw();
     C2D_Flush();
 }
 
@@ -107,9 +142,11 @@ void draw_cursor(void)
 
 void infoDisp(C3D_RenderTarget *target, const char* message)
 {
-    char     temp[1024] = {0};
-    strncpy(temp, message, 1023);
-    strncat(temp, "\n\nPress " FONT_A " to Continue.", 40);
+    static const std::string contMsg = "\n\nPress " FONT_A " to Continue.";
+    std::string string = message + contMsg;
+    Text Msg(COLOR_GREY, string, 0.8, 0.8);
+    float XCord = CenterTextX(Msg, 50.f, 300.f);
+    float YCord = CenterTextY(Msg, 33.5f, 180.f);
 
     while (aptMainLoop())
     {
@@ -119,7 +156,7 @@ void infoDisp(C3D_RenderTarget *target, const char* message)
         draw_base_interface();
         C2D_SceneBegin(target);
         C2D_DrawRectSolid(50, 33.5, 0, 300, 180, COLOR_BROWN);
-        draw_centered_text(120, 280, 80, 0, 0.7f, 0.7f, COLOR_GREY, temp);
+        Msg.Draw(XCord, YCord);
         C3D_FrameEnd(0);
     }
 }
@@ -136,9 +173,11 @@ void infoDispF(C3D_RenderTarget *target, const char* string, ...)
 
 bool confirmDisp(C3D_RenderTarget *target, const char* message)
 {
-    char     temp[1024] = {0};
-    strncpy(temp, message, 1023);
-    strncat(temp, "\n\nYes: " FONT_A ", No: " FONT_B, 40);
+    static const std::string contMsg = "\n\nYes: " FONT_A ", No: " FONT_B;
+    std::string string = message + contMsg;
+    Text Msg(COLOR_GREY, string, 0.8, 0.8);
+    float XCord = CenterTextX(Msg, 50.f, 300.f);
+    float YCord = CenterTextY(Msg, 33.5f, 180.f);
 
     while (aptMainLoop())
     {
@@ -149,7 +188,7 @@ bool confirmDisp(C3D_RenderTarget *target, const char* message)
         draw_base_interface();
         C2D_SceneBegin(target);
         C2D_DrawRectSolid(50, 33.5, 0, 300, 180, COLOR_BROWN);
-        draw_centered_text(120, 280, 80, 0, 0.7f, 0.7f, COLOR_GREY, temp);
+        Msg.Draw(XCord, YCord);
         C3D_FrameEnd(0);
     }
     return 0;
@@ -227,6 +266,20 @@ void DisplayCardError() {
 
 void draw_main_menu(void)
 {
+    static bool TextInit = false;
+    static const float TextSize = 0.6f;
+    static std::vector<Text> ModeText;
+    static std::vector<Text> ColumnText;
+
+    if (!TextInit) {
+        ModeText.push_back(Text(COLOR_GREY, "Editor", TextSize, TextSize, 70.f, 140.f));
+        ModeText.push_back(Text(COLOR_GREY, "Manager", TextSize, TextSize, 190.f, 140.f));
+        
+        ColumnText.push_back(Text(COLOR_GREY, "About", TextSize, TextSize, 44.f, 12.f));
+        ColumnText.push_back(Text(COLOR_GREY, " ", TextSize, TextSize, 40.f, 60.f));
+        TextInit = true;
+    }
+
     draw_base_interface();
     C2D_SceneBegin(bottom);
     DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
@@ -238,8 +291,8 @@ void draw_main_menu(void)
 
     DrawSprite(Common_ss, EDITOR_ICON, 60, 70); //Editor Icon
     DrawSprite(Common_ss, MANAGER_ICON, 180, 70); //Manager Icon
-    DrawText(60, 130, 0.5, 0.5, COLOR_GREY, "Editor");
-    DrawText(180, 130, 0.5, 0.5, COLOR_GREY, "Manager");
+    ModeText[0].Draw(); //Editor
+    ModeText[1].Draw(); //Manager
     
     C2D_SceneBegin(top);
     draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Actual Main Menu!");
