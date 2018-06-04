@@ -15,6 +15,7 @@ typedef struct
 extern C3D_RenderTarget* top;
 extern C3D_RenderTarget* bottom;
 extern C2D_ImageTint* GreyFilter;
+extern C2D_ImageTint* GreySelectFilter;
 extern C2D_ImageTint* GreenFilter;
 
 extern C2D_SpriteSheet About_ss;
@@ -25,10 +26,12 @@ extern C2D_SpriteSheet Editor_ss;
 extern C2D_SpriteSheet Items_ss;
 extern C2D_SpriteSheet Players_ss;
 
+extern std::vector<Text> DebugText;
+
 void InitGFX(void);
 void ExitGFX(void);
 void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const C2D_ImageTint *tint = nullptr, float scaleX = 1.0, float scaleY = 1.0);
-void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text, bool atBaseline = false);
+void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text);
 void infoDisp(C3D_RenderTarget *target, const char* message);
 bool confirmDisp(C3D_RenderTarget *target, const char* message);
 void DisplayText(C3D_RenderTarget *target, int x, int y, int width, int height, float textsize, const char* message);
@@ -54,6 +57,7 @@ static const u32 COLOR_BROWN           =    C2D_Color32(80,78,45,255);
 static const u32 COLOR_LIGHT_BROWN     =    C2D_Color32(99,93,31,255);
 static const u32 COLOR_GREY_FILTER     =    C2D_Color32(0,0,0,170);
 static const u32 COLOR_GREY            =    C2D_Color32(210,210,210,255);
+static const u32 COLOR_DARK_GREY       =    C2D_Color32(145,145,145,255);
 static const u32 COLOR_RED             =    C2D_Color32(255,0,0,255);
 static const u32 COLOR_YELLOW          =    C2D_Color32(255,255,0,255);
 static const u32 COLOR_ORANGE          =    C2D_Color32(255,106,0,255);

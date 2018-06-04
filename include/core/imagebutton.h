@@ -12,12 +12,16 @@ public:
 	void SetImageId(u32 id);
     void SetSpriteSheet(C2D_SpriteSheet sheet);
     u32 GetImageId(void);
+    void SetImageTint(u32 TintColor);
+    void SetImageTint(C2D_ImageTint* Tint);
+    void SetScale(float scale);
     C2D_SpriteSheet GetSpriteSheet(void);
-
-	float Scale = 1;
-	u32 ActiveColor;
+    C2D_ImageTint*  GetImageTint(void);
 
 protected:
     u32 m_imageId = 0;
 	C2D_SpriteSheet m_sheet;
+    C2D_ImageTint* ImageTint;
+    float Scale = 1;
+    u32 ActiveColor;
 };

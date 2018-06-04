@@ -195,14 +195,19 @@ all:
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn
 	@makerom -f cia -o $(OUTPUT).cia -target t -exefslogo -elf "$(OUTPUT).elf" -rsf "$(RSF_PATH)" -banner "$(BUILD)/banner.bnr" -icon "$(BUILD)/icon.icn" -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(UNIQUE_ID)" -logo "$(LOGO)"
-	@echo Done!
+	@echo Building Finished!
 #---------------------------------------------------------------------------------
 clean:
 	@echo clean ...
 	@rm -fr $(BUILD) $(OUTDIR)
 #---------------------------------------------------------------------------------
 re: clean all
-
+#---------------------------------------------------------------------------------
+citra:
+	@echo Opening in Citra...
+	@cd $(OUTDIR) && citra-qt $(APP_TITLE).3dsx
+#---------------------------------------------------------------------------------
+test: all citra
 #---------------------------------------------------------------------------------
 else
 

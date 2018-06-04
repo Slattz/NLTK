@@ -24,7 +24,7 @@ s32 acreEditorSelectedAcre = -1;
 
 void InitEditorGFX(void)
 {
-    C2D_PlainImageTint(AcreTint, 0x666666FF, 1.0);
+    C2D_PlainImageTint(AcreTint, COLOR_DARK_GREY, 0.5f);
 
 	// Create Controls
 	playerNameLabel = Label(10, 10, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Name:");
@@ -84,8 +84,8 @@ void InitAcreGFX(Save *saveFile, const u8 LoopMax, const u8 GridXMax,
 		acre = saveFile->ReadU8(Offset + i * 2);
 		ImageButton *acreButton = new ImageButton(GridXStartPos + (40 * scale * GridX), GridYStartPos + GridY, 40 * scale, 40 * scale,
 			COLOR_TRANSPARENT, KEY_A | KEY_TOUCH, ACRE_PNG + acre, Acres_ss);
-		acreButton->Scale = scale;
-		acreButton->ActiveColor = COLOR_YELLOW;
+		acreButton->SetScale(scale);
+		acreButton->SetImageTint(COLOR_YELLOW);
 
 		acreButton->SetCallback(onAcreClick);
 		acreEditorControls.push_back(acreButton);
@@ -117,11 +117,30 @@ void draw_acre_selection_panel(void) {
 
 void draw_editor_main_menu(void)
 {
-    int ButtonIcon[] = {TOWN_ICON, ACRES_ICON, PROFILE_ICON, VILLAGERS_ICON, 
+    static bool TextInit = false;
+    static const float TextSize = 0.6f;
+    static std::vector<Text> ButtonText;
+    static std::vector<Text> ColumnText;
+    static int ButtonIcon[] = {TOWN_ICON, ACRES_ICON, PROFILE_ICON, VILLAGERS_ICON, 
                           PWP_ICON, ISLAND_ICON, MAIN_STREET_ICON, ABOUT_ICON};
-    const char* ButtonText[] = {"Town", "Acres", "Players", "Villagers", 
-                            "PWPs", "Island", "Main Street", "About"};
-    const char* ColumnText[] = {"Game\nSelect", "  Town\nManager", "Save", "Options"};
+
+
+    if (!TextInit) {
+        ButtonText.push_back(Text(COLOR_GREY, "Town", TextSize, TextSize, 37.f, 147.f));
+        ButtonText.push_back(Text(COLOR_GREY, "Acres", TextSize, TextSize, 110.f, 147.f));
+        ButtonText.push_back(Text(COLOR_GREY, "Players", TextSize, TextSize, 178.f, 147.f));
+        ButtonText.push_back(Text(COLOR_GREY, "Villagers", TextSize, TextSize, 248.f, 147.f));
+        ButtonText.push_back(Text(COLOR_GREY, "PWPs", TextSize, TextSize, 37.f, 217.f));
+        ButtonText.push_back(Text(COLOR_GREY, "Island", TextSize, TextSize, 110.f, 217.f));
+        ButtonText.push_back(Text(COLOR_GREY, "Main Street", 0.55f, 0.55f, 168.f, 217.f));
+        ButtonText.push_back(Text(COLOR_GREY, "About", TextSize, TextSize, 256.f, 217.f));
+        
+        ColumnText.push_back(Text(COLOR_GREY, "Game\nSelect", TextSize, TextSize, 44.f, 12.f));
+        ColumnText.push_back(Text(COLOR_GREY, "  Town\nManager", TextSize, TextSize, 40.f, 60.f));
+        ColumnText.push_back(Text(COLOR_GREY, "Save", TextSize, TextSize, 248.f, 18.f));
+        ColumnText.push_back(Text(COLOR_GREY, "Options", TextSize, TextSize, 240.f, 67.f));
+        TextInit = true;
+    }
 
     draw_base_interface();
     C2D_SceneBegin(bottom);
@@ -131,8 +150,8 @@ void draw_editor_main_menu(void)
     {
         DrawSprite(Editor_ss, BUTTON_MAIN, 20,  10+(50*i), nullptr, 1.15, 0.6);  //w = 80, h = 33
         DrawSprite(Editor_ss, BUTTON_MAIN, 220, 10+(50*i), nullptr, 1.15, 0.6);  //w = 80, h = 33
-        draw_centered_text(20,  80, 10+(50*i), 33, 0.46, 0.46, COLOR_GREY, ColumnText[i]); //Column 1 Text
-        draw_centered_text(220, 80, 10+(50*i), 33, 0.48, 0.48, COLOR_GREY, ColumnText[2+i]); //Column 2 Text
+        ColumnText[i].Draw(); //Column 1 Text
+        ColumnText[2+i].Draw(); //Column 2 Text
     }
 
     for (int i = 0; i < 4; i++)
@@ -141,24 +160,12 @@ void draw_editor_main_menu(void)
         DrawSprite(Editor_ss, BUTTON_MAIN, 15+(74*i), 180); //Row 2 Buttons
         DrawSprite(Editor_ss, ButtonIcon[i], 39+(74*i), 114, GreenFilter); //Row 1 Icons
         DrawSprite(Editor_ss, ButtonIcon[4+i], 39+(74*i), 184, GreenFilter); //Row 2 Icons
-        DrawText(37+(71*i), 147, 0.46, 0.46, COLOR_GREY, ButtonText[i]); //Row 1 Text
-        if (i==2) //Fit Main Street Text
-            DrawText(26+(71*i), 216, 0.44, 0.44, COLOR_GREY, ButtonText[4+i]); //Row 2 MS Text
-        else
-            DrawText(37+(73*i), 217, 0.46, 0.46, COLOR_GREY, ButtonText[4+i]); //Row 2 Text
-
+        ButtonText[i].Draw(); //Row 1 Text
+        ButtonText[i+4].Draw(); //Row 2 Text
     }
     
     C2D_SceneBegin(top);
     draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Editor Main Menu!");
-
-    if (config.isdebug)
-    {
-        DrawText(100, 120, 0.5, 0.5, COLOR_GREY, Format("Cursor X: %d, Cursor Y: %d", g_cursorpos.x, g_cursorpos.y).c_str());
-        DrawText(100, 140, 0.5, 0.5, COLOR_GREY, Format("Game + Region: 0x%016llX", g_tid).c_str());
-        DrawText(100, 160, 0.5, 0.5, COLOR_GREY, Format("Is ACNL: %d", is_ACNL(g_tid)).c_str());
-        DrawText(100, 180, 0.5, 0.5, COLOR_GREY, Format("ItemBin allocated: %d", (g_ItemBin==NULL) ? 0:1).c_str());
-    }
     draw_cursor();
     C3D_FrameEnd(0);
 }

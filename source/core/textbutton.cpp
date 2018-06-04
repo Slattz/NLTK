@@ -7,6 +7,7 @@ TextButton::TextButton(Point_t location, Size_t size, u32 bgColor, u32 activator
 	
     SetTextColor(textColor);
     SetTextSize(FontScale, FontScale);
+    SetTextPos(Location.X + 2, Location.Y + 2);
     Visible = true;
 };
 
@@ -15,7 +16,7 @@ TextButton::TextButton(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 act
 
 void TextButton::Draw(void) {
     Button::Draw();
-    myText.Draw(Location.X + 2, Location.Y + 2);
+    myText.Draw();
 }
 
 void TextButton::SetVisibility(bool visibility) {
@@ -28,4 +29,8 @@ void TextButton::SetTextSize(float scaleX, float scaleY) {
 
 void TextButton::SetTextColor(u32 color) {
     myText.SetColor(color);
+}
+
+void TextButton::SetTextPos(float posX, float posY) {
+    myText.SetPos(posX, posY);
 }

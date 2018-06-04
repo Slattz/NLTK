@@ -10,7 +10,7 @@ struct C2D_Glyph
     struct
     {
         float left, top, right, bottom;
-    } texcoord{0.f};
+    } texcoord{0.f, 0.f, 0.f, 0.f};
 };
 
 #include "FontInternal.hpp"
@@ -47,7 +47,7 @@ int     Bcfnt::CreateGlyphsheet(void)
 
     int         i;
     TGLP_s  *   glyphInfo = GetGlyphInfo();
-    
+
     glyphSheets = new C3D_Tex[glyphInfo->nSheets];
 
     if (glyphSheets == NULL)
@@ -77,7 +77,7 @@ int     Bcfnt::LoadFromFile(FILE *file)
     void    *data;
     FINF_s  *finf;
     Result  res = 0;
-    CFNT_s  header = {0};
+    CFNT_s  header;
 
     if (file == NULL)
         return MAKERESULT(RL_USAGE, RS_NOTFOUND, RM_APPLICATION, RD_NOT_FOUND);
@@ -100,8 +100,8 @@ int     Bcfnt::LoadFromFile(FILE *file)
         res = MAKERESULT(RL_USAGE, RS_OUTOFRESOURCE, RM_APPLICATION, RD_OUT_OF_MEMORY);
         goto exit;
     }
-    
-    fseek(file, 0, SEEK_SET);    
+
+    fseek(file, 0, SEEK_SET);
     if (fread(data, 1, header.fileSize, file) != header.fileSize)
     {
         linearFree(data);

@@ -13,6 +13,7 @@ public:
     void SetVisibility(bool visibility);
     void SetTextSize(float scaleX, float scaleY);
     void SetTextColor(u32 color);
+    void SetTextPos(float posX, float posY);
 
     Text myText;
 	float FontScale = 1;

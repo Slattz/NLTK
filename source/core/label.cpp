@@ -7,6 +7,7 @@ Label::Label(Point_t location, Size_t size, u32 bgColor, u32 textColor, std::str
 
     SetTextColor(textColor);
 	SetTextSize(FontScale, FontScale);
+    SetTextPos(Location.X + 2, Location.Y);
 	Visible = true;
 };
 
@@ -16,7 +17,7 @@ Label::Label(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 textColor, st
 void Label::Draw(void) {
 	if (Visible) {
 		Control::Draw();
-        myText.Draw(Location.X + 2, Location.Y);
+        myText.Draw();
 	}
 }
 
@@ -30,4 +31,8 @@ void Label::SetTextSize(float scaleX, float scaleY) {
 
 void Label::SetTextColor(u32 color) {
     myText.SetColor(color);
+}
+
+void Label::SetTextPos(float posX, float posY) {
+    myText.SetPos(posX, posY);
 }

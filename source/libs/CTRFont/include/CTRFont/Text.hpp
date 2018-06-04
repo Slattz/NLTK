@@ -35,6 +35,7 @@ public:
     Text(const std::string &src, float scaleX, float scaleY);
     Text(const Color &color, const std::string &src, float scaleX, float scaleY);
     Text(const Color &color, const std::string &src, float scaleX, float scaleY, const FontHandle &font);
+    Text(const Color &color, const std::string &src, float scaleX, float scaleY, float posX, float posY);
     virtual ~Text();
 
     // Get the nb of glyphs
@@ -74,7 +75,7 @@ public:
         bool    underline : 1; ///< Not yet supported
         bool    outline : 1;
         bool    strikethrough : 1; ///< Not yet supported
-    }   Style{0, 0, 0, 0, 0};
+    }   Style{false, false, false, false, false};
 
 private:
 

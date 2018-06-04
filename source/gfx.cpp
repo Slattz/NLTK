@@ -4,6 +4,7 @@
 C3D_RenderTarget* top;
 C3D_RenderTarget* bottom;
 C2D_ImageTint* GreyFilter = new C2D_ImageTint[sizeof(C2D_ImageTint)];
+C2D_ImageTint* GreySelectFilter = new C2D_ImageTint[sizeof(C2D_ImageTint)];
 C2D_ImageTint* GreenFilter = new C2D_ImageTint[sizeof(C2D_ImageTint)];
 
 C2D_SpriteSheet About_ss;
@@ -33,8 +34,9 @@ void InitGFX(void)
     Players_ss = C2D_SpriteSheetLoad("romfs:/gfx/Players.t3x");
 
     /* Init Tints */
-    C2D_PlainImageTint(GreyFilter, COLOR_GREY_FILTER, 1.0);
-    C2D_PlainImageTint(GreenFilter, COLOR_GREEN, 1.0);
+    C2D_PlainImageTint(GreyFilter, COLOR_GREY_FILTER, 1.0f);
+    C2D_PlainImageTint(GreySelectFilter, COLOR_GREY_FILTER, 0.8f);
+    C2D_PlainImageTint(GreenFilter, COLOR_GREEN, 1.0f);
 }
 
 void ExitGFX(void)
@@ -53,15 +55,14 @@ void ExitGFX(void)
 
 void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const C2D_ImageTint *tint, float scaleX, float scaleY)
 {
-    C2D_Image img;
-    img = C2D_SpriteSheetGetImage(sheet, imgindex);
-    C2D_DrawImageAt(img, x, y, 1.0, tint, scaleX, scaleY);
+    C2D_Image img = C2D_SpriteSheetGetImage(sheet, imgindex);
+    C2D_DrawImageAt(img, x, y, 0, tint, scaleX, scaleY);
 }
 
-void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text, bool atBaseline)
+void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text)
 {
     Text Txt(Color(color), text, scaleX, scaleY);
-    Txt.Draw(x, y, atBaseline);
+    Txt.Draw(x, y);
 }
 
 void draw_base_interface(void)

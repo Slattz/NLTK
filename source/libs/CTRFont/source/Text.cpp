@@ -182,9 +182,23 @@ Text::Text(const Color &color, const std::string &src, float scaleX, float scale
     _OptimizeGlyphs();
 }
 
-Text::Text(const Color &color, const std::string &src, float scaleX, float scaleY, const FontHandle &font) :
+Text::Text(const Color &color, const std::string &src, float scaleX, float scaleY,
+            const FontHandle &font) :
     _scaleX{scaleX}, _scaleY{scaleY}, _color{color}, _text{src}, _font{font}
 {
+    _glyphs = GetGlyphsFromString(_font, src, _width, _lines);
+    _OptimizeGlyphs();
+}
+
+Text::Text(const Color &color, const std::string &src, float scaleX, float scaleY,
+            float posX, float posY) :
+    _posX{posX}, _posY{posY}, _scaleX{scaleX}, _scaleY{scaleY}, _color{color}, _text{src}
+{
+    if (!_defaultFont)
+        _defaultFont = Font::GetSysfont();
+
+    _font = _defaultFont;
+
     _glyphs = GetGlyphsFromString(_font, src, _width, _lines);
     _OptimizeGlyphs();
 }
@@ -335,7 +349,7 @@ float     Text::Draw(float posX, float posY, bool atBaseline) const
     if (Style.outline)
         _Draw(_outlineColor.raw, posX, posY, atBaseline, true);
 
-    _Draw(_color.raw, _posX, posY, atBaseline, false);
+    _Draw(_color.raw, posX, posY, atBaseline, false);
 
     return posY + _scaleY * _font->GetLineFeed() * _lines;
 }

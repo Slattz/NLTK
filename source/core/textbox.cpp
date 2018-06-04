@@ -8,7 +8,8 @@ TextBox::TextBox() {
 
 	BackgroundColor = COLOR_WHITE;
 	SetTextColor(COLOR_BLACK);
-	SetTextSize(FontScale, FontScale);
+	SetTextSize(0.f, 0.f);
+	SetTextPos(0, 0);
 	Visible = true;
 }
 
@@ -25,6 +26,7 @@ TextBox::TextBox(Point_t location, Size_t size, std::string text, std::string hi
 	BackgroundColor = bgColor;
     SetTextColor(textColor);
     SetTextSize(FontScale, FontScale);
+    SetTextPos(Location.X + 2, Location.Y + 1);
 	Visible = true;
 }
 
@@ -61,4 +63,8 @@ void TextBox::SetTextSize(float scaleX, float scaleY) {
 
 void TextBox::SetTextColor(u32 color) {
     myText.SetColor(color);
+}
+
+void TextBox::SetTextPos(float posX, float posY) {
+    myText.SetPos(posX, posY);
 }
