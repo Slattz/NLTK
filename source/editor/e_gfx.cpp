@@ -147,7 +147,7 @@ void draw_editor_main_menu(void)
 
     for (int i = 0; i < 2; i++)
     {
-        DrawSprite(Editor_ss, BUTTON_MAIN, 20,  10+(50*i), nullptr, 1.001, 1.0);  //w = 80, h = 33
+        DrawSprite(Editor_ss, BUTTON_MAIN, 20,  10+(50*i), nullptr, 1.15, 0.6);  //w = 80, h = 33
         DrawSprite(Editor_ss, BUTTON_MAIN, 220, 10+(50*i), nullptr, 1.15, 0.6);  //w = 80, h = 33
         ColumnText[i].Draw(); //Column 1 Text
         ColumnText[2+i].Draw(); //Column 2 Text
