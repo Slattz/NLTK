@@ -3,13 +3,13 @@
 #ifndef SPRITEIDS_H
 #define SPRITEIDS_H
 
-#include "sprites/About.h"
-#include "sprites/Acres.h"
-#include "sprites/Common.h"
-#include "sprites/GameSelect.h"
-#include "sprites/Editor.h"
-#include "sprites/Items.h"
-#include "sprites/Players.h"
+#include "About_ss.h"
+#include "Acres_ss.h"
+#include "Common_ss.h"
+#include "GameSelect_ss.h"
+#include "Editor_ss.h"
+#include "Items_ss.h"
+#include "Players_ss.h"
 
 
 #endif

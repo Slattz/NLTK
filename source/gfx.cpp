@@ -46,13 +46,13 @@ void InitGFX(void)
     bottom = C2D_CreateScreenTarget(GFX_BOTTOM, GFX_LEFT);
 
     /* Load Spritesheets */
-    About_ss = C2D_SpriteSheetLoad("romfs:/gfx/About.t3x");
-    Acres_ss = C2D_SpriteSheetLoad("romfs:/gfx/Acres.t3x");
-    Common_ss = C2D_SpriteSheetLoad("romfs:/gfx/Common.t3x");
-    GameSelect_ss = C2D_SpriteSheetLoad("romfs:/gfx/GameSelect.t3x");
-    Editor_ss = C2D_SpriteSheetLoad("romfs:/gfx/Editor.t3x");
-    Items_ss = C2D_SpriteSheetLoad("romfs:/gfx/Items.t3x");
-    Players_ss = C2D_SpriteSheetLoad("romfs:/gfx/Players.t3x");
+    About_ss = C2D_SpriteSheetLoad("romfs:/gfx/About_ss.t3x");
+    Acres_ss = C2D_SpriteSheetLoad("romfs:/gfx/Acres_ss.t3x");
+    Common_ss = C2D_SpriteSheetLoad("romfs:/gfx/Common_ss.t3x");
+    GameSelect_ss = C2D_SpriteSheetLoad("romfs:/gfx/GameSelect_ss.t3x");
+    Editor_ss = C2D_SpriteSheetLoad("romfs:/gfx/Editor_ss.t3x");
+    Items_ss = C2D_SpriteSheetLoad("romfs:/gfx/Items_ss.t3x");
+    Players_ss = C2D_SpriteSheetLoad("romfs:/gfx/Players_ss.t3x");
     C3D_TexSetFilter(&About_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Acres_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Common_ss->tex, GPU_LINEAR, GPU_LINEAR);

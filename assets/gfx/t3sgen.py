@@ -23,7 +23,7 @@ for path, subdirs, files in os.walk("."):
 		print "couldn't sort the files"
 
 	if len(ofiles) > 0:
-		a = open(path[path.rfind('\\') + 1 :] + ".t3s", "w+")
+		a = open(path[path.rfind('\\') + 1 :] + "_ss.t3s", "w+")
 		a.write("--atlas -f rgba8888 -z auto" + os.linesep) 
 		for file in ofiles:
 			a.write(file + "\n")
