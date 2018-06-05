@@ -61,6 +61,10 @@ void InitGFX(void)
     C3D_TexSetFilter(&Items_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Players_ss->tex, GPU_LINEAR, GPU_LINEAR);
 
+    /* Very Hacky, used as a bypass for a tex3ds bug */
+    C2D_Image button = C2D_SpriteSheetGetImage(Editor_ss, BUTTON_MAIN);
+    ((Tex3DS_SubTexture *)button.subtex)->right -= 0.005f;
+
     /* Init Tints */
     C2D_PlainImageTint(GreyFilter, COLOR_GREY_FILTER, 1.0f);
     C2D_PlainImageTint(GreySelectFilter, COLOR_GREY_FILTER, 0.8f);
@@ -267,7 +271,7 @@ void DisplayCardError() {
 void draw_main_menu(void)
 {
     static bool TextInit = false;
-    static const float TextSize = 0.6f;
+    static const float TextSize = 0.7f;
     static std::vector<Text> ModeText;
     static std::vector<Text> ColumnText;
 
@@ -275,8 +279,8 @@ void draw_main_menu(void)
         ModeText.push_back(Text(COLOR_GREY, "Editor", TextSize, TextSize, 70.f, 140.f));
         ModeText.push_back(Text(COLOR_GREY, "Manager", TextSize, TextSize, 190.f, 140.f));
         
-        ColumnText.push_back(Text(COLOR_GREY, "About", TextSize, TextSize, 44.f, 12.f));
-        ColumnText.push_back(Text(COLOR_GREY, " ", TextSize, TextSize, 40.f, 60.f));
+        ColumnText.push_back(Text(COLOR_GREY, "About", TextSize, TextSize, 42.f, 38.f));
+        ColumnText.push_back(Text(COLOR_GREY, "Options", TextSize, TextSize, 237.f, 38.f));
         TextInit = true;
     }
 
@@ -285,9 +289,8 @@ void draw_main_menu(void)
     DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
     DrawSprite(Editor_ss, BUTTON_MAIN, 20,  30, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
     DrawSprite(Editor_ss, BUTTON_MAIN, 220, 30, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
-    draw_centered_text(20,  80, 30, 33, 0.46, 0.46, COLOR_GREY, "About"); //Column 1 Text
-    draw_centered_text(220, 80, 30, 33, 0.48, 0.48, COLOR_GREY, "Options"); //Column 2 Text
-    
+    ColumnText[0].Draw(); //About
+    ColumnText[1].Draw(); //Options
 
     DrawSprite(Common_ss, EDITOR_ICON, 60, 70); //Editor Icon
     DrawSprite(Common_ss, MANAGER_ICON, 180, 70); //Manager Icon
@@ -307,30 +310,35 @@ void draw_main_menu(void)
 
 void draw_config_menu(void)
 {
-    const char* ConfigText[] = {"Auto Update", "Auto Save Backup", "Auto Load Preferred Game", "Debug"};
+    static bool TextInit = false;
+    static const float TextSize = 0.7f;
+    static std::vector<Text> ConfigText;
     bool  ConfigBools[] = {config.autoupdate, config.autosavebackup, config.autoloadprefGame, 
                     config.isdebug};
-    u32 configmax = sizeof(ConfigBools)/sizeof(ConfigBools[0]);
+    u32 configamount = 4;
+
+    if (!TextInit) {
+        ConfigText.push_back(Text(COLOR_GREY, "Auto Update", TextSize, TextSize));
+        ConfigText.push_back(Text(COLOR_GREY, "Auto Save Backup", TextSize, TextSize));
+        ConfigText.push_back(Text(COLOR_GREY, "Auto Load Preferred Game", TextSize, TextSize));
+        ConfigText.push_back(Text(COLOR_GREY, "Debug", TextSize, TextSize));
+        TextInit = true;
+    }
 
     draw_base_interface();
     C2D_SceneBegin(bottom);
 
     u32 i;
-    for (i = 0; i < configmax-1; i++) //configmax-1: exclude Debug
+    for (i = 0; i < configamount-1; i++) //configmax-1: exclude Debug
     {
-        if (ConfigBools[i])
-            DrawSprite(Common_ss, CHECKBOX_FILLED, 20, 20+(28*i));
-
-        else
-            DrawSprite(Common_ss, CHECKBOX_EMPTY, 20, 20+(28*i));
-
-        DrawText(52, 21+(28*(configmax-1)), 0.6, 0.6, COLOR_GREY, ConfigText[configmax-1]); //ConfigText
+        DrawSprite(Common_ss, (ConfigBools[i] == true ? CHECKBOX_FILLED : CHECKBOX_EMPTY), 20, 20+(28*i));
+        ConfigText[i].Draw(52, 23+(28*i)); //ConfigText
     }
 
     if (config.isdebug)
     {
-        DrawSprite(Common_ss, CHECKBOX_FILLED, 20, 20+(28*(configmax-1)));
-        DrawText(52, 21+(28*(configmax-1)), 0.6, 0.6, COLOR_GREY, ConfigText[configmax-1]);
+        DrawSprite(Common_ss, CHECKBOX_FILLED, 20, 20+(28*(configamount-1)));
+        ConfigText[configamount-1].Draw(52, 23+(28*(configamount-1)));
     }
     draw_cursor();
     C3D_FrameEnd(0);
