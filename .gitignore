@@ -58,6 +58,7 @@ dkms.conf
 *.sublime-workspace
 out/
 build/
+*.t3x
 
 # Visual Studio
 *.sln
