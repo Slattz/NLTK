@@ -1,9 +1,13 @@
 #include <codecvt>
 #include <locale>
 #include <memory>
+#include <fstream>
+#include <sstream>
+#include <iostream>
 #include "utils.h"
 
 cursorinfo_s g_cursorpos;
+std::map<u16, std::string>g_ItemDatabase;
 
 /*
 	bool IsSDCardInserted(void)
@@ -237,4 +241,28 @@ std::string Format(const char* fmt, ...)
     va_end(argList);
 
     return (std::string(buffer));
+}
+
+void loadItemDatabase() {
+	g_ItemDatabase.clear();
+	std::string currentLine;
+	std::ifstream itemDatabase("romfs:/Items_en.txt", std::ifstream::in);
+
+	while (std::getline(itemDatabase, currentLine)) {
+		if (currentLine.find("//") == std::string::npos) { // confirm we don't have any comments
+			std::string itemIdStr = currentLine.substr(2, 4); // skip the 0x hex specifier
+			std::string itemName = currentLine.substr(8, currentLine.size() - 9);
+			u16 itemId = 0;
+			
+			// Convert itemIdStr to a u16
+			std::stringstream ss;
+			ss << std::hex << itemIdStr;
+			ss >> itemId;
+
+			// Add item to the database
+			g_ItemDatabase.insert({ itemId, itemName });
+		}
+	}
+
+	itemDatabase.close();
 }

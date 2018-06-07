@@ -12,7 +12,7 @@
 #include <sys/stat.h>
 #include <stdarg.h>
 #include <citro2d.h>
-
+#include <map>
 
 #include "CTRFont.hpp"
 #include "structs.h"
@@ -46,6 +46,7 @@ extern LoadItem_s g_InvItems[16];
 extern NLTK_config config;
 extern u64 currentTitleId;
 extern FS_MediaType currentMediaType;
+extern std::map<u16, std::string> g_itemDatabase;
 
 static u64 *g_titleIds = new u64[8]{
 	0x0004000000086200, // New Leaf Japan

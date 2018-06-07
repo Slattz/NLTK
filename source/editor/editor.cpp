@@ -15,6 +15,9 @@ void CleanupEditor(void) {
 }
 
 void init_editor(void) {
+	// Load Item Database
+	loadItemDatabase();
+
 	g_Items_en = fopen("romfs:/Items_en.txt", "r");
 	InitEditorGFX();
 
