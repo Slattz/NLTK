@@ -85,10 +85,10 @@ void ExitGFX(void)
     gfxExit();
 }
 
-void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const C2D_ImageTint *tint, float scaleX, float scaleY)
+void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const C2D_ImageTint *tint, float scaleX, float scaleY, float z)
 {
     C2D_Image img = C2D_SpriteSheetGetImage(sheet, imgindex);
-    C2D_DrawImageAt(img, x, y, 0, tint, scaleX, scaleY);
+    C2D_DrawImageAt(img, x, y, z, tint, scaleX, scaleY);
 }
 
 void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text)
@@ -136,10 +136,10 @@ void draw_cursor(void)
     if (g_cursorpos.show)
     {
         if (g_cursorpos.A_held)
-            DrawSprite(Common_ss, CURSOR_SELECT, g_cursorpos.x, g_cursorpos.y);
+            DrawSprite(Common_ss, CURSOR_SELECT, g_cursorpos.x, g_cursorpos.y, nullptr, 1.0f, 1.0f, 1.0f);
         
         else
-            DrawSprite(Common_ss, CURSOR_POINT, g_cursorpos.x, g_cursorpos.y);
+            DrawSprite(Common_ss, CURSOR_POINT, g_cursorpos.x, g_cursorpos.y, nullptr, 1.0f, 1.0f, 1.0f);
     }
     C2D_Flush();
 }

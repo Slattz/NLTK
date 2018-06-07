@@ -111,10 +111,9 @@ static const u32 COLOR_TRANSPARENT     =    C2D_Color32(0,0,0,0);
 
 void InitGFX(void);
 void ExitGFX(void);
-void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const C2D_ImageTint *tint = nullptr, float scaleX = 1.0, float scaleY = 1.0);
+void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const C2D_ImageTint *tint = nullptr, float scaleX = 1.0f, float scaleY = 1.0f, float z = 0.f);
 void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text);
 bool MsgDisp(C3D_RenderTarget *target, std::string message, MsgType Type = MsgTypeAccept, u32 bgColor = COLOR_BROWN, u32 textColor = COLOR_GREY, float textsize = 0.8f, float x = 50.f, float y = 33.5f, float width = 300.f, float height = 180.f);
-bool confirmDisp(C3D_RenderTarget *target, const char* message);
 void DisplayCardError();
 
 void draw_base_interface(void);
