@@ -12,6 +12,12 @@ typedef struct
     float dx, dy; // velocity
 } Sprite;
 
+enum MsgType {
+    MsgTypeNone = 0,
+    MsgTypeAccept,
+    MsgTypeConfirm
+};
+
 extern C3D_RenderTarget* top;
 extern C3D_RenderTarget* bottom;
 extern C2D_ImageTint* GreyFilter;
@@ -27,25 +33,6 @@ extern C2D_SpriteSheet Items_ss;
 extern C2D_SpriteSheet Players_ss;
 
 extern std::vector<Text> DebugText;
-
-void InitGFX(void);
-void ExitGFX(void);
-void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const C2D_ImageTint *tint = nullptr, float scaleX = 1.0, float scaleY = 1.0);
-void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text);
-void infoDisp(C3D_RenderTarget *target, const char* message);
-bool confirmDisp(C3D_RenderTarget *target, const char* message);
-void DisplayText(C3D_RenderTarget *target, int x, int y, int width, int height, float textsize, const char* message);
-void infoDispF(C3D_RenderTarget *target, const char* string, ...);
-void confirmDispF(C3D_RenderTarget *target, const char* string, ...);
-void DisplayTextF(C3D_RenderTarget *target, int x, int y, int width, int height, float textsize, const char* string, ...);
-void DisplayCardError();
-
-void draw_base_interface(void);
-void draw_cursor(void);
-void draw_main_menu(void);
-void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmedia);
-void draw_about_menu(bool discord, bool twitter);
-void draw_config_menu(void);
 
 //Colors
 static const u32 COLOR_BG              =    C2D_Color32(92,188,105,255);
@@ -121,5 +108,20 @@ static const u32 COLOR_TRANSPARENT     =    C2D_Color32(0,0,0,0);
 #define ACRE_PNG            Acres_ss_acre_0_idx
 #define LAST_ACRE_PIC       Acres_ss_acre_214_idx
 
+
+void InitGFX(void);
+void ExitGFX(void);
+void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const C2D_ImageTint *tint = nullptr, float scaleX = 1.0, float scaleY = 1.0);
+void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text);
+bool MsgDisp(C3D_RenderTarget *target, std::string message, MsgType Type = MsgTypeAccept, u32 bgColor = COLOR_BROWN, u32 textColor = COLOR_GREY, float textsize = 0.8f, float x = 50.f, float y = 33.5f, float width = 300.f, float height = 180.f);
+bool confirmDisp(C3D_RenderTarget *target, const char* message);
+void DisplayCardError();
+
+void draw_base_interface(void);
+void draw_cursor(void);
+void draw_main_menu(void);
+void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmedia);
+void draw_about_menu(bool discord, bool twitter);
+void draw_config_menu(void);
 
 #endif

@@ -13,7 +13,7 @@ enum
     ITALIC = 1 << 2,
     UNDERLINE = 1 << 3,
     OUTLINE = 1 << 4,
-    STRIKETHROUGH = 1 << 5
+    STRIKETHROUGH = 1 << 5,
 };
 
 class Text
@@ -57,6 +57,8 @@ public:
     virtual Text&   SetOutlineColor(const Color &color);
     // Set style using the enumeration higher
     virtual Text&   SetStyle(const u32 style);
+    // Center the text within the bounds
+    virtual Text&   CenterInBounds(float left, float top, float width, float height);
 
     float     Draw(bool atBaseline = false) const;
     float     Draw(float posX, float posY, bool atBaseline = false) const;
@@ -87,9 +89,21 @@ protected:
 
     void    _OptimizeGlyphs(void);
     void    _Draw(const u32 color, float posX, float posY, const bool atBaseline, const bool outline) const;
+    void    _CenterInBounds(void);
 
     u16                             _lines{0};
-    u16                             _reserved;
+    union
+    {
+        u16                         _flags{0};
+        struct
+        {
+            bool                    _isCentered : 1;
+        };
+    };
+    struct
+    {
+        float   left, top, width, height;
+    }                               _bounds;
     float                           _posX{0.f};
     float                           _posY{0.f};
     float                           _scaleX{1.f};

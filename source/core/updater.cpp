@@ -65,7 +65,7 @@ bool    CheckVersion(const char *releaseName)
 
     major = strtol(releaseName, &next, 10); //Get major version
     if (config.isdebug)
-        infoDispF(top, "Major: %d, Result: %d", major, major >= MAJOR_VERSION);
+        MsgDisp(top, Format("Major: %d, Result: %d", major, major >= MAJOR_VERSION));
 
     if (next && *next == '.') //If minor version
         next++;
@@ -74,7 +74,7 @@ bool    CheckVersion(const char *releaseName)
 
     minor = strtol(next, &next, 10); //Get minor version
     if (config.isdebug)
-        infoDispF(top, "Minor: %d, Result %d", minor, minor >= MINOR_VERSION);
+        MsgDisp(top, Format("Minor: %d, Result %d", minor, minor >= MINOR_VERSION));
     if (next && *next == '.') //If revision version
         next++;
 
@@ -83,7 +83,7 @@ bool    CheckVersion(const char *releaseName)
         next++;
         beta_ver = strtol(next, NULL, 10); //Get beta version
         if (config.isdebug)
-            infoDispF(top, "Beta 1: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION);
+            MsgDisp(top, Format("Beta 1: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION));
         return major >= MAJOR_VERSION && minor >= MINOR_VERSION && beta_ver > BETA_VERSION;
     }
             
@@ -92,7 +92,7 @@ bool    CheckVersion(const char *releaseName)
 
     revision = strtol(next,  &next, 10); //Get revision version
     if (config.isdebug)
-        infoDispF(top, "Revision: %d, Result %d", revision, revision >= REV_VERSION);
+        MsgDisp(top, Format("Revision: %d, Result %d", revision, revision >= REV_VERSION));
     if (next && *next == 'B') //If there's a beta ver after revision ver
         next++;
 
@@ -101,7 +101,7 @@ bool    CheckVersion(const char *releaseName)
     
     beta_ver = strtol(next, NULL, 10); //Get beta version
     if (config.isdebug)
-        infoDispF(top, "Beta 2: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION);
+        MsgDisp(top, Format("Beta 2: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION));
     return major >= MAJOR_VERSION && minor >= MINOR_VERSION 
             && revision >= REV_VERSION && beta_ver > BETA_VERSION;
 }
@@ -131,7 +131,7 @@ bool http_download(const char *src, u8 **output, u32 *outSize)
             if (responseCode >= 301 && responseCode <= 303)
             {
                 if (config.isdebug)
-                    infoDisp(top, "redirecting URL");
+                    MsgDisp(top, "redirecting URL");
                 memset(url, '\0', strlen(url));
                 if (R_SUCCEEDED(res = httpc.GetResponseHeader(&context, (char*)"Location", url, 1024)))
                     httpc.CloseContext(&context);
@@ -144,14 +144,14 @@ bool http_download(const char *src, u8 **output, u32 *outSize)
                 if (responseCode != 200)
                 {
                     if (config.isdebug)
-                        infoDispF(top, "URL returned status: %ld", responseCode);
+                        MsgDisp(top, Format("URL returned status: %ld", responseCode));
                     httpc.CloseContext(&context);
                     return false;       
                 }
             }
         }
 
-        else infoDisp(top, "Could not open HTTP context!");
+        else MsgDisp(top, "Could not open HTTP context!");
     }
 
     if (R_SUCCEEDED(res = httpc.GetDownloadSizeState(&context, NULL, &size)))
@@ -209,7 +209,7 @@ bool checkUpdate(void)
         if (res < 0) 
         {
                 if (config.isdebug)
-                    infoDispF(top, "Failed to parse JSON: %ld", res);
+                    MsgDisp(top, Format("Failed to parse JSON: %ld", res));
             return 0;
         }
 
@@ -217,7 +217,7 @@ bool checkUpdate(void)
         if (res < 1 || tokens[0].type != JSMN_OBJECT)
         {
             if (config.isdebug)
-                infoDisp(top, "Object expected");
+                MsgDisp(top, "Object expected");
             return 0;
         }
 
@@ -332,19 +332,19 @@ bool installUpdate(void)
     if (http_download(urlDownload, &downloadbuf, &downloadsize))
     {
         if (config.isdebug)
-            infoDisp(top, "Update Downloaded!");
+            MsgDisp(top, "Update Downloaded!");
 
         if (envIsHomebrew())
         {
             if (file_write(downloadbuf, "sdmc:/3ds/NLTK/NLTK.3dsx", downloadsize))
             {
-                infoDisp(top, "The update has been installed!\nNow exiting the app");
+                MsgDisp(top, "The update has been installed!\nNow exiting the app");
                 return true;
             }
 
             else
             {
-                infoDisp(top, "Failed to write 3dsx!");
+                MsgDisp(top, "Failed to write 3dsx!");
                 return false;
             }
         }
@@ -356,21 +356,21 @@ bool installUpdate(void)
                 FSFILE_Write(ciaHandle, &bytesWritten, 0, downloadbuf, downloadsize, 0);
                 if (R_SUCCEEDED(res = AM_FinishCiaInstall(ciaHandle)))
                 {
-                    infoDisp(top, "The update has been installed!\nNow exiting the app");
+                    MsgDisp(top, "The update has been installed!\nNow exiting the app");
                     return true;
                 }
 
                 else
                 {
                     AM_CancelCIAInstall(ciaHandle);
-                    infoDispF(top, "Update install failed (FinishCiaInstall): %d", res);
+                    MsgDisp(top, Format("Update install failed (FinishCiaInstall): %d", res));
                     return false;
                 }
             }
 
             else
             {
-                infoDispF(top, "Update install failed (StartCiaInstall): %d", res);
+                MsgDisp(top, Format("Update install failed (StartCiaInstall): %d", res));
                 return false;
             }
         }
@@ -389,11 +389,11 @@ bool launchUpdater(void)
     {
 
         if (config.isdebug)
-            infoDisp(top, "Check Update: True!");
+            MsgDisp(top, "Check Update: True!");
 
-        infoDispF(top, "New Version: %s\n Changelog:\n%s", newVerString, newChangelog);
+        MsgDisp(top, Format("New Version: %s\n Changelog:\n%s", newVerString, newChangelog));
 
-        if (confirmDisp(top, ProceedUpdate))
+        if (MsgDisp(top, ProceedUpdate, MsgTypeConfirm))
             ret = installUpdate();        
 
         return ret;
@@ -402,7 +402,7 @@ bool launchUpdater(void)
     else
     {
         if (config.isdebug)
-            infoDisp(top, "Check Update: False!");
+            MsgDisp(top, "Check Update: False!");
 
         return false;
     }

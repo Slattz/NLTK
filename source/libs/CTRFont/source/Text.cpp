@@ -85,6 +85,11 @@ Text::Text(void)
 Text::Text(const Text &text)
 {
     _lines = text._lines;
+    _flags = text._flags;
+    _bounds.left = text._bounds.left;
+    _bounds.top = text._bounds.top;
+    _bounds.width = text._bounds.width;
+    _bounds.height = text._bounds.height;
     _posX = text._posX;
     _posY = text._posY;
     _scaleX = text._scaleX;
@@ -107,6 +112,11 @@ Text::Text(const Text &text)
 Text::Text(Text &&text)
 {
     _lines = text._lines;
+    _flags = text._flags;
+    _bounds.left = text._bounds.left;
+    _bounds.top = text._bounds.top;
+    _bounds.width = text._bounds.width;
+    _bounds.height = text._bounds.height;
     _posX = text._posX;
     _posY = text._posY;
     _scaleX = text._scaleX;
@@ -247,6 +257,9 @@ Text&   Text::SetSize(float scaleX, float scaleY)
     _scaleX = scaleX;
     _scaleY = scaleY;
 
+    if (_isCentered)
+        _CenterInBounds();
+
     return *this;
 }
 
@@ -279,6 +292,19 @@ Text&   Text::SetStyle(const u32 style)
     Style.underline = style & UNDERLINE;
     Style.outline = style & OUTLINE;
     Style.strikethrough = style & STRIKETHROUGH;
+
+    return *this;
+}
+
+Text&   Text::CenterInBounds(float left, float top, float width, float height)
+{
+    _isCentered = true;
+    _bounds.left = left;
+    _bounds.top = top;
+    _bounds.width = width;
+    _bounds.height = height;
+
+    _CenterInBounds();
 
     return *this;
 }
@@ -354,6 +380,24 @@ float     Text::Draw(float posX, float posY, bool atBaseline) const
     return posY + _scaleY * _font->GetLineFeed() * _lines;
 }
 
+// TODO: parse text and cut lines
+void    Text::_CenterInBounds(void)
+{
+    // Center current text according to scale
+    float   textHeight = GetHeight();
+    float   textWidth = GetWidth();
+
+    if (textWidth > _bounds.width)
+        _posX = _bounds.left;
+    else
+        _posX = _bounds.left + ((_bounds.width - textWidth) / 2.f);
+
+    if (textHeight > _bounds.height)
+        _posY = _bounds.top;
+    else
+        _posY = _bounds.top + ((_bounds.height - textHeight) / 2.f);
+}
+
 /*
 ** Operators
 */
@@ -361,6 +405,11 @@ float     Text::Draw(float posX, float posY, bool atBaseline) const
 Text&   Text::operator=(const Text &text)
 {
     _lines = text._lines;
+    _flags = text._flags;
+    _bounds.left = text._bounds.left;
+    _bounds.top = text._bounds.top;
+    _bounds.width = text._bounds.width;
+    _bounds.height = text._bounds.height;
     _posX = text._posX;
     _posY = text._posY;
     _scaleX = text._scaleX;

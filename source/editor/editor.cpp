@@ -54,7 +54,7 @@ GameSelect:
 
 	bool successfullyOpenedArchive = openSaveArchive(&saveArch, g_tid, currentMediaType);
     if (!successfullyOpenedArchive && !(tryOpenSaveArchive(&saveArch, g_tid, &currentMediaType))) {
-        infoDisp(top, "Unable to Open the Save Archive\nSave file may not have been created!");
+        MsgDisp(top, "Unable to Open the Save Archive\nSave file may not have been created!");
 		CleanupEditor();
         return 0;
     }
@@ -66,7 +66,7 @@ GameSelect:
 	saveFile = Save(saveArch, &saveHandle, true);
 
 	if (saveFile.GetSaveSize() != SIZE_SAVE) {
-		infoDisp(top, "Save file is the incorrect size!");
+		MsgDisp(top, "Save file is the incorrect size!");
 		CleanupEditor();
 		saveFile.Close();
 		return 0;

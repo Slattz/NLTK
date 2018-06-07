@@ -37,7 +37,7 @@ int main() {
 	g_acnlFont = Font::Open("romfs:/ACNL_font.bcfnt");
 
 	if (g_acnlFont->IsLoaded()) {
-        infoDisp(top, "Error: ACNL font failed to open.\n");
+        MsgDisp(top, "Error: ACNL font failed to open.\n", MsgTypeAccept);
     }
 
     Text::SetDefaultFont(g_acnlFont);

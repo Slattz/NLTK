@@ -4,9 +4,9 @@
 #include "core/imagebutton.h"
 #include <algorithm>
 
-static int g_selectedplayer = 0;
-static bool drawingMenu = false;
-static bool drawingSubmenu = false;
+//static int g_selectedplayer = 0;
+//static bool drawingMenu = false;
+//static bool drawingSubmenu = false;
 
 int spawn_manager_main_menu(Save *saveFile)
 {

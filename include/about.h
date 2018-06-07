@@ -14,8 +14,8 @@ static const char* credits[] =
     "PabloMK7:", "For tips on making the startup logo."
 };
 
-static const char* discordtext = "Need help or want to talk to\nother ACNL hackers? \
-Join the ACNL Hacking Discord Server:\nhttps://discord.gg/EZSxqRr\n";
+static const char* discordtext = "Need help with NLTK?\n\
+Join the NLTK Discord Server:\nhttps://discord.gg/j2VUBBv\n";
 
 static const char* twittertext = "Follow me on Twitter for NLTK\nnews, ACNL Hacking and\nrandom things:\n@Slattz3D\n";
 

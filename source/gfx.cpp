@@ -144,88 +144,41 @@ void draw_cursor(void)
     C2D_Flush();
 }
 
-void infoDisp(C3D_RenderTarget *target, const char* message)
+bool MsgDisp(C3D_RenderTarget *target, std::string message, MsgType Type, u32 bgColor, u32 textColor, 
+    float textsize, float x, float y, float width, float height)
 {
-    static const std::string contMsg = "\n\nPress " FONT_A " to Continue.";
-    std::string string = message + contMsg;
-    Text Msg(COLOR_GREY, string, 0.8, 0.8);
-    float XCord = CenterTextX(Msg, 50.f, 300.f);
-    float YCord = CenterTextY(Msg, 33.5f, 180.f);
+    static const std::string acceptMsg = "\n\nPress " FONT_A " to Continue.";
+    static const std::string confirmMsg = "\n\nYes: " FONT_A ", No: " FONT_B;
+
+    if (Type == MsgTypeAccept) {
+        message += acceptMsg;
+    }
+
+    else if (Type == MsgTypeConfirm) {
+        message += confirmMsg;
+    }
+
+    Text Msg(textColor, message, textsize, textsize);
+    Msg.CenterInBounds(x+5, y+5, width-5, height-5);
+
 
     while (aptMainLoop())
     {
         hidScanInput();
-        if (hidKeysDown() & KEY_A) break;
+        if (hidKeysDown() & KEY_A && Type != MsgTypeNone) return true;
+        if (hidKeysDown() & KEY_B && Type == MsgTypeConfirm) return false;
         
-        draw_base_interface();
+        if (Type != MsgTypeNone)
+            draw_base_interface();
+
         C2D_SceneBegin(target);
-        C2D_DrawRectSolid(50, 33.5, 0, 300, 180, COLOR_BROWN);
-        Msg.Draw(XCord, YCord);
+        C2D_DrawRectSolid(x, y, 0, width, height, bgColor);
+        Msg.Draw();
+
+        if (Type == MsgTypeNone) break;
         C3D_FrameEnd(0);
     }
-}
-
-void infoDispF(C3D_RenderTarget *target, const char* string, ...)
-{
-    char       buffer[1024];
-    va_list    args;
-    va_start(args, string);
-    vsnprintf(buffer, sizeof(buffer), string, args);
-    infoDisp(target, buffer);
-    va_end(args);
-}
-
-bool confirmDisp(C3D_RenderTarget *target, const char* message)
-{
-    static const std::string contMsg = "\n\nYes: " FONT_A ", No: " FONT_B;
-    std::string string = message + contMsg;
-    Text Msg(COLOR_GREY, string, 0.8, 0.8);
-    float XCord = CenterTextX(Msg, 50.f, 300.f);
-    float YCord = CenterTextY(Msg, 33.5f, 180.f);
-
-    while (aptMainLoop())
-    {
-        hidScanInput();
-        if (hidKeysDown() & KEY_A) return true;
-        if (hidKeysDown() & KEY_B) return false;
-        
-        draw_base_interface();
-        C2D_SceneBegin(target);
-        C2D_DrawRectSolid(50, 33.5, 0, 300, 180, COLOR_BROWN);
-        Msg.Draw(XCord, YCord);
-        C3D_FrameEnd(0);
-    }
-    return 0;
-}
-
-void confirmDispF(C3D_RenderTarget *target, const char* string, ...)
-{
-    char       buffer[1024];
-    va_list    args;
-    va_start(args, string);
-    vsnprintf(buffer, sizeof(buffer), string, args);
-    confirmDisp(target, buffer);
-    va_end(args);
-}
-
-void DisplayText(C3D_RenderTarget *target, int x, int y, int width, int height, float textsize, const char* message)
-{
-	char     temp[1024] = { 0 };
-	strncpy(temp, message, 1023);
-	C2D_SceneBegin(target);
-	C2D_DrawRectSolid(x, y, 0, width, height, COLOR_BROWN);
-    draw_centered_text(x+5, 400-x-5, y+5, 0, textsize, textsize, COLOR_GREY, temp);
-	//Caller function must call C3D_FrameEnd(0);
-}
-
-void DisplayTextF(C3D_RenderTarget *target, int x, int y, int width, int height, float textsize, const char* string, ...)
-{
-    char       buffer[1024];
-    va_list    args;
-    va_start(args, string);
-    vsnprintf(buffer, sizeof(buffer), string, args);
-    DisplayText(target, x, y, width, height, textsize, buffer);
-    va_end(args);
+    return false;
 }
 
 void DisplayCardError() {
@@ -298,12 +251,7 @@ void draw_main_menu(void)
     ModeText[1].Draw(); //Manager
     
     C2D_SceneBegin(top);
-    draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Actual Main Menu!");
-
-    if (config.isdebug)
-    {
-        DrawText(100, 120, 0.5, 0.5, COLOR_GREY, Format("Cursor X: %d, Cursor Y: %d", g_cursorpos.x, g_cursorpos.y).c_str());
-    }
+    //draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Actual Main Menu!");
     draw_cursor();
     C3D_FrameEnd(0);
 }
@@ -346,14 +294,28 @@ void draw_config_menu(void)
 
 void draw_about_menu(bool discord, bool twitter)
 {
+    static bool TextInit = false;
+    static const float TextSize = 0.6f;
+    static std::vector<Text> AboutLText;
+    static std::vector<Text> AboutRText;
+
+    if (!TextInit) {
+        for (int i = 0; i < creditsCount; i++) {
+            AboutLText.push_back(Text(COLOR_GREY, credits[i*2], TextSize, TextSize));
+            AboutRText.push_back(Text(COLOR_GREY, credits[1+i*2], TextSize, TextSize));
+        }
+        TextInit = true;
+    }
+
     draw_base_interface();
     DrawText(175, 30, 0.6, 0.6, COLOR_GREY, "Credits:");
 
     for (int i = 0; i < creditsCount; i++)
     {
-        DrawText(10, 55+(i*20), 0.46, 0.46, COLOR_GREY, credits[i*2]); //Name
-        DrawText(120, 55+(i*20), 0.45, 0.45, COLOR_GREY, credits[1+i*2]); //Description
+        AboutLText[i].Draw(10, 55+(i*20)); //Name
+        AboutRText[i].Draw(120, 55+(i*20)); //Description
     }
+
     C2D_SceneBegin(bottom);
     DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
     DrawSprite(About_ss, DISCORD_ICON, 55, 180); //Discord Icon
@@ -361,10 +323,10 @@ void draw_about_menu(bool discord, bool twitter)
     /* L:55, M:135, R:215 */
 
     if (discord)
-        DisplayText(bottom, 60, 100, 200, 70, 0.5, discordtext);
+        MsgDisp(bottom, discordtext, MsgTypeNone, COLOR_BROWN, COLOR_GREY, 0.6f, 60.f, 100.f, 200.f, 70.f);
 
-    if (twitter)
-        DisplayText(bottom, 60, 100, 200, 70, 0.5, twittertext);
+    else if (twitter)
+        MsgDisp(bottom, twittertext, MsgTypeNone, COLOR_BROWN, COLOR_GREY, 0.6f, 60.f, 100.f, 200.f, 70.f);
 
     draw_cursor();
     C3D_FrameEnd(0);
