@@ -2,7 +2,6 @@
 #include "editor/editor.h"
 
 u8* g_ItemBin;
-FILE* g_Items_en;
 u64 currentTitleId;
 bool m_editorInitiated = false;
 
@@ -17,8 +16,6 @@ void CleanupEditor(void) {
 void init_editor(void) {
 	// Load Item Database
 	loadItemDatabase();
-
-	g_Items_en = fopen("romfs:/Items_en.txt", "r");
 	InitEditorGFX();
 
 	g_ItemBin = new u8[0x2B720];

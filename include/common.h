@@ -35,7 +35,6 @@
 extern Save saveFile;
 extern u64 g_tid;
 extern u8* g_ItemBin;
-extern FILE* g_Items_en;
 extern NLTK_Titles_Info MediaInfo;
 extern cursorinfo_s g_cursorpos;
 extern s16  g_CheckX[2];
