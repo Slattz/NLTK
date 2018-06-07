@@ -132,14 +132,14 @@ std::string GetItemIcon(Item *item)
 
 std::string GetItemName(Item *item)
 {
-    char itemid[10];
+    /*char itemid[10];
     char* line = new char[100];
     snprintf(itemid, 8, "0x%04X", item->Id);
 
     rewind(g_Items_en);
-    while (fgets(line, 100, g_Items_en) != NULL) /* read each line */
+    while (fgets(line, 100, g_Items_en) != NULL) // read each line
     {
-        if (strncmp(itemid, line, 6) == 0) /* If itemID in txt is same as our ID */
+        if (strncmp(itemid, line, 6) == 0) // If itemID in txt is same as our ID
         {
             int len = strlen(line + 8) - 1;
             if ((len > 0) && (line[len] == '\n'))
@@ -148,9 +148,15 @@ std::string GetItemName(Item *item)
 			delete[] line;
             return str;
         }
-    }
+    }*/
+	for (auto const& entry : g_itemDatabase) {
+		if (entry.first == item->Id) {
+			MsgDisp(top, Format("Item ID: %04X\nItem Name: %s", entry.first, entry.second.c_str()));
+			return entry.second;
+		}
+	}
 
-	delete[] line;
+	//delete[] line;
 	return std::string("???");
 }
 

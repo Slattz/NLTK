@@ -7,7 +7,7 @@
 #include "utils.h"
 
 cursorinfo_s g_cursorpos;
-std::map<u16, std::string>g_ItemDatabase;
+std::map<u16, std::string> g_itemDatabase;
 
 /*
 	bool IsSDCardInserted(void)
@@ -244,14 +244,16 @@ std::string Format(const char* fmt, ...)
 }
 
 void loadItemDatabase() {
-	g_ItemDatabase.clear();
+	g_itemDatabase.clear();
 	std::string currentLine;
 	std::ifstream itemDatabase("romfs:/Items_en.txt", std::ifstream::in);
+	std::string itemIdStr;
+	std::string itemName;
 
 	while (std::getline(itemDatabase, currentLine)) {
-		if (currentLine.find("//") == std::string::npos) { // confirm we don't have any comments
-			std::string itemIdStr = currentLine.substr(2, 4); // skip the 0x hex specifier
-			std::string itemName = currentLine.substr(8, currentLine.size() - 9);
+		if (currentLine.size() > 8 && currentLine.find("//") == std::string::npos) { // confirm we don't have any comments
+			itemIdStr = currentLine.substr(2, 4); // skip the 0x hex specifier
+			itemName = currentLine.substr(8, currentLine.size() - 9);
 			u16 itemId = 0;
 			
 			// Convert itemIdStr to a u16
@@ -260,9 +262,19 @@ void loadItemDatabase() {
 			ss >> itemId;
 
 			// Add item to the database
-			g_ItemDatabase.insert({ itemId, itemName });
+			g_itemDatabase.insert(std::make_pair(itemId, itemName));
+
+			// TESTING
+			//MsgDisp(top, Format("Item ID: %04X\nItem Name: %s", itemId, itemName.c_str()));
 		}
 	}
 
 	itemDatabase.close();
+}
+
+// abort override
+void abort(void)
+{
+	MsgDisp(top, "Abort has been called");
+	for (;;);
 }
