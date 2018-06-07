@@ -263,9 +263,6 @@ void loadItemDatabase() {
 
 			// Add item to the database
 			g_itemDatabase.insert(std::make_pair(itemId, itemName));
-
-			// TESTING
-			//MsgDisp(top, Format("Item ID: %04X\nItem Name: %s", itemId, itemName.c_str()));
 		}
 	}
 
