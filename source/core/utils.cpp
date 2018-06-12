@@ -93,38 +93,12 @@ s64 Seconds(float amount)
     return (s64)(amount*1000000000);
 }
 
-float CenterTextX(Text msg, float StartX, float WidthX)
-{
-    float CharWidth = msg.GetWidth();
-    float CenterX = StartX+(WidthX - CharWidth) /2;
-    return CenterX;
-}
-
-float CenterTextY(Text msg, float StartY, float HeightY)
-{
-    float CharHeight = msg.GetHeight();
-    float CenterY = StartY+(HeightY-CharHeight) /2;
-    return CenterY;
-}
-
 void draw_centered_text(float StartX, float WidthX, float StartY, float HeightY,
                         float scaleX, float scaleY, u32 color, const char* text)
 {
     Text Msg(Color(color), text, scaleX, scaleY);
-    float XCoord = CenterTextX(Msg, StartX, WidthX);
-    float YCoord = CenterTextY(Msg, StartY, HeightY);
-    Msg.Draw(XCoord, YCoord);
-}
-
-void draw_centered_textf(float StartX, float WidthX, float StartY, float HeightY,
-                        float scaleX, float scaleY, u32 color, const char* string, ...)
-{
-    char       buffer[1024];
-    va_list    args;
-    va_start(args, string);
-    vsnprintf(buffer, sizeof(buffer), string, args);
-    draw_centered_text(StartX, WidthX, StartY, HeightY, scaleX, scaleY, color, buffer);
-    va_end(args);
+    Msg.CenterInBounds(StartX, StartY, WidthX, HeightY);
+    Msg.Draw();
 }
 
 void updatePointerPosition(void)

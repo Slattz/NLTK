@@ -91,12 +91,6 @@ void DrawSprite(C2D_SpriteSheet sheet, size_t imgindex, float x, float y, const 
     C2D_DrawImageAt(img, x, y, z, tint, scaleX, scaleY);
 }
 
-void DrawText(float x, float y, float scaleX, float scaleY, u32 color, const char* text)
-{
-    Text Txt(Color(color), text, scaleX, scaleY);
-    Txt.Draw(x, y);
-}
-
 void draw_base_interface(void)
 {
     static bool Init = false;
@@ -110,8 +104,8 @@ void draw_base_interface(void)
             titleX -= 20;
         }
 
-        BarText.push_back(Text(COLOR_GREY, title, 0.65, 0.65, titleX, 2.f));
-        BarText.push_back(Text(COLOR_ORANGE, "Debug: ON", 0.65, 0.65, 3.f, 2.f));
+        BarText.push_back(Text(COLOR_GREY, title, 0.6, 0.6, titleX, 2.f));
+        BarText.push_back(Text(COLOR_ORANGE, "Debug: ON", 0.6, 0.6, 3.f, 2.f));
         Init = true;
     }
 
@@ -298,6 +292,7 @@ void draw_about_menu(bool discord, bool twitter)
     static const float TextSize = 0.6f;
     static std::vector<Text> AboutLText;
     static std::vector<Text> AboutRText;
+    static Text CreditTxt(COLOR_GREY, "Credits:", TextSize, TextSize, 175, 30);
 
     if (!TextInit) {
         for (int i = 0; i < creditsCount; i++) {
@@ -308,7 +303,7 @@ void draw_about_menu(bool discord, bool twitter)
     }
 
     draw_base_interface();
-    DrawText(175, 30, 0.6, 0.6, COLOR_GREY, "Credits:");
+    CreditTxt.Draw();
 
     for (int i = 0; i < creditsCount; i++)
     {
@@ -334,6 +329,7 @@ void draw_about_menu(bool discord, bool twitter)
 
 void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmedia)
 {
+    static const Text ConfirmTxt(COLOR_GREY, "Confirm", 0.7f, 0.7f, 128, 195);
     draw_base_interface();
     C2D_SceneBegin(bottom);
 
@@ -399,7 +395,7 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
     DrawSprite(GameSelect_ss, USA_FLAG, 106, 127);
     DrawSprite(GameSelect_ss, JPN_FLAG, 170, 130);
     DrawSprite(GameSelect_ss, KOR_FLAG, 234, 130);
-    DrawText(128, 195, 0.7, 0.7, COLOR_GREY, "Confirm"); //Confirm Button Text
+    ConfirmTxt.Draw(); //Confirm Button Text
 
     if (selectedmedia == -1 || !mediaInstalled.InstalledTitles.ORIG_installed) //Grey out Orig ACNL Icon if no ORIG ACNL game is found
     C2D_DrawRectSolid(101, 66, 0, 48, 48, COLOR_GREY_FILTER);

@@ -14,12 +14,8 @@ bool    is_ACNL(u64 tid);
 bool    DebugCode(bool complete);
 void    Sleep(u64 nanoseconds);
 s64     Seconds(float amount);
-float   CenterTextX(Text msg, float StartX, float WidthX);
-float   CenterTextY(Text msg, float StartY, float HeightY);
 void    draw_centered_text(float StartX, float WidthX, float StartY, float HeightY,
                         float scaleX, float scaleY, u32 color, const char* text);
-void draw_centered_textf(float StartX, float WidthX, float StartY, float HeightY,
-                        float scaleX, float scaleY, u32 color, const char* text, ...);
 void  updatePointerPosition(void);
 void  updateCursorInfo(void);
 std::string u16tou8(std::u16string src);

@@ -194,32 +194,53 @@ void draw_save_acres(Save *saveFile)
 }
 
 void draw_player_menu_top(Save *saveFile, int selectedplayer, u32 LColor, u32 RColor) {
+    static bool Init = false;
+    static Text LButton;
+    static Text RButton;
+    static std::vector<Text> PlayerNameText;
+    static std::vector<Text> PlayerNumText;
 	u32 Ptext_colour;
+
+    if (!Init)
+    {
+        LButton = Text(COLOR_GREY, FONT_NDS_L, 1.3f, 1.3f, 5.f, 210.f);
+        RButton = Text(COLOR_GREY, FONT_NDS_R, 1.3f, 1.3f, 375.f, 210.f);
+        for (int i = 0; i < 4; i++) {
+            if (saveFile->players[i].Exists(saveFile)) {
+                PlayerNameText.push_back(Text(COLOR_GREY, u16tou8(saveFile->players[i].Name).c_str(), 0.5f, 0.5f));
+                PlayerNameText[i].CenterInBounds(18.f + (i * 100.f), 150.f, 64.f, 15.f);
+
+                PlayerNumText.push_back(Text(COLOR_GREY, Format("Player %d", i + 1).c_str(), 0.5f, 0.5f));
+                PlayerNumText[i].CenterInBounds(18.f + (i * 100.f), 25.f, 64.f, 20.f);
+            }
+        }
+        Init = true;
+    }
 
 	draw_base_interface();
 	C2D_SceneBegin(top);
 
 	for (int i = 0; i < 4; i++) {
 		if (saveFile->players[i].Exists(saveFile)) {
-			C2D_DrawImageAt(saveFile->players[i].m_TPCPic, 100 * i + 18, 45, 1.0, nullptr, 1.0, 1.0);  //WxH: 64x104
+			C2D_DrawImageAt(saveFile->players[i].m_TPCPic, (100 * i) + 18, 45, 0.f, nullptr, 1.0, 1.0);  //WxH: 64x104
 
 			if (i == selectedplayer)
 				Ptext_colour = COLOR_WHITE;
 			else
 				Ptext_colour = COLOR_GREY;
 
-			draw_centered_textf(18 + (i * 100), 64, 25, 20, 0.5, 0.5, Ptext_colour, "Player %d", i + 1); //Player Number
-			draw_centered_text(18 + (i * 100), 64, 150, 15, 0.5, 0.5, Ptext_colour, u16tou8(saveFile->players[i].Name).c_str()); //Player Name
+			PlayerNameText[i].SetColor(Ptext_colour).Draw();
+            PlayerNumText[i].SetColor(Ptext_colour).Draw();
 		}
 	}
 
-	DrawText(5, 210, 1.0, 1.0, LColor, FONT_NDS_L);
-	DrawText(375, 210, 1.0, 1.0, RColor, FONT_NDS_R);
+    LButton.SetColor(LColor).Draw();
+    RButton.SetColor(RColor).Draw();
 }
 
 void draw_player_menu(Save *saveFile, int selectedplayer, int selectedmode, u32 LColor, u32 RColor)
 {
-    int ButtonIcon[] = {PLYR_ABOUT, PLYR_INVENTORY, PLYR_APPEARANCE, PLYR_HOUSE, 
+    u32 ButtonIcon[] = {PLYR_ABOUT, PLYR_INVENTORY, PLYR_APPEARANCE, PLYR_HOUSE, 
                         PLYR_PATTERN, PLYR_MAILBOX, PLYR_MAILBOX_UNREAD};
     const char* ButtonText[] = {"Info", "Inventory", "Appearance",
                             "House", "Patterns", "Mail"};

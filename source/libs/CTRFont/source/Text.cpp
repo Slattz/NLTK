@@ -38,6 +38,12 @@ static GlyphVector  GetGlyphsFromString(const FontHandle &font, const std::strin
         else if (code == 0)
             break;
 
+        if (code == '\r')
+        {
+            ++str;
+            continue;
+        }
+
         if (code == '\n')
         {
             ++line;
@@ -326,7 +332,7 @@ void      Text::_Draw(const u32 color, float posX, float posY, const bool atBase
 {
     C2Di_Context* ctx = C2Di_GetContext();
 
-    float   scalePixY = outline ? 2.f / _font->GetCellHeight() * _scaleY: 0.f;
+    float   scalePixY = outline ? 2.f / _font->GetCellHeight() * _scaleY : 0.f;
     float   scaleY = _scaleY + scalePixY;
     float   glyphH = scaleY * _font->GetCellHeight();
     float   dispY = _scaleY * _font->GetLineFeed();
@@ -334,7 +340,7 @@ void      Text::_Draw(const u32 color, float posX, float posY, const bool atBase
     float   centerY = _font->GetCellHeight() / 2.f;
 
     if (atBaseline)
-        posY -= _scaleY * _font->GetBaselinePos() + scaleY * _font->GetBaselinePos();
+        posY -= _scaleY * _font->GetBaselinePos() - outline ? scaleY * _font->GetBaselinePos() : 0.f;
     else
         posY += _scaleY * centerY - scaleY * centerY;
 
@@ -362,40 +368,74 @@ void      Text::_Draw(const u32 color, float posX, float posY, const bool atBase
 
 float     Text::Draw(bool atBaseline) const
 {
+    if (_isCentered)
+    {
+        C2Di_Context* ctx = C2Di_GetContext();
+
+        u32 sceneW = ctx->sceneW;
+        u32 sceneH = ctx->sceneH;
+
+        u32 left = sceneH - (u32)(_bounds.top + _bounds.height);
+        u32 top = sceneW - (u32)(_bounds.left + _bounds.width);
+        u32 right = left + (u32)_bounds.height;
+        u32 bottom = top + (u32)_bounds.width;
+
+        C3D_SetScissor(GPU_SCISSOR_NORMAL, left, top, right, bottom);
+    }
+
     if (Style.outline)
         _Draw(_outlineColor.raw, _posX, _posY, atBaseline, true);
 
     _Draw(_color.raw, _posX, _posY, atBaseline, false);
+
+    if (_isCentered)
+    {
+        C2Di_FlushVtxBuf();
+        C3D_SetScissor(GPU_SCISSOR_DISABLE, 0, 0, 0, 0);
+    }
 
     return _posY + _scaleY * _font->GetLineFeed() * _lines;
 }
 
 float     Text::Draw(float posX, float posY, bool atBaseline) const
 {
+    if (_isCentered)
+    {
+        C2Di_Context* ctx = C2Di_GetContext();
+
+        u32 sceneW = ctx->sceneW;
+        u32 sceneH = ctx->sceneH;
+
+        u32 left = sceneH - (u32)(_bounds.top + _bounds.height);
+        u32 top = sceneW - (u32)(_bounds.left + _bounds.width);
+        u32 right = left + (u32)_bounds.height;
+        u32 bottom = top + (u32)_bounds.width;
+
+        C3D_SetScissor(GPU_SCISSOR_NORMAL, left, top, right, bottom);
+    }
+
     if (Style.outline)
         _Draw(_outlineColor.raw, posX, posY, atBaseline, true);
 
     _Draw(_color.raw, posX, posY, atBaseline, false);
 
+    if (_isCentered)
+    {
+        C2Di_FlushVtxBuf();
+        C3D_SetScissor(GPU_SCISSOR_DISABLE, 0, 0, 0, 0);
+    }
+
     return posY + _scaleY * _font->GetLineFeed() * _lines;
 }
 
-// TODO: parse text and cut lines
 void    Text::_CenterInBounds(void)
 {
     // Center current text according to scale
     float   textHeight = GetHeight();
     float   textWidth = GetWidth();
 
-    if (textWidth > _bounds.width)
-        _posX = _bounds.left;
-    else
-        _posX = _bounds.left + ((_bounds.width - textWidth) / 2.f);
-
-    if (textHeight > _bounds.height)
-        _posY = _bounds.top;
-    else
-        _posY = _bounds.top + ((_bounds.height - textHeight) / 2.f);
+    _posX = _bounds.left + ((_bounds.width - textWidth) / 2.f);
+    _posY = _bounds.top + ((_bounds.height - textHeight) / 2.f);
 }
 
 /*
