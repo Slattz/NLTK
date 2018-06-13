@@ -118,13 +118,13 @@ void updatePointerPosition(void)
     {
         if (hidKeysHeld() & KEY_CPAD_RIGHT)
             g_cursorpos.x += 3;
-        
+
         if (hidKeysHeld() & KEY_CPAD_LEFT)
             g_cursorpos.x -= 3;
-        
+
         if (hidKeysHeld() & KEY_CPAD_UP)
             g_cursorpos.y -= 3;
-        
+
         if (hidKeysHeld() & KEY_CPAD_DOWN)
             g_cursorpos.y += 3;
 
@@ -136,13 +136,13 @@ void updatePointerPosition(void)
     {
         if (hidKeysHeld() & KEY_CSTICK_RIGHT)
             g_cursorpos.x += 4;
-        
+
         if (hidKeysHeld() & KEY_CSTICK_LEFT)
             g_cursorpos.x -= 4;
-        
+
         if (hidKeysHeld() & KEY_CSTICK_UP)
             g_cursorpos.y -= 4;
-        
+
         if (hidKeysHeld() & KEY_CSTICK_DOWN)
             g_cursorpos.y += 4;
 
@@ -169,7 +169,7 @@ void updateCursorInfo(void)
 {
     touchPosition touch;
     hidTouchRead(&touch);
-    
+
     g_CheckX[0] = touch.px;
     g_CheckY[0] = touch.py;
     g_CheckX[1] = g_cursorpos.x;
@@ -229,7 +229,7 @@ void loadItemDatabase() {
 			itemIdStr = currentLine.substr(2, 4); // skip the 0x hex specifier
 			itemName = currentLine.substr(8, currentLine.size() - 9);
 			u16 itemId = 0;
-			
+
 			// Convert itemIdStr to a u16
 			std::stringstream ss;
 			ss << std::hex << itemIdStr;
@@ -255,7 +255,9 @@ static inline u32 Pow2(u32 x)
 	if (x <= 2)
 		return x;
 
-	return 1u << (32 - __builtin_clz(x - 1));
+	u32 s = 1u << (32 - __builtin_clz(x - 1));
+
+    return s < 64 ? 64 : s;
 }
 
 C2D_Image ImageDataToC2DImage(u32 *imageData, u32 width, u32 height, GPU_TEXCOLOR colorFormat) {
@@ -265,25 +267,26 @@ C2D_Image ImageDataToC2DImage(u32 *imageData, u32 width, u32 height, GPU_TEXCOLO
 	C3D_Tex *tex = new C3D_Tex();
 	bool initSuccess = C3D_TexInit(tex, Pow2(width), Pow2(height), colorFormat);
 
-	MsgDisp(top, Format("TexInit finished. Result: %s", initSuccess ? "true" : "false"));
-	
+	//MsgDisp(top, Format("TexInit finished. Result: %s", initSuccess ? "true" : "false"));
+
 	tex->param = GPU_TEXTURE_MAG_FILTER(GPU_LINEAR) | GPU_TEXTURE_MIN_FILTER(GPU_LINEAR)
 		| GPU_TEXTURE_WRAP_S(GPU_CLAMP_TO_BORDER) | GPU_TEXTURE_WRAP_T(GPU_CLAMP_TO_BORDER);
 	tex->border = 0xFFFFFFFF;
 
 	C3D_SyncMemoryFill((u32 *)tex->data, 0, (u32 *)((u8 *)tex->data + tex->size), BIT(0) | (tex->fmt << 8), nullptr, 0, nullptr, 0);
-	MsgDisp(top, "SyncMemoryFill successful");
+	//MsgDisp(top, "SyncMemoryFill successful");
 	C3D_TexFlush(tex);
-	MsgDisp(top, "TexFlush #1 successful");
-	MsgDisp(top, Format("imgData: %08X\ntex->data: %08X", imageData, tex->data));
+
+	//MsgDisp(top, "TexFlush #1 successful");
+	//MsgDisp(top, Format("imgData: %08X\ntex->data: %08X", imageData, tex->data));
 
 	C3D_SyncDisplayTransfer(imageData, GX_BUFFER_DIM(tex->width, tex->height), \
 		(u32 *)tex->data, GX_BUFFER_DIM(tex->width, tex->height), TEXTURE_TRANSFER_FLAGS);
 
-	MsgDisp(top, "SyncDisplayTransfer successful");
+	//MsgDisp(top, "SyncDisplayTransfer successful");
 
 	C3D_TexFlush(tex);
-	MsgDisp(top, "TexFlush #2 successful");
+	//MsgDisp(top, "TexFlush #2 successful");
 
 	Tex3DS_SubTexture *subtex = new Tex3DS_SubTexture();
 	subtex->width = width;
