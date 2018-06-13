@@ -279,6 +279,7 @@ C2D_Image ImageDataToC2DImage(u32 *imageData, u32 width, u32 height, GPU_TEXCOLO
 
 	//MsgDisp(top, "TexFlush #1 successful");
 	//MsgDisp(top, Format("imgData: %08X\ntex->data: %08X", imageData, tex->data));
+	GSPGPU_FlushDataCache(imageData, Pow2(width) * Pow2(height) * 4);
 
 	C3D_SyncDisplayTransfer(imageData, GX_BUFFER_DIM(tex->width, tex->height), \
 		(u32 *)tex->data, GX_BUFFER_DIM(tex->width, tex->height), TEXTURE_TRANSFER_FLAGS);
