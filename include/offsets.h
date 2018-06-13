@@ -164,7 +164,7 @@ typedef struct PlayerData
 
 } PlayerData;
 
-typedef struct Pattern
+/*typedef struct Pattern
 {
 	char Title[42];
 	PlayerData CreatorData;
@@ -180,7 +180,7 @@ typedef struct Pattern
 	u8   PatternData4[512]; //optional
 	u32  ZeroPad_2; //Zero Padding; Optional
 
-} ACNL_Pattern;
+} ACNL_Pattern;*/
 
 typedef struct Letter
 {
@@ -200,7 +200,7 @@ typedef struct Letter
 
 } ACNL_Letter;
 
-typedef struct Player_Patterns
+/*typedef struct Player_Patterns
 {
 	ACNL_Pattern Pattern1;
 	ACNL_Pattern Pattern2;
@@ -213,7 +213,7 @@ typedef struct Player_Patterns
 	ACNL_Pattern Pattern9;
 	ACNL_Pattern Pattern10;
 
-} Player_Patterns;
+} Player_Patterns;*/
 
 typedef struct Player_Letters
 {
@@ -245,7 +245,7 @@ typedef struct mPlayer
 	u32 Socks;        					//0xBE
 	u32 Shoes;        					//0xC2
 	u32 HeldItem;     					//0xC6
-	Player_Patterns Patterns; 			//0xCC
+//	Player_Patterns Patterns; 			//0xCC
 	u8 Unknown1[10]; 					//0x552C -> 0x5535 
 	u16 ZeroPad_1; 						//0x5536: Zero Padding; Always 0x0000
 	u8 MiiFace[92]; 					//0x5538 -> 0x5595; Based on https://3dbrew.org/wiki/Mii#Mii_format
