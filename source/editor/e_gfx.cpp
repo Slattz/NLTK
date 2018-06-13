@@ -294,18 +294,22 @@ void draw_player_menu_info(Save *saveFile, int selectedPlayer, u32 LColor, u32 R
 
 void draw_player_menu_inventory(Save *saveFile, int selectedplayer, u32 LColor, u32 RColor)
 {
-    int x = 11;
-    int y = 50;
+    int x = 42;
+    int y = 63;
 
 	draw_player_menu_top(saveFile, selectedplayer, LColor, RColor);
     C2D_SceneBegin(bottom);
 
 	for (int i = 0; i < 16; ++i)
 	{
-		if (i % 8 == 0 && i != 0)
+		if (i == 2) {
+			x += 38 * 2;
+		}
+
+		if (i > 0 && (i == 4 || i % 10 == 0))
 		{
 			y += 38;
-			x = 11;
+			x = 42;
 		}
 
 		Item item = saveFile->players[selectedplayer].Pockets[i];
