@@ -300,18 +300,20 @@ void draw_player_menu_inventory(Save *saveFile, int selectedplayer, u32 LColor, 
 	draw_player_menu_top(saveFile, selectedplayer, LColor, RColor);
     C2D_SceneBegin(bottom);
 
-    for (int i = 0; i < 16; ++i)
-    {
-        if (i % 8 == 0 && i != 0)
-        {
-            y += 38;
-            x = 11;
-        }
+	for (int i = 0; i < 16; ++i)
+	{
+		if (i % 8 == 0 && i != 0)
+		{
+			y += 38;
+			x = 11;
+		}
 
-        Item item = saveFile->players[selectedplayer].Pockets[i];
-        DrawSprite(Common_ss, ITEM_HOLE, x-16, y-16);
-        //DrawSprite(Items_ss, GetIndex(item.Icon), x, y);
-        DrawSprite(Items_ss, 0, x, y);
+		Item item = saveFile->players[selectedplayer].Pockets[i];
+		DrawSprite(Common_ss, ITEM_HOLE, x - 16, y - 16);
+
+		if (item.Icon > -1) {
+			DrawSprite(Items_ss, item.Icon, x, y);
+		}
 
         x += 38;
     }

@@ -15,8 +15,8 @@ u32   CheckIfValidItem(Item *item);
 u16   GetAxeDamageValue(Item *item);
 u16   GetAxeDamageIcon(Item *item, u16 ItemIcon);
 u8    GetItemCategory(Item *item);
-u16   GetIconID(Item *item, LoadItem_s *itemData);
-std::string GetItemIcon(Item *item);
+u16   GetIconID(Item *item);
+s32 GetItemIcon(Item *item);
 std::string GetItemName(Item *item);
 std::vector<u32> findPlayerReferences(Save *saveFile, Player *player);
 

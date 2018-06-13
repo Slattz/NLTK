@@ -10,5 +10,5 @@ public:
 	u8 Flag1;
 	u8 Flag2;
     std::string Name;
-	std::string Icon;
+	s32 Icon;
 };
