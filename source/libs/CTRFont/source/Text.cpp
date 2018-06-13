@@ -379,7 +379,7 @@ float     Text::Draw(bool atBaseline) const
         u32 top = sceneW - (u32)(_bounds.left + _bounds.width);
         u32 right = left + (u32)_bounds.height;
         u32 bottom = top + (u32)_bounds.width;
-
+        C2Di_FlushVtxBuf();
         C3D_SetScissor(GPU_SCISSOR_NORMAL, left, top, right, bottom);
     }
 
