@@ -2,6 +2,8 @@
 #include "save.h"
 #include "player.h"
 
+class Player;
+
 class Pattern {
 public:
 	Pattern(Save *saveFile, Player *player, u32 id);
@@ -15,6 +17,7 @@ public:
 	u8 *Palette = new u8[16]; // only the first 15 colors are valid
 	u8 *PatternData = nullptr;
 	u32 **ImageData = nullptr;
+	C2D_Image Images[4];
 	const u32 Offset;
 
 private:

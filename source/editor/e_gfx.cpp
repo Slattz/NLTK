@@ -329,19 +329,38 @@ void draw_player_menu_inventory(Save *saveFile, int selectedplayer, u32 LColor, 
 void draw_player_menu_appearance(u8* savebuf, int selectedplayer)
 {
     return;
-}
+}*/
 
-void draw_player_menu_house(u8* savebuf, int selectedplayer)
+/*void draw_player_menu_house(u8* savebuf, int selectedplayer)
 {
     return;
-}
+}*/
 
-void draw_player_menu_patterns(u8* savebuf, int selectedplayer)
+void draw_player_menu_patterns(Save *saveFile, int selectedPlayer, u32 LColor, u32 RColor)
 {
-    return;
+	draw_player_menu_top(saveFile, selectedPlayer, LColor, RColor);
+	C2D_SceneBegin(bottom);
+
+	float x = 20;
+	float y = 20;
+
+	for (int i = 0; i < 10; i++) {
+		C2D_DrawImageAt(saveFile->players[selectedPlayer].Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
+
+		if (i > 0 && i % 2 == 0) {
+			x = 20;
+			y += 40;
+		}
+		else {
+			x += 40;
+		}
+	}
+
+	draw_cursor();
+	C3D_FrameEnd(0);
 }
 
-void draw_player_menu_mailbox(u8* savebuf, int selectedplayer)
+/*void draw_player_menu_mailbox(u8* savebuf, int selectedplayer)
 {
     return;
 }*/

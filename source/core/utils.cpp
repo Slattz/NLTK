@@ -246,6 +246,56 @@ void loadItemDatabase() {
 // abort override
 void abort(void)
 {
-	MsgDisp(top, "Abort has been called");
-	for (;;);
+	for (;;)
+		MsgDisp(top, "Abort has been called");
+}
+
+static inline u32 Pow2(u32 x)
+{
+	if (x <= 2)
+		return x;
+
+	return 1u << (32 - __builtin_clz(x - 1));
+}
+
+C2D_Image ImageDataToC2DImage(u32 *imageData, u32 width, u32 height, GPU_TEXCOLOR colorFormat) {
+	//u32 powSize = Pow2(width) * Pow2(height) * 4;
+	//GSPGPU_FlushDataCache(imageData, powSize);
+
+	C3D_Tex *tex = new C3D_Tex();
+	bool initSuccess = C3D_TexInit(tex, Pow2(width), Pow2(height), colorFormat);
+
+	MsgDisp(top, Format("TexInit finished. Result: %s", initSuccess ? "true" : "false"));
+	
+	tex->param = GPU_TEXTURE_MAG_FILTER(GPU_LINEAR) | GPU_TEXTURE_MIN_FILTER(GPU_LINEAR)
+		| GPU_TEXTURE_WRAP_S(GPU_CLAMP_TO_BORDER) | GPU_TEXTURE_WRAP_T(GPU_CLAMP_TO_BORDER);
+	tex->border = 0xFFFFFFFF;
+
+	C3D_SyncMemoryFill((u32 *)tex->data, 0, (u32 *)((u8 *)tex->data + tex->size), BIT(0) | (tex->fmt << 8), nullptr, 0, nullptr, 0);
+	MsgDisp(top, "SyncMemoryFill successful");
+	C3D_TexFlush(tex);
+	MsgDisp(top, "TexFlush #1 successful");
+	MsgDisp(top, Format("imgData: %08X\ntex->data: %08X", imageData, tex->data));
+
+	C3D_SyncDisplayTransfer(imageData, GX_BUFFER_DIM(tex->width, tex->height), \
+		(u32 *)tex->data, GX_BUFFER_DIM(tex->width, tex->height), TEXTURE_TRANSFER_FLAGS);
+
+	MsgDisp(top, "SyncDisplayTransfer successful");
+
+	C3D_TexFlush(tex);
+	MsgDisp(top, "TexFlush #2 successful");
+
+	Tex3DS_SubTexture *subtex = new Tex3DS_SubTexture();
+	subtex->width = width;
+	subtex->height = height;
+	subtex->left = 1.f;
+	subtex->top = 1.f;
+	subtex->right = 1.f - (float)width / (float)tex->width;
+	subtex->bottom = 1.f - (float)height / (float)tex->height;
+
+	C2D_Image image;
+	image.tex = tex;
+	image.subtex = subtex;
+
+	return image;
 }

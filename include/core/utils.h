@@ -23,5 +23,6 @@ std::u16string u8tou16(const char* src);
 bool checkGameCartIsACNL();
 std::string Format(const char* fmt, ...);
 void loadItemDatabase();
+C2D_Image ImageDataToC2DImage(u32 *imageData, u32 width, u32 height, GPU_TEXCOLOR colorFormat = GPU_TEXCOLOR::GPU_RGBA8);
 
 #endif

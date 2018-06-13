@@ -31,11 +31,17 @@ Player::Player(Save *save, u32 offset, u32 index) {
 	if (Exists(save)) {
 		RefreshTPC(save);
 	}
+
+	for (u32 i = 0; i < 10; i++) {
+		Patterns[i] = new Pattern(save, this, i);
+	}
 }
 
 void Player::Write(Save *save) {
 	u32 encryptedInt = 0;
 	u32 encryptionData = 0;
+
+	// TODO: Write Patterns
 
 	save->Write(m_offset + 0x55A6, PlayerId);
 	save->Write(m_offset + 0x55A8, Name, 8);

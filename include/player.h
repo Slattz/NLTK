@@ -4,9 +4,11 @@
 #define PLAYER
 
 #include "common.h"
+#include "pattern.h"
 
 class Save;
 class Item;
+class Pattern;
 
 class Player {
 public:
@@ -23,6 +25,7 @@ public:
 	EncryptedInt32 Savings;
 	EncryptedInt32 MeowCoupons;
 	EncryptedInt32 IslandMedals;
+	Pattern *Patterns[10];
 
 	void Write(Save *save);
 	u8* RefreshTPC(Save *save);

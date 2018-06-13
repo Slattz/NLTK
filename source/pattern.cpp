@@ -20,6 +20,8 @@ const u32 PaletteColors[] = {
 };
 
 Pattern::Pattern(Save *saveFile, Player *player, u32 id) : Index(id), Offset(player->m_offset + 0x2C + id * 0x870) {
+	PatternData = new u8[0x800];
+
 	Name = saveFile->ReadString(Offset, 20);
 	CreatorName = saveFile->ReadString(Offset + 0x2C, 8);
 	saveFile->ReadArray(Palette, Offset + 0x58, 16);
@@ -48,7 +50,7 @@ Pattern::~Pattern() {
 }
 
 void Pattern::Write(Save *saveFile) {
-	Compress(ImageData);
+	//Compress(ImageData);
 	saveFile->Write(Offset, Name, 20);
 	saveFile->Write(Offset + 0x2C, CreatorName, 8);
 	saveFile->Write(Offset + 0x58, Palette, 16);
@@ -61,26 +63,35 @@ u32 ** Pattern::Decompress(u8 *Data) {
 		if (ImageData != nullptr) {
 			for (u32 i = 0; i < 4; i++) {
 				if (ImageData[i] != nullptr) {
-					delete[] ImageData[i];
+					linearFree(ImageData[i]);
 				}
 			}
 			delete[] ImageData;
+			MsgDisp(top, "Pattern data was deleted!");
 		}
 
-		u32 ** Output = new u32 *[4];
+		ImageData = new u32 *[4];
+
 		for (u32 i = 0; i < 4; i++) {
+			u32 *Output = (u32 *)linearAlloc(sizeof(u32) * 0x400);
+			MsgDisp(top, Format("Creating pattern: %d at offset: %08X", i, Output));
 			u32 idx = i * 0x200;
 			u32 outputIdx = 0;
-			Output[i] = new u32[0x400];
 			for (u32 x = 0; x < 0x200; x++, idx++) {
 
-				Output[i][outputIdx++] = Palette[((Data[idx] >> 4) & 0x0F)]; // Left Pixel
-				Output[i][outputIdx++] = Palette[(Data[idx] & 0x0F)]; // Right Pixel
+				Output[outputIdx++] = PaletteColors[Palette[((Data[idx] >> 4) & 0x0F)]]; // Left Pixel
+				Output[outputIdx++] = PaletteColors[Palette[(Data[idx] & 0x0F)]]; // Right Pixel
+				if (outputIdx >= 0x400) {
+					MsgDisp(top, Format("outputIdx >= 0x400! idx: %04X", idx));
+				}
 			}
+
+			MsgDisp(top, Format("Creating Pattern Image for pattern: %d", i));
+			Images[i] = ImageDataToC2DImage(Output, 32, 32, GPU_RGBA8);
+			ImageData[i] = Output;
 		}
 
-		ImageData = Output;
-		return Output;
+		return ImageData;
 	}
 
 	return nullptr;
