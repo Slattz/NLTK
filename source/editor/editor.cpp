@@ -33,12 +33,7 @@ GameSelect:
     Handle saveHandle;
     FS_Archive saveArch;
 
-    if (envIsHomebrew()) {
-        srvGetServiceHandleDirect(&saveHandle, "fs:USER");
-        FSUSER_Initialize(saveHandle);
-        fsUseSession(saveHandle);
-    }
-    else {
+	{
 		if (config.autoloadprefGame && !(hidKeysDown() & KEY_DOWN) && is_ACNL(config.prefGame)) {
 			g_tid = config.prefGame; // TODO: Support media type in config
 		}
@@ -49,7 +44,7 @@ GameSelect:
         if (g_tid == 0) {
 			CleanupEditor();
             return 0;
-        }   
+        }
     }
 
 	bool successfullyOpenedArchive = openSaveArchive(&saveArch, g_tid, currentMediaType);

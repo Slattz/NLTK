@@ -58,18 +58,12 @@ u64 Save::ReadU64(u32 offset) {
 
 void Save::ReadArray(u8 *dst, u32 offset, u32 count) {
 	u8 *src = m_saveBuffer + offset;
-	while (count > 0) {
-		*dst++ = *src++;
-		count--;
-	}
+	memcpy(dst, src, count);
 }
 
 void Save::ReadArrayU16(u16 *dst, u32 offset, u32 count) {
 	u16 *src = (u16 *)(m_saveBuffer + offset);
-	while (count > 0) {
-		*dst++ = *src++;
-		count--;
-	}
+	memcpy(dst, src, count << 1);
 }
 
 std::u16string Save::ReadString(u32 offset, u32 maxSize) {
@@ -108,7 +102,7 @@ u8 Save::DeriveRegionLockID(u8 RegionID, u8 LanguageID) {
                 case 5:
                     return 5;
                 default:
-                    return 4;             
+                    return 4;
             }
         }
 

@@ -68,7 +68,7 @@ void InitAcreGFX(Save *saveFile, const u8 LoopMax, const u8 GridXMax,
 	float scale = 1; // The scale of the acre editor image buttons
 
 	u8  acre = 0;           //acre ID
-	u32 GridX = 0;          //X position of acre     
+	u32 GridX = 0;          //X position of acre
 	u32 GridY = 0;          //Y position of acre
 	//u32 GridXOffset = (320 - (40 * scale) * GridXMax) / 2; // Offset to center the controls horizontally
 
@@ -121,7 +121,7 @@ void draw_editor_main_menu(void)
     static const float TextSize = 0.6f;
     static std::vector<Text> ButtonText;
     static std::vector<Text> ColumnText;
-    static int ButtonIcon[] = {TOWN_ICON, ACRES_ICON, PROFILE_ICON, VILLAGERS_ICON, 
+    static int ButtonIcon[] = {TOWN_ICON, ACRES_ICON, PROFILE_ICON, VILLAGERS_ICON,
                           PWP_ICON, ISLAND_ICON, MAIN_STREET_ICON, ABOUT_ICON};
 
     if (!TextInit) {
@@ -133,7 +133,7 @@ void draw_editor_main_menu(void)
         ButtonText.push_back(Text(COLOR_GREY, "Island", TextSize, TextSize, 110.f, 217.f));
         ButtonText.push_back(Text(COLOR_GREY, "Main Street", 0.55f, 0.55f, 168.f, 217.f));
         ButtonText.push_back(Text(COLOR_GREY, "About", TextSize, TextSize, 256.f, 217.f));
-        
+
         ColumnText.push_back(Text(COLOR_GREY, "Game\nSelect", TextSize, TextSize, 44.f, 12.f));
         ColumnText.push_back(Text(COLOR_GREY, "  Town\nManager", TextSize, TextSize, 40.f, 60.f));
         ColumnText.push_back(Text(COLOR_GREY, "Save", TextSize, TextSize, 248.f, 18.f));
@@ -162,7 +162,7 @@ void draw_editor_main_menu(void)
         ButtonText[i].Draw(); //Row 1 Text
         ButtonText[i+4].Draw(); //Row 2 Text
     }
-    
+
     C2D_SceneBegin(top);
     draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Editor Main Menu!");
     draw_cursor();
@@ -218,11 +218,10 @@ void draw_player_menu_top(Save *saveFile, int selectedplayer, u32 LColor, u32 RC
     }
 
 	draw_base_interface();
-	C2D_SceneBegin(top);
 
 	for (int i = 0; i < 4; i++) {
 		if (saveFile->players[i].Exists(saveFile)) {
-			C2D_DrawImageAt(saveFile->players[i].m_TPCPic, (100 * i) + 18, 45, 0.f, nullptr, 1.0, 1.0);  //WxH: 64x104
+			C2D_DrawImageAt(saveFile->players[i].m_TPCPic, (float)(100 * i) + 18.f, 45.f, 0.5f, nullptr, 1.f, 1.f);  //WxH: 64x104
 
 			if (i == selectedplayer)
 				Ptext_colour = COLOR_WHITE;
@@ -231,16 +230,16 @@ void draw_player_menu_top(Save *saveFile, int selectedplayer, u32 LColor, u32 RC
 
 			PlayerNameText[i].SetColor(Ptext_colour).Draw();
             PlayerNumText[i].SetColor(Ptext_colour).Draw();
+
 		}
 	}
-
     LButton.SetColor(LColor).Draw();
     RButton.SetColor(RColor).Draw();
 }
 
 void draw_player_menu(Save *saveFile, int selectedplayer, int selectedmode, u32 LColor, u32 RColor)
 {
-    u32 ButtonIcon[] = {PLYR_ABOUT, PLYR_INVENTORY, PLYR_APPEARANCE, PLYR_HOUSE, 
+    u32 ButtonIcon[] = {PLYR_ABOUT, PLYR_INVENTORY, PLYR_APPEARANCE, PLYR_HOUSE,
                         PLYR_PATTERN, PLYR_MAILBOX, PLYR_MAILBOX_UNREAD};
     const char* ButtonText[] = {"Info", "Inventory", "Appearance",
                             "House", "Patterns", "Mail"};
@@ -272,7 +271,7 @@ void draw_player_menu(Save *saveFile, int selectedplayer, int selectedmode, u32 
         else if (i == 2)
             draw_centered_text(1, 53, 35+(39*i), 8, 0.35, 0.38, COLOR_GREY, ButtonText[i]); //Inventory Text
 
-        else 
+        else
             draw_centered_text(1, 53, 35+(39*i), 8, 0.4, 0.4, COLOR_GREY, ButtonText[i]); //Text
     }
 

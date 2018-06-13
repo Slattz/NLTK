@@ -2,7 +2,11 @@
 
 Player::Player() { }
 
-Player::~Player() { }
+Player::~Player()
+{
+	if (m_TPCData != nullptr)
+		delete[] m_TPCData;
+}
 
 Player::Player(Save *save, u32 offset, u32 index) {
 	m_offset = offset;
@@ -12,7 +16,7 @@ Player::Player(Save *save, u32 offset, u32 index) {
 	Name = save->ReadString(offset + 0x55A8, 8);
 
 	Pockets = new Item[16];
-	
+
 	for (int i = 0; i < 16; i++) {
 		u32 itemOffset = offset + 0x6BD0 + i * 4;
 		Pockets[i] = Item(save->ReadU16(itemOffset), save->ReadU8(itemOffset + 2), save->ReadU8(itemOffset + 3));
@@ -58,14 +62,19 @@ void Player::Write(Save *save) {
 }
 
 u8* Player::RefreshTPC(Save *save) {
-	m_TPCData = new u8[0x1400];
 
 	if (save->ReadU16(m_offset + 0x5738) == 0xD8FF) { // 0xFFD8 = JPEG File Marker
+		if (m_TPCData == nullptr)
+			m_TPCData = new u8[0x1400];
 		save->ReadArray(m_TPCData, m_offset + 0x5738, 0x1400);
 		m_TPCPic = LoadPlayerPicture(m_TPCData);
 	}
 	else { //No TPC
-		m_TPCData = nullptr;
+		if (m_TPCData != nullptr)
+		{
+			delete[] m_TPCData;
+			m_TPCData = nullptr;
+		}
 		m_TPCPic = C2D_SpriteSheetGetImage(Players_ss, NO_TPC_PIC);
 	}
 

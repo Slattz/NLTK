@@ -8,6 +8,29 @@ u64 g_tid = 0;
 Save saveFile;
 FS_MediaType currentMediaType;
 
+// Override ctrulib appInit to check for Rosalina hbl
+void __appInit(void)
+{
+    // Initialize services
+    srvInit();
+    aptInit();
+    hidInit();
+
+    fsInit();
+
+    // Check if we're using Rosalina or not
+    s64 out;
+    if (envIsHomebrew() && R_FAILED(svcGetProcessInfo(&out, CUR_PROCESS_HANDLE, 0x10001)))
+    {
+        Handle fsuHandle;
+        srvGetServiceHandleDirect(&fsuHandle, "fs:USER");
+        FSUSER_Initialize(fsuHandle);
+        fsUseSession(fsuHandle);
+    }
+
+    sdmcInit();
+}
+
 void InitApp(void) {
     romfsInit();
 	mkdir(WORKDIR, 777);
