@@ -44,14 +44,14 @@ Pattern::~Pattern() {
 }
 
 void Pattern::Write(Save *saveFile) {
-    //Compress(ImageData);
+    Compress();
     saveFile->Write(Offset, Name, 20);
     saveFile->Write(Offset + 0x2C, CreatorName, 8);
     saveFile->Write(Offset + 0x58, Palette.data(), 16);
     saveFile->Write(Offset + 0x6C, PatternData.data(), 0x800);
 }
 
-void    Pattern::Decompress(void) {
+void Pattern::Decompress(void) {
     for (u32 *data : ImageData)
         linearFree(data);
     ImageData.clear();
@@ -75,33 +75,22 @@ void    Pattern::Decompress(void) {
     }
 }
 
-u8 * Pattern::Compress(u32 ** Data) {
-    /*if (Data != nullptr) {
-        if (PatternData != nullptr) {
-            delete[] PatternData;
-        }
-
-        u8 *Output = new u8[0x800];
-        for (int i = 0; i < 4; i++) {
-            u32 readOffset = 0;
-            u32 idx = i * 200;
-            for (int x = 0; x < 0x200; x++) {
-                u8 CompressedPixel = 0;
-                for (int y = 0; y < 2; y++) {
-                    u32 Pixel = Data[i][readOffset++];
-                    for (int p = 0; p < 16; p++) {
-                        if (PaletteColors[Palette[p]] == Pixel) {
-                            CompressedPixel |= (p << (y * 4));
-                        }
+void Pattern::Compress(void) {
+    for (int i = 0; i < 4; i++) {
+        u32 readOffset = 0;
+        u32 idx = i * 200;
+        for (int x = 0; x < 0x200; x++) {
+            u8 CompressedPixel = 0;
+            for (int y = 0; y < 2; y++) {
+                u32 Pixel = ImageData[i][readOffset++];
+                for (int p = 0; p < 16; p++) {
+                    if (PaletteColors[Palette[p]] == Pixel) {
+                        CompressedPixel |= (p << (y * 4));
                     }
                 }
-
-                Output[idx + x] = CompressedPixel;
             }
-        }
 
-        PatternData = Output;
-        return Output;
+            PatternData[idx + x] = CompressedPixel;
+        }
     }
-    return nullptr;*/
 }

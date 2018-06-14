@@ -345,15 +345,16 @@ void draw_player_menu_patterns(Save *saveFile, int selectedPlayer, u32 LColor, u
 	float y = 20;
 
 	for (int i = 0; i < 10; i++) {
-		C2D_DrawImageAt(saveFile->players[selectedPlayer].Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
 
 		if (i > 0 && i % 2 == 0) {
 			x = 20;
 			y += 40;
 		}
-		else {
+		else if (i > 0) {
 			x += 40;
 		}
+
+		C2D_DrawImageAt(saveFile->players[selectedPlayer].Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
 	}
 
 	draw_cursor();

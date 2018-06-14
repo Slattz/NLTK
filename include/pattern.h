@@ -25,6 +25,6 @@ public:
     const u32 Offset;
 
 private:
-    void    Decompress(void);
-    u8 * Compress(u32 **Data);
+    void Decompress(void);
+    void Compress(void);
 };
