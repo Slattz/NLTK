@@ -8,7 +8,7 @@
 class Player;
 
 // TODO: Research the 1-7 design types
-enum DesignType : u8 {
+enum class DesignType : u8 {
 	Dress = 0,
 	Unknown1 = 1,
 	Unknown2 = 2,
@@ -23,10 +23,11 @@ enum DesignType : u8 {
 
 class Pattern {
 public:
-    Pattern(Save *saveFile, Player *player, u32 id);
-    ~Pattern();
+	Pattern(Save *saveFile, Player *player, u32 id);
+	~Pattern();
 
-    void Write(Save *saveFile);
+	void TakeOwnership(Player *player);
+	void Write(Save *saveFile);
     
 	std::u16string              Name;
 	u16							CreatorId;

@@ -48,6 +48,15 @@ Pattern::~Pattern() {
 
 }
 
+void Pattern::TakeOwnership(Player *player) {
+	CreatorId = player->PlayerId;
+	CreatorName = player->Name;
+	CreatorGender = player->Gender;
+
+	OriginatingTownId = player->TownId;
+	OriginatingTownName = player->TownName;
+}
+
 void Pattern::Write(Save *saveFile) {
     Compress();
     saveFile->Write(Offset, Name, 20);

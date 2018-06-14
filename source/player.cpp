@@ -14,6 +14,9 @@ Player::Player(Save *save, u32 offset, u32 index) {
 
 	PlayerId = save->ReadU16(offset + 0x55A6);
 	Name = save->ReadString(offset + 0x55A8, 8);
+	Gender = save->ReadU16(offset + 0x55BA);
+	TownId = save->ReadU16(offset + 0x55BC);
+	TownName = save->ReadString(offset + 0x55BE, 8);
 
 	Pockets = new Item[16];
 
@@ -45,6 +48,9 @@ void Player::Write(Save *save) {
 
 	save->Write(m_offset + 0x55A6, PlayerId);
 	save->Write(m_offset + 0x55A8, Name, 8);
+	save->Write(m_offset + 0x55BA, Gender);
+	save->Write(m_offset + 0x55BC, TownId);
+	save->Write(m_offset + 0x55BE, TownName, 8);
 
 	Savings.encrypt(encryptedInt, encryptionData);
 	save->Write(m_offset + 0x6B8C, encryptedInt);

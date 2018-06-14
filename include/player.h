@@ -16,16 +16,18 @@ public:
 	~Player(void);
 	Player(Save *save, u32 offset, u32 index);
 
-	u8 Gender;
+	Pattern *Patterns[10];
 	u16 PlayerId;
 	std::u16string Name;
+	u16 Gender; // might not be a u16, but the following byte is always? 0.
+	u16 TownId;
+	std::u16string TownName;
 	Item *Pockets = nullptr;
 	EncryptedInt32 Wallet;
 	EncryptedInt32 Debt;
 	EncryptedInt32 Savings;
 	EncryptedInt32 MeowCoupons;
 	EncryptedInt32 IslandMedals;
-	Pattern *Patterns[10];
 
 	void Write(Save *save);
 	u8* RefreshTPC(Save *save);
