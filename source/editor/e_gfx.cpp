@@ -2,6 +2,7 @@
 #include "core/label.h"
 #include "core/imagebutton.h"
 #include "editor/e_gfx.h"
+#include "pattern.h"
 
 C2D_ImageTint* AcreTint = new C2D_ImageTint[sizeof(C2D_ImageTint)];
 
@@ -26,93 +27,93 @@ void InitEditorGFX(void)
 {
     C2D_PlainImageTint(AcreTint, COLOR_DARK_GREY, 0.5f);
 
-	// Create Controls
-	playerNameLabel = Label(10, 10, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Name:");
-	playerNameBox = TextBox(68, 10, 100, 16, "Name", "Enter a name for the player.", 8, SWKBD_TYPE_NORMAL, COLOR_WHITE, COLOR_BLACK);
-	playerWalletLabel = Label(10, 30, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Wallet:");
-	playerWalletBox = TextBox(68, 30, 100, 16, "0", "Enter wallet amount.", 5, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
-	playerSavingsLabel = Label(10, 50, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Savings:");
-	playerSavingsBox = TextBox(68, 50, 100, 16, "0", "Enter savings amount.", 9, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
-	playerMedalsLabel = Label(10, 70, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Medals:");
-	playerMedalsBox = TextBox(68, 70, 100, 16, "0", "Enter island medals amount.", 5, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
-	playerCouponsLabel = Label(10, 90, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Coupons:");
-	playerCouponsBox = TextBox(68, 90, 100, 16, "0", "Enter meow coupons amount.", 5, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
+    // Create Controls
+    playerNameLabel = Label(10, 10, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Name:");
+    playerNameBox = TextBox(68, 10, 100, 16, "Name", "Enter a name for the player.", 8, SWKBD_TYPE_NORMAL, COLOR_WHITE, COLOR_BLACK);
+    playerWalletLabel = Label(10, 30, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Wallet:");
+    playerWalletBox = TextBox(68, 30, 100, 16, "0", "Enter wallet amount.", 5, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
+    playerSavingsLabel = Label(10, 50, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Savings:");
+    playerSavingsBox = TextBox(68, 50, 100, 16, "0", "Enter savings amount.", 9, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
+    playerMedalsLabel = Label(10, 70, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Medals:");
+    playerMedalsBox = TextBox(68, 70, 100, 16, "0", "Enter island medals amount.", 5, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
+    playerCouponsLabel = Label(10, 90, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Coupons:");
+    playerCouponsBox = TextBox(68, 90, 100, 16, "0", "Enter meow coupons amount.", 5, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
 
-	editorPlayerInfoControls.push_back(&playerNameBox);
-	editorPlayerInfoControls.push_back(&playerWalletBox);
-	editorPlayerInfoControls.push_back(&playerSavingsBox);
-	editorPlayerInfoControls.push_back(&playerMedalsBox);
-	editorPlayerInfoControls.push_back(&playerCouponsBox);
+    editorPlayerInfoControls.push_back(&playerNameBox);
+    editorPlayerInfoControls.push_back(&playerWalletBox);
+    editorPlayerInfoControls.push_back(&playerSavingsBox);
+    editorPlayerInfoControls.push_back(&playerMedalsBox);
+    editorPlayerInfoControls.push_back(&playerCouponsBox);
 
-	editorPlayerInfoControls.push_back(&playerNameLabel);
-	editorPlayerInfoControls.push_back(&playerWalletLabel);
-	editorPlayerInfoControls.push_back(&playerSavingsLabel);
-	editorPlayerInfoControls.push_back(&playerMedalsLabel);
-	editorPlayerInfoControls.push_back(&playerCouponsLabel);
+    editorPlayerInfoControls.push_back(&playerNameLabel);
+    editorPlayerInfoControls.push_back(&playerWalletLabel);
+    editorPlayerInfoControls.push_back(&playerSavingsLabel);
+    editorPlayerInfoControls.push_back(&playerMedalsLabel);
+    editorPlayerInfoControls.push_back(&playerCouponsLabel);
 
-	// Create Acre Editor Controls
+    // Create Acre Editor Controls
 }
 
 void InitAcreGFX(Save *saveFile, const u8 LoopMax, const u8 GridXMax,
-	const u8 GridXStartPos, const u8 GridYStartPos, const u8 ByteSkip, u32 Offset) {
-	/*
-	LoopMax: How many times to loop
-	GridXMax: How many acres per row
-	GridXStartPos: Start X Position for drawing
-	GridYStartPos: Start Y Position for drawing
-	ByteSkip: Num of bytes to skip when moving to new row
-	Offset: offset of acre IDs in save
-	*/
+    const u8 GridXStartPos, const u8 GridYStartPos, const u8 ByteSkip, u32 Offset) {
+    /*
+    LoopMax: How many times to loop
+    GridXMax: How many acres per row
+    GridXStartPos: Start X Position for drawing
+    GridYStartPos: Start Y Position for drawing
+    ByteSkip: Num of bytes to skip when moving to new row
+    Offset: offset of acre IDs in save
+    */
 
-	acreEditorControls.clear();
-	float scale = 1; // The scale of the acre editor image buttons
+    acreEditorControls.clear();
+    float scale = 1; // The scale of the acre editor image buttons
 
-	u8  acre = 0;           //acre ID
-	u32 GridX = 0;          //X position of acre
-	u32 GridY = 0;          //Y position of acre
-	//u32 GridXOffset = (320 - (40 * scale) * GridXMax) / 2; // Offset to center the controls horizontally
+    u8  acre = 0;           //acre ID
+    u32 GridX = 0;          //X position of acre
+    u32 GridY = 0;          //Y position of acre
+    //u32 GridXOffset = (320 - (40 * scale) * GridXMax) / 2; // Offset to center the controls horizontally
 
-	for (u32 i = 0; i < LoopMax; i++)
-	{
-		GridX = i % GridXMax; //Get remainder for the row
-		if (GridX == 0 && i != 0)
-		{
-			GridY += 40 * scale; // 40 == height of acre img
-			Offset += ByteSkip;
-		}
+    for (u32 i = 0; i < LoopMax; i++)
+    {
+        GridX = i % GridXMax; //Get remainder for the row
+        if (GridX == 0 && i != 0)
+        {
+            GridY += 40 * scale; // 40 == height of acre img
+            Offset += ByteSkip;
+        }
 
-		acre = saveFile->ReadU8(Offset + i * 2);
-		ImageButton *acreButton = new ImageButton(GridXStartPos + (40 * scale * GridX), GridYStartPos + GridY, 40 * scale, 40 * scale,
-			COLOR_TRANSPARENT, KEY_A | KEY_TOUCH, ACRE_PNG + acre, Acres_ss);
-		acreButton->SetScale(scale);
-		acreButton->SetImageTint(COLOR_YELLOW);
+        acre = saveFile->ReadU8(Offset + i * 2);
+        ImageButton *acreButton = new ImageButton(GridXStartPos + (40 * scale * GridX), GridYStartPos + GridY, 40 * scale, 40 * scale,
+            COLOR_TRANSPARENT, KEY_A | KEY_TOUCH, ACRE_PNG + acre, Acres_ss);
+        acreButton->SetScale(scale);
+        acreButton->SetImageTint(COLOR_YELLOW);
 
-		acreButton->SetCallback(onAcreClick);
-		acreEditorControls.push_back(acreButton);
-	}
+        acreButton->SetCallback(onAcreClick);
+        acreEditorControls.push_back(acreButton);
+    }
 }
 
 void draw_acre_selection_panel(void) {
-	int numAcresShown = 5; // 5 acres shown at a time max
-	u32 xLocation = 130;
-	u32 yLocation = 120;
-	s32 startAcreId = acreEditorSelectedAcre - 2;
+    int numAcresShown = 5; // 5 acres shown at a time max
+    u32 xLocation = 130;
+    u32 yLocation = 120;
+    s32 startAcreId = acreEditorSelectedAcre - 2;
 
-	for (int i = 0; i < numAcresShown; i++) {
-		s32 acreId = startAcreId + i;
-		if (acreId < 0 || acreId > ACRE_ID_MAX) {
-			continue;
-		}
+    for (int i = 0; i < numAcresShown; i++) {
+        s32 acreId = startAcreId + i;
+        if (acreId < 0 || acreId > ACRE_ID_MAX) {
+            continue;
+        }
 
-		if (i == 2) {
-			DrawSprite(Acres_ss, ACRE_PNG + acreId, xLocation, yLocation - 20);
-			xLocation += 45;
-		}
-		else {
-			DrawSprite(Acres_ss, ACRE_PNG + acreId, xLocation, yLocation - 10, AcreTint, 0.5, 0.5);
-			xLocation += 25;
-		}
-	}
+        if (i == 2) {
+            DrawSprite(Acres_ss, ACRE_PNG + acreId, xLocation, yLocation - 20);
+            xLocation += 45;
+        }
+        else {
+            DrawSprite(Acres_ss, ACRE_PNG + acreId, xLocation, yLocation - 10, AcreTint, 0.5, 0.5);
+            xLocation += 25;
+        }
+    }
 }
 
 void draw_editor_main_menu(void)
@@ -174,22 +175,22 @@ void draw_save_acres(Save *saveFile)
 
     draw_base_interface();
 
-	// Draw selected acre (if one is selected)
-	/*if (currentAcreId > -1 && currentAcreId <= ACRE_ID_MAX) {
-		DrawSprite(Acres_ss, ACRE_PNG + currentAcreId, (400 / 2) - (40 / 2), (240 / 2) - (40 / 2));
-	}*/
+    // Draw selected acre (if one is selected)
+    /*if (currentAcreId > -1 && currentAcreId <= ACRE_ID_MAX) {
+        DrawSprite(Acres_ss, ACRE_PNG + currentAcreId, (400 / 2) - (40 / 2), (240 / 2) - (40 / 2));
+    }*/
 
-	if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre <= ACRE_ID_MAX) {
-		draw_acre_selection_panel();
-	}
+    if (acreEditorSelectedAcre > -1 && acreEditorSelectedAcre <= ACRE_ID_MAX) {
+        draw_acre_selection_panel();
+    }
 
     C2D_SceneBegin(bottom);
 
-	for (Control *c : acreEditorControls) {
-		c->Draw();
-	}
+    for (Control *c : acreEditorControls) {
+        c->Draw();
+    }
 
-	draw_cursor();
+    draw_cursor();
     C3D_FrameEnd(0);
 }
 
@@ -199,7 +200,7 @@ void draw_player_menu_top(Save *saveFile, int selectedplayer, u32 LColor, u32 RC
     static Text RButton;
     static std::vector<Text> PlayerNameText;
     static std::vector<Text> PlayerNumText;
-	u32 Ptext_colour;
+    u32 Ptext_colour;
 
     if (!Init)
     {
@@ -217,22 +218,22 @@ void draw_player_menu_top(Save *saveFile, int selectedplayer, u32 LColor, u32 RC
         Init = true;
     }
 
-	draw_base_interface();
+    draw_base_interface();
 
-	for (int i = 0; i < 4; i++) {
-		if (saveFile->players[i].Exists(saveFile)) {
-			C2D_DrawImageAt(saveFile->players[i].m_TPCPic, (float)(100 * i) + 18.f, 45.f, 0.5f, nullptr, 1.f, 1.f);  //WxH: 64x104
+    for (int i = 0; i < 4; i++) {
+        if (saveFile->players[i].Exists(saveFile)) {
+            C2D_DrawImageAt(saveFile->players[i].m_TPCPic, (float)(100 * i) + 18.f, 45.f, 0.5f, nullptr, 1.f, 1.f);  //WxH: 64x104
 
-			if (i == selectedplayer)
-				Ptext_colour = COLOR_WHITE;
-			else
-				Ptext_colour = COLOR_GREY;
+            if (i == selectedplayer)
+                Ptext_colour = COLOR_WHITE;
+            else
+                Ptext_colour = COLOR_GREY;
 
-			PlayerNameText[i].SetColor(Ptext_colour).Draw();
+            PlayerNameText[i].SetColor(Ptext_colour).Draw();
             PlayerNumText[i].SetColor(Ptext_colour).Draw();
 
-		}
-	}
+        }
+    }
     LButton.SetColor(LColor).Draw();
     RButton.SetColor(RColor).Draw();
 }
@@ -244,10 +245,10 @@ void draw_player_menu(Save *saveFile, int selectedplayer, int selectedmode, u32 
     const char* ButtonText[] = {"Info", "Inventory", "Appearance",
                             "House", "Patterns", "Mail"};
 
-	draw_player_menu_top(saveFile, selectedplayer, LColor, RColor);
+    draw_player_menu_top(saveFile, selectedplayer, LColor, RColor);
     C2D_SceneBegin(bottom);
 
-	/* Sidebar Stuff */
+    /* Sidebar Stuff */
     C2D_DrawRectSolid(0, 0, 0, 58, 240, C2D_Color32(39,163,49,255)); //Sidebar Background
     if (selectedmode != -1 && selectedmode < 6)
         C2D_DrawRectSolid(0, 4+(40*selectedmode), 0, 55, 40, C2D_Color32(44,183,53,255)); //
@@ -280,16 +281,16 @@ void draw_player_menu(Save *saveFile, int selectedplayer, int selectedmode, u32 
 }
 
 void draw_player_menu_info(Save *saveFile, int selectedPlayer, u32 LColor, u32 RColor) {
-	draw_player_menu_top(saveFile, selectedPlayer, LColor, RColor);
-	C2D_SceneBegin(bottom);
+    draw_player_menu_top(saveFile, selectedPlayer, LColor, RColor);
+    C2D_SceneBegin(bottom);
 
-	// Draw Controls
-	for (Control *c : editorPlayerInfoControls) {
-		c->Draw();
-	}
+    // Draw Controls
+    for (Control *c : editorPlayerInfoControls) {
+        c->Draw();
+    }
 
-	draw_cursor();
-	C3D_FrameEnd(0);
+    draw_cursor();
+    C3D_FrameEnd(0);
 }
 
 void draw_player_menu_inventory(Save *saveFile, int selectedplayer, u32 LColor, u32 RColor)
@@ -297,27 +298,27 @@ void draw_player_menu_inventory(Save *saveFile, int selectedplayer, u32 LColor, 
     int x = 42;
     int y = 63;
 
-	draw_player_menu_top(saveFile, selectedplayer, LColor, RColor);
+    draw_player_menu_top(saveFile, selectedplayer, LColor, RColor);
     C2D_SceneBegin(bottom);
 
-	for (int i = 0; i < 16; ++i)
-	{
-		if (i == 2) {
-			x += 38 * 2;
-		}
+    for (int i = 0; i < 16; ++i)
+    {
+        if (i == 2) {
+            x += 38 * 2;
+        }
 
-		if (i > 0 && (i == 4 || i % 10 == 0))
-		{
-			y += 38;
-			x = 42;
-		}
+        if (i > 0 && (i == 4 || i % 10 == 0))
+        {
+            y += 38;
+            x = 42;
+        }
 
-		Item item = saveFile->players[selectedplayer].Pockets[i];
-		DrawSprite(Common_ss, ITEM_HOLE, x - 16, y - 16);
+        Item item = saveFile->players[selectedplayer].Pockets[i];
+        DrawSprite(Common_ss, ITEM_HOLE, x - 16, y - 16);
 
-		if (item.Icon > -1) {
-			DrawSprite(Items_ss, item.Icon, x, y);
-		}
+        if (item.Icon > -1) {
+            DrawSprite(Items_ss, item.Icon, x, y);
+        }
 
         x += 38;
     }
@@ -329,19 +330,39 @@ void draw_player_menu_inventory(Save *saveFile, int selectedplayer, u32 LColor, 
 void draw_player_menu_appearance(u8* savebuf, int selectedplayer)
 {
     return;
-}
+}*/
 
-void draw_player_menu_house(u8* savebuf, int selectedplayer)
+/*void draw_player_menu_house(u8* savebuf, int selectedplayer)
 {
     return;
-}
+}*/
 
-void draw_player_menu_patterns(u8* savebuf, int selectedplayer)
+void draw_player_menu_patterns(Save *saveFile, int selectedPlayer, u32 LColor, u32 RColor)
 {
-    return;
+    draw_player_menu_top(saveFile, selectedPlayer, LColor, RColor);
+    C2D_SceneBegin(bottom);
+
+    float x = 20;
+    float y = 20;
+
+    for (int i = 0; i < 10; i++) {
+
+        if (i > 0 && i % 2 == 0) {
+            x = 20;
+            y += 40;
+        }
+        else if (i > 0) {
+            x += 40;
+        }
+
+        C2D_DrawImageAt(saveFile->players[selectedPlayer].Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
+    }
+
+    draw_cursor();
+    C3D_FrameEnd(0);
 }
 
-void draw_player_menu_mailbox(u8* savebuf, int selectedplayer)
+/*void draw_player_menu_mailbox(u8* savebuf, int selectedplayer)
 {
     return;
 }*/

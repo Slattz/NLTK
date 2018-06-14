@@ -167,9 +167,10 @@ void spawn_player_menu(Save *saveFile)
 				{
 					selectedmode = 3;
 				}
-				else if (g_CheckX[i] >= 0 && g_CheckX[i] <= 58 && g_CheckY[i] >= 160 && g_CheckY[i] < 200) //Flags
+				else if (g_CheckX[i] >= 0 && g_CheckX[i] <= 58 && g_CheckY[i] >= 160 && g_CheckY[i] < 200) //Patterns
 				{
 					selectedmode = 4;
+					spawn_player_menu_patterns(saveFile);
 				}
 				else if (g_CheckX[i] >= 0 && g_CheckX[i] <= 58 && g_CheckY[i] >= 200 && g_CheckY[i] <= 240) //Mail
 				{
@@ -371,6 +372,63 @@ void spawn_player_menu_inventory(Save *saveFile)
             load_player_invitems(saveFile, g_selectedplayer);
         }
     }
+
+	drawingSubmenu = false;
+}
+
+void spawn_player_menu_patterns(Save *saveFile) {
+	if (drawingSubmenu)
+		return;
+
+	drawingSubmenu = true;
+
+	static u32 LColor, RColor;
+
+	while (aptMainLoop())
+	{
+		checkIfCardInserted();
+
+		hidScanInput();
+		draw_player_menu_patterns(saveFile, g_selectedplayer, LColor, RColor);
+		updateCursorInfo();
+
+		LColor = RColor = COLOR_GREY;
+
+		if (hidKeysDown() & KEY_B)
+			break;
+
+		if (hidKeysHeld() & KEY_R)
+			RColor = COLOR_WHITE;
+
+		if (hidKeysHeld() & KEY_L)
+			LColor = COLOR_WHITE;
+
+		if (hidKeysDown() & KEY_R)
+		{
+			while (true) {
+				g_selectedplayer++;
+				if (g_selectedplayer > 3)
+					g_selectedplayer = 0;
+
+				if (saveFile->players[g_selectedplayer].Exists(saveFile)) {
+					break;
+				}
+			}
+		}
+
+		if (hidKeysDown() & KEY_L)
+		{
+			while (true) {
+				g_selectedplayer--;
+				if (g_selectedplayer < 0)
+					g_selectedplayer = 3;
+
+				if (saveFile->players[g_selectedplayer].Exists(saveFile)) {
+					break;
+				}
+			}
+		}
+	}
 
 	drawingSubmenu = false;
 }
