@@ -250,17 +250,15 @@ void abort(void)
         MsgDisp(top, "Abort has been called");
 }
 
-static inline u32 Pow2(u32 x)
+static inline u32   Pow2(u32 x)
 {
-    if (x <= 2)
-        return x;
+    if (x <= 64)
+        return 64;
 
-    u32 s = 1u << (32 - __builtin_clz(x - 1));
-
-    return s < 64 ? 64 : s;
+    return 1u << (32 - __builtin_clz(x - 1));
 }
 
-C2D_Image ImageDataToC2DImage(u32 *imageData, u32 width, u32 height, GPU_TEXCOLOR colorFormat) {
+C2D_Image   ImageDataToC2DImage(u32 *imageData, u32 width, u32 height, GPU_TEXCOLOR colorFormat) {
 
     u32     widthPow2 = Pow2(width);
     u32     heightPow2 = Pow2(height);
@@ -312,4 +310,11 @@ C2D_Image ImageDataToC2DImage(u32 *imageData, u32 width, u32 height, GPU_TEXCOLO
     image.subtex = subtex;
 
     return image;
+}
+
+void    C2D_ImageDelete(C2D_Image image)
+{
+    C3D_TexDelete(image.tex);
+    delete image.tex;
+    delete image.subtex;
 }
