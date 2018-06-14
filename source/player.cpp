@@ -1,4 +1,5 @@
 #include "player.h"
+#include "pattern.h"
 
 Player::Player() { }
 

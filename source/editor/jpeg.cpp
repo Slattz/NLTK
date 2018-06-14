@@ -115,10 +115,3 @@ C2D_Image LoadPlayerPicture(const void *tpcData)
 
     return image;
 }
-
-void C2D_Image_Destroy(C2D_Image image)
-{
-    C3D_TexDelete(image.tex);
-    delete image.tex;
-    delete image.subtex;
-}

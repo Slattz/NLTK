@@ -1,4 +1,5 @@
 #include "pattern.h"
+#include "player.h"
 
 static const u32 PaletteColors[] = {
     0xFFEFFFFF, 0xFF9AADFF, 0xEF559CFF, 0xFF65ADFF, 0xFF0063FF, 0xBD4573FF, 0xCE0052FF, 0x9C0031FF, 0x522031FF, 0x000009FF, 0x00000AFF, 0x00000BFF, 0x00000CFF, 0x00000DFF, 0x00000EFF, 0xFFFFFFFF,
@@ -23,45 +24,43 @@ Pattern::Pattern(Save *saveFile, Player *player, u32 id) :
     Index(id), Offset(player->m_offset + 0x2C + id * 0x870)
 {
     Name = saveFile->ReadString(Offset, 20);
-	CreatorId = saveFile->ReadU16(Offset + 0x2A);
+    CreatorId = saveFile->ReadU16(Offset + 0x2A);
     CreatorName = saveFile->ReadString(Offset + 0x2C, 8);
-	CreatorGender = saveFile->ReadU16(Offset + 0x3E);
-	OriginatingTownId = saveFile->ReadU16(Offset + 0x40);
-	OriginatingTownName = saveFile->ReadString(Offset + 0x42, 8);
+    CreatorGender = saveFile->ReadU16(Offset + 0x3E);
+    OriginatingTownId = saveFile->ReadU16(Offset + 0x40);
+    OriginatingTownName = saveFile->ReadString(Offset + 0x42, 8);
     saveFile->ReadArray(Palette.data(), Offset + 0x58, 16);
-	Type = (DesignType)(saveFile->ReadU8(Offset + 0x69) & 9); // TODO: Check the real max disgn type value and limit it to that.
+    Type = (DesignType)(saveFile->ReadU8(Offset + 0x69) & 9); // TODO: Check the real max disgn type value and limit it to that.
     saveFile->ReadArray(PatternData.data(), Offset + 0x6C, 0x800);
 
     Decompress();
 }
 
 Pattern::~Pattern() {
+
     for (u32 *data : ImageData)
         linearFree(data);
 
     for (C2D_Image& image : Images)
-    {
-        C3D_TexDelete(image.tex);
-        delete image.tex;
-        delete image.subtex;
-    }
+        C2D_ImageDelete(image);
 
 }
 
 void Pattern::Write(Save *saveFile) {
     Compress();
     saveFile->Write(Offset, Name, 20);
-	saveFile->Write(Offset + 0x2A, CreatorId);
+    saveFile->Write(Offset + 0x2A, CreatorId);
     saveFile->Write(Offset + 0x2C, CreatorName, 8);
-	saveFile->Write(Offset + 0x3E, CreatorGender);
-	saveFile->Write(Offset + 0x40, OriginatingTownId);
-	saveFile->Write(Offset + 0x42, OriginatingTownName, 8);
+    saveFile->Write(Offset + 0x3E, CreatorGender);
+    saveFile->Write(Offset + 0x40, OriginatingTownId);
+    saveFile->Write(Offset + 0x42, OriginatingTownName, 8);
     saveFile->Write(Offset + 0x58, Palette.data(), 16);
-	saveFile->Write(Offset + 0x69, (u8)Type);
+    saveFile->Write(Offset + 0x69, (u8)Type);
     saveFile->Write(Offset + 0x6C, PatternData.data(), 0x800);
 }
 
 void Pattern::Decompress(void) {
+
     for (u32 *data : ImageData)
         linearFree(data);
     ImageData.clear();
@@ -86,13 +85,17 @@ void Pattern::Decompress(void) {
 }
 
 void Pattern::Compress(void) {
+
     for (int i = 0; i < 4; i++) {
         u32 readOffset = 0;
         u32 idx = i * 200;
+
         for (int x = 0; x < 0x200; x++) {
             u8 CompressedPixel = 0;
+
             for (int y = 0; y < 2; y++) {
                 u32 Pixel = ImageData[i][readOffset++];
+
                 for (int p = 0; p < 16; p++) {
                     if (PaletteColors[Palette[p]] == Pixel) {
                         CompressedPixel |= (p << (y * 4));
