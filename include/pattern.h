@@ -13,14 +13,14 @@ class Player;
 
 // TODO: Research the 1-7 design types
 enum class DesignType : u8 {
-    Dress = 0,
-    Unknown1 = 1,
-    Unknown2 = 2,
-    Unknown3 = 3,
-    Unknown4 = 4,
-    Unknown5 = 5,
-    Unknown6 = 6,
-    Unknown7 = 7,
+    DressLongSleeve = 0,
+    DressShortSleeve = 1,
+    DressSleeveless = 2,
+    ShirtLongSleeve = 3,
+    ShirtShortSleeve = 4,
+    ShirtSleeveless = 5,
+    HornedHat = 6,
+    KnitHat = 7,
     PhotoBoard = 8,
     Pattern = 9
 };
