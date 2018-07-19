@@ -145,6 +145,24 @@ void Save::FixSaveRegion(void) {
     }
 }
 
+void Save::FixInvalidBuildings(void) {
+	bool asked = false;
+	for (int i = 0; i < 58; i++) {
+		u8 building = ReadU8(0x04be88+(i * 4)); //Get building ID
+		if ((building >= 0x12 && building <= 0x4B) || building > 0xFC) {
+			if (!asked) {
+				asked = true;
+				if (!MsgDisp(top, "Invalid building(s) have been\nfound in your save.\nThey may cause your game to crash.\nWould you like to fix it?", MsgTypeConfirm)) {
+					return;
+				}
+			}
+
+			Write(0x04be88+(i*4), static_cast<u32>(0x000000FC)); //Write empty building
+			m_changesMade = true;
+		}
+	}
+}
+
 bool Save::Write(u32 offset, u8 *data, u32 count) {
 	if (offset >= m_saveSize || (offset + count) >= m_saveSize) {
 		return false;

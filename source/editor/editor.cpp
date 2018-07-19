@@ -71,10 +71,10 @@ GameSelect:
 		saveBackup(&saveFile, g_tid);
 	}
 
-    // Update Region of the Save
-    saveFile.FixSaveRegion();
+	saveFile.FixSaveRegion();		//Update Region of the Save
+	saveFile.FixInvalidBuildings(); //Fix any invalid buildings (fixes 7dd6 crash caused by ntr plg)
 
-    int mode = spawn_editor_main_menu(&saveFile);
+	int mode = spawn_editor_main_menu(&saveFile);
 
     saveFile.Close();
 

@@ -27,6 +27,7 @@ public:
 	u8 DeriveRegionLockID(u8 RegionID, u8 LanguageID);
 	bool UpdateSaveRegion(void);
 	void FixSaveRegion(void);
+	void FixInvalidBuildings(void);
 
 	bool Write(u32 offset, u8 *buffer, u32 count);
 	bool Write(u32 offset, u8 data);
