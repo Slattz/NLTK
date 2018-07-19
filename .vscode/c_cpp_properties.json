@@ -1,0 +1,26 @@
+{
+    "configurations": [
+        {
+            "name": "Win32",
+            "defines": [
+                "_DEBUG",
+                "UNICODE",
+                "_UNICODE"
+            ],
+            "compilerPath": "C:/Program Files (x86)/Microsoft Visual Studio/2017/Community/VC/Tools/MSVC/14.11.25503/bin/Hostx64/x64/cl.exe",
+            "cStandard": "c11",
+            "cppStandard": "c++17",
+            "intelliSenseMode": "msvc-x64",
+            "includePath": [
+                "${default}",
+                "${workspaceFolder}/include/core",
+                "${workspaceFolder}/include/editor",
+                "${workspaceFolder}/build",
+                "${workspaceFolder}/source/libs/CTRFont/include",
+                "${workspaceFolder}/source/libs/jsmn",
+                "${workspaceFolder}/source/libs/httpc-curl"
+            ]
+        }
+    ],
+    "version": 4
+}
