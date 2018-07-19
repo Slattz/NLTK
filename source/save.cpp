@@ -164,14 +164,11 @@ void Save::FixInvalidBuildings(void) {
 }
 
 bool Save::Write(u32 offset, u8 *data, u32 count) {
-	if (offset >= m_saveSize || (offset + count) >= m_saveSize) {
-		return false;
+	if (offset + count >= m_saveSize) {
+    	return false;
 	}
 
-	for (u32 i = 0; i < count; i++) {
-		m_saveBuffer[offset + i] = data[i];
-	}
-
+	memcpy(m_saveBuffer + offset, data, count);
 	m_changesMade = true;
 	return true;
 }
