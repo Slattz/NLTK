@@ -31,6 +31,7 @@
 #include "unicode.h"
 #include "utils.h"
 #include "e_utils.h"
+#include "keyboard.h"
 
 extern Save saveFile;
 extern u64 g_tid;

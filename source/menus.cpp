@@ -31,6 +31,14 @@ int spawn_main_menu(void) {
             return MODE_EXIT;
         }
 
+        /* For Debugging Keyboard atm, will eventually be removed */
+        if (hidKeysDown() & KEY_DLEFT && config.isdebug)
+        {
+            std::string lol;
+            Keyboard keyboard("This is the hint text");
+            keyboard.Open(lol);
+        }
+
         for (int i = 0; i < 2; i++)
         {
             if (hidKeysDown() & g_key[i] && g_disabled[i])
