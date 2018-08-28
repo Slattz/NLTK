@@ -78,35 +78,36 @@ u8* Save::GetRawSaveData(void) {
 	return m_saveBuffer;
 }
 
+//https://3dbrew.org/wiki/Title_list/DLC#Region_IDs
 u8 Save::DeriveRegionLockID(u8 RegionID, u8 LanguageID) {
-    if (RegionID != 0) {
-        if (RegionID == 1) {
+    if (RegionID != 0) { //If not Japan
+        if (RegionID == 1) { //If region is USA
             switch (LanguageID) {
-                case 2:
+                case 2: //If lang is French
                     return 3;
-                case 5:
-                    return 2;
-                default:
-                    return 1;
+				case 5: //If lang is Spanish
+					return 2;
+				default: //If lang is English & other langs
+					return 1;
             }
         }
 
-        else if (RegionID == 2) {
+        else if (RegionID == 2) { //If region is EUR
             switch (LanguageID) {
-                case 2:
+                case 2: //If lang is French
                     return 6;
-                case 3:
-                    return 8;
-                case 4:
-                    return 7;
-                case 5:
-                    return 5;
+				case 3: //If lang is German
+					return 8;
+				case 4: //If lang is Italian
+					return 7;
+				case 5: //If lang is Spanish
+					return 5;
                 default:
                     return 4;
             }
         }
 
-        else if (RegionID == 5) {
+        else if (RegionID == 5) { //If region is KOR
             return 9;
         }
     }
