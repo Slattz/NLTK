@@ -96,7 +96,7 @@ void draw_base_interface(void)
     static bool Init = false;
     static std::vector<Text> BarText;
     static std::string title = TITLE " " VERSION;
-    static int titleX = 315;
+    static int titleX = 320;
 
     if (!Init) {
         if (BETA_VERSION > 0) {
@@ -223,8 +223,8 @@ void draw_main_menu(void)
     static std::vector<Text> ColumnText;
 
     if (!TextInit) {
-        ModeText.push_back(Text(COLOR_GREY, "Editor", TextSize, TextSize, 70.f, 140.f));
-        ModeText.push_back(Text(COLOR_GREY, "Manager", TextSize, TextSize, 190.f, 140.f));
+        ModeText.push_back(Text(COLOR_GREY, "Editor", TextSize, TextSize, 100.f, 150.f));
+        ModeText.push_back(Text(COLOR_GREY, "Manager", TextSize, TextSize, 180.f, 150.f));
         
         ColumnText.push_back(Text(COLOR_GREY, "About", TextSize, TextSize, 42.f, 38.f));
         ColumnText.push_back(Text(COLOR_GREY, "Options", TextSize, TextSize, 237.f, 38.f));
@@ -233,14 +233,14 @@ void draw_main_menu(void)
 
     draw_base_interface();
     C2D_SceneBegin(bottom);
-    DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
-    DrawSprite(Editor_ss, BUTTON_MAIN, 20,  30, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
-    DrawSprite(Editor_ss, BUTTON_MAIN, 220, 30, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
+    DrawSprite(Common_ss, NLTK_ICON, 126.f, 10.f); //NLTK's Icon
+    DrawSprite(Editor_ss, BUTTON_MAIN, 20.f,  30.f, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
+    DrawSprite(Editor_ss, BUTTON_MAIN, 220.f, 30.f, nullptr, 1.15f, 0.6f);  //w = 80, h = 33
     ColumnText[0].Draw(); //About
     ColumnText[1].Draw(); //Options
 
-    DrawSprite(Common_ss, EDITOR_ICON, 60, 70); //Editor Icon
-    DrawSprite(Common_ss, MANAGER_ICON, 180, 70); //Manager Icon
+    DrawSprite(Common_ss, EDITOR_ICON, 90, 90); //Editor Icon
+    DrawSprite(Common_ss, MANAGER_ICON, 180, 90); //Manager Icon
     ModeText[0].Draw(); //Editor
     ModeText[1].Draw(); //Manager
     
