@@ -63,7 +63,11 @@ void InitGFX(void)
 
     /* Very Hacky, used as a bypass for a tex3ds bug */
     C2D_Image button = C2D_SpriteSheetGetImage(Editor_ss, BUTTON_MAIN);
+    C2D_Image swkbd_shifton = C2D_SpriteSheetGetImage(Common_ss, SWKBD_SHIFT_ON);
+    C2D_Image swkbd_shiftoff = C2D_SpriteSheetGetImage(Common_ss, SWKBD_SHIFT_OFF);
     ((Tex3DS_SubTexture *)button.subtex)->right -= 0.005f;
+    ((Tex3DS_SubTexture *)swkbd_shifton.subtex)->right -= 0.005f;
+    ((Tex3DS_SubTexture *)swkbd_shiftoff.subtex)->right -= 0.005f;
 
     /* Init Tints */
     C2D_PlainImageTint(GreyFilter, COLOR_GREY_FILTER, 1.0f);
