@@ -72,7 +72,7 @@ static GlyphVector  GetGlyphsFromString(const FontHandle &font, const std::strin
 
     } while (true);
 
-    if (width > outWidth)
+    if (width > outWidth || (width < outWidth && line == 0))
         outWidth = width;
 
     outLines = line + 1;
