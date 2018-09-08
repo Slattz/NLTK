@@ -35,7 +35,7 @@ int spawn_main_menu(void) {
         if (hidKeysDown() & KEY_DLEFT && config.isdebug)
         {
             std::string lol;
-            Keyboard keyboard("This is the hint text");
+            Keyboard keyboard(InputTypes::Text, 30, true, "This is the hint text", "This is the main text");
             keyboard.Open(lol);
         }
 

@@ -100,6 +100,10 @@ static const u32 COLOR_TRANSPARENT     =    C2D_Color32(0,0,0,0);
 #define CURSOR_SELECT       Common_ss_hand_select_idx
 #define EDITOR_ICON         Common_ss_Editor_idx
 #define MANAGER_ICON        Common_ss_Manager_idx
+#define SWKBD_BACK          Common_ss_swkbd_back_idx
+#define SWKBD_SHIFT         Common_ss_swkbd_shift_idx
+#define SWKBD_SHIFT_ON      Common_ss_swkbd_shift_on_idx
+#define SWKBD_SHIFT_OFF     Common_ss_swkbd_shift_off_idx
 
 /* Item Icons */
 #define ITEM_HOLE           Common_ss_ItemHole_idx
