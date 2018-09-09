@@ -103,10 +103,10 @@ void Keyboard::SetupCommonText() {
     Text LetterTab(COLOR_WHITE, "ABC\n123", 0.8f, 0.8f);
     Text SymTab(COLOR_WHITE, "Symbols", 0.8f, 0.8f);
     Text NinSymTab(COLOR_WHITE, "Nintendo\nSymbols", 0.8f, 0.8f);
-    Text Up(COLOR_GREY, "▲", 0.9f, 0.9f, 295.f, 50.f);
-    Text Down(COLOR_GREY, "▼", 0.9f, 0.9f, 295.f, 100.f);
-    Text Page(COLOR_GREY, "Page", 0.6f, 0.6f, 290.f, 70.f);
-    Text PageNum(COLOR_GREY, "1", 0.8f, 0.8f, 297.f, 85.f);
+    Text Up(COLOR_GREY, "▲", 0.9f, 0.9f, 295.f, 45.f);
+    Text Down(COLOR_GREY, "▼", 0.9f, 0.9f, 295.f, 95.f);
+    Text Page(COLOR_GREY, "Page", 0.6f, 0.6f, 290.f, 65.f);
+    Text PageNum(COLOR_GREY, "1", 0.8f, 0.8f, 297.f, 80.f);
     LetterTab.CenterInBounds(2.f, 202.f, 98.f, 38.f);
     SymTab.CenterInBounds(100.f, 202.f, 124.f, 38.f);
     NinSymTab.CenterInBounds(224.f, 202.f, 96.f, 38.f);
@@ -223,9 +223,14 @@ void Keyboard::Draw() {
     C2D_TargetClear(bottom, SWKBD_BG);
     C2D_DrawRectSolid(0.f, 0.f, 0.f, 320.f, 25.f, SWKBD_BAR); //Bar for (Hint) Text Background (Top)
     C2D_DrawRectSolid(0.f, 200.f, 0.f, 320.f, 40.f, SWKBD_BAR); //Bar for Tabs and Exit (Bottom)
+    C2D_DrawRectSolid(283.f, 122.f, 0.f, 33.f, 68.f, SWKBD_CHAR_BG);  //Bar for Confirm/Cancel (Right)
     C2D_DrawRectSolid(38.f, 37.f, 0.5f, 245.f, 153.f, SWKBD_CHAR_BG); //Characters BG
     C2D_DrawRectSolid(99.f, 161.f, 0.5f, 126.f, 22.f, COLOR_DARK_GREY); //Spacebar Outline
     C2D_DrawRectSolid(100.f, 162.f, 0.5f, 124.f, 20.f, COLOR_GREY);     //Spacebar
+    DrawSprite(Swkbd_ss, SWKBD_BACK, 255.f, 127.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Back Icon
+    DrawSprite(Swkbd_ss, SWKBD_ENTER, 256.f, 160.f, nullptr, 0.8f, 0.8f, 0.5f);  //Keyboard Enter Icon
+    DrawSprite(Swkbd_ss, SWKBD_CONFIRM, 287.f, 127.f, nullptr, 0.8f, 0.8f); //Keyboard Confirm Icon
+    DrawSprite(Swkbd_ss, SWKBD_CANCEL, 287.f, 160.f, nullptr, 0.8f, 0.8f); //Keyboard Cancel Icon
     m_CommonText[0].Draw(); //Comma
     m_CommonText[1].Draw(); //F Stop
 
@@ -242,8 +247,8 @@ void Keyboard::Draw() {
             for (u32 i = 0; i < m_Characters.size(); i++)
                 m_Characters[i].Draw();
 
-            if (m_ShiftOn) DrawSprite(Common_ss, SWKBD_SHIFT_ON, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
-            else  DrawSprite(Common_ss, SWKBD_SHIFT_OFF, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
+            if (m_ShiftOn) DrawSprite(Swkbd_ss, SWKBD_SHIFT_ON, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
+            else  DrawSprite(Swkbd_ss, SWKBD_SHIFT_OFF, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
             C2D_DrawRectSolid(0.f, 200.f, 0.f, 100.f, 40.f, SWKBD_TAB_CLR);    //Highlight selected tab
             break;
 
@@ -270,7 +275,6 @@ void Keyboard::Draw() {
             break;
     }
 
-    DrawSprite(Common_ss, SWKBD_BACK, 255.f, 127.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Back Icon
     for (int i = 0; i < 3; i++)
         m_CommonText[i+2].Draw(); //Draw text for the tabs (+2 as comma and fstop before)
 
