@@ -45,27 +45,29 @@ public:
     int Open(u32& output);
 
 private:
-    void SetupLetters();
-    void SetupSymbols();
-    void SetupACNLSymbols();
-    void SetupComm();
-    void UpdateHID();
-    void Update();
-    void Draw();
-    int _Open(std::string& output);
+  void SetupCommonText();
+  void SetupLetters();
+  void SetupSymbols();
+  void SetupACNLSymbols();
+  void UpdateHID();
+  void Update();
+  void Draw();
+  int _Open(std::string& output);
 
-    u32 m_ButtonIndex;
-    KeyboardTab m_KeyboardTab;
-    u32 m_MaxSize;
-    bool m_CanAbort;
-    bool m_ShiftOn;
-    InputTypes m_InputType;
-    KeyboardStatus m_KeyboardStatus;
-    Text m_HintText;
-    Text m_Text;
-    std::vector<Text> m_Characters;
-    std::vector<Text> m_Symbols;
-    std::vector<Text> m_ACNLSymbols;
+  bool m_CanAbort;
+  bool m_ShiftOn;
+  u32 m_ButtonIndex;
+  u32 m_MaxSize;
+  u32 m_NinSymbolsPage;
+  InputTypes m_InputType;
+  KeyboardTab m_KeyboardTab;
+  KeyboardStatus m_KeyboardStatus;
+  Text m_HintText;
+  Text m_Text;
+  std::vector<Text> m_CommonText;
+  std::vector<Text> m_Characters;
+  std::vector<Text> m_Symbols;
+  std::vector<Text> m_ACNLSymbols;
 };
 
 
