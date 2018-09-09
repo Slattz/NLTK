@@ -1,5 +1,4 @@
 --atlas -f rgba8888 -z auto
-.\Common\back.png
 .\Common\Bell.png
 .\Common\checkbox.png
 .\Common\checkbox_c.png
@@ -13,7 +12,3 @@
 .\Common\ItemHole.png
 .\Common\Letter.png
 .\Common\Manager.png
-.\Common\swkbd_back.png
-.\Common\swkbd_enter.png
-.\Common\swkbd_shift_off.png
-.\Common\swkbd_shift_on.png

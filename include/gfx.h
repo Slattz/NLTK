@@ -31,6 +31,7 @@ extern C2D_SpriteSheet GameSelect_ss;
 extern C2D_SpriteSheet Editor_ss;
 extern C2D_SpriteSheet Items_ss;
 extern C2D_SpriteSheet Players_ss;
+extern C2D_SpriteSheet Swkbd_ss;
 
 extern std::vector<Text> DebugText;
 
@@ -100,9 +101,14 @@ static const u32 COLOR_TRANSPARENT     =    C2D_Color32(0,0,0,0);
 #define CURSOR_SELECT       Common_ss_hand_select_idx
 #define EDITOR_ICON         Common_ss_Editor_idx
 #define MANAGER_ICON        Common_ss_Manager_idx
-#define SWKBD_BACK          Common_ss_swkbd_back_idx
-#define SWKBD_SHIFT_ON      Common_ss_swkbd_shift_on_idx
-#define SWKBD_SHIFT_OFF     Common_ss_swkbd_shift_off_idx
+
+//SWKBD
+#define SWKBD_CONFIRM       Swkbd_ss_confirm_idx
+#define SWKBD_CANCEL        Swkbd_ss_cancel_idx
+#define SWKBD_BACK          Swkbd_ss_back_idx
+#define SWKBD_ENTER         Swkbd_ss_enter_idx
+#define SWKBD_SHIFT_ON      Swkbd_ss_shift_on_idx
+#define SWKBD_SHIFT_OFF     Swkbd_ss_shift_off_idx
 
 /* Item Icons */
 #define ITEM_HOLE           Common_ss_ItemHole_idx

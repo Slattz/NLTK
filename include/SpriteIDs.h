@@ -10,6 +10,7 @@
 #include "Editor_ss.h"
 #include "Items_ss.h"
 #include "Players_ss.h"
+#include "Swkbd_ss.h"
 
 
 #endif

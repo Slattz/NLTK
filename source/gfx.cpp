@@ -14,6 +14,7 @@ C2D_SpriteSheet GameSelect_ss;
 C2D_SpriteSheet Editor_ss;
 C2D_SpriteSheet Items_ss;
 C2D_SpriteSheet Players_ss;
+C2D_SpriteSheet Swkbd_ss;
 
 struct C2D_SpriteSheet_s
 {
@@ -53,6 +54,7 @@ void InitGFX(void)
     Editor_ss = C2D_SpriteSheetLoad("romfs:/gfx/Editor_ss.t3x");
     Items_ss = C2D_SpriteSheetLoad("romfs:/gfx/Items_ss.t3x");
     Players_ss = C2D_SpriteSheetLoad("romfs:/gfx/Players_ss.t3x");
+    Swkbd_ss = C2D_SpriteSheetLoad("romfs:/gfx/Swkbd_ss.t3x");
     C3D_TexSetFilter(&About_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Acres_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Common_ss->tex, GPU_LINEAR, GPU_LINEAR);
@@ -60,14 +62,17 @@ void InitGFX(void)
     C3D_TexSetFilter(&Editor_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Items_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Players_ss->tex, GPU_LINEAR, GPU_LINEAR);
+    C3D_TexSetFilter(&Swkbd_ss->tex, GPU_LINEAR, GPU_LINEAR);
 
     /* Very Hacky, used as a bypass for a tex3ds bug */
     C2D_Image button = C2D_SpriteSheetGetImage(Editor_ss, BUTTON_MAIN);
-    C2D_Image swkbd_shifton = C2D_SpriteSheetGetImage(Common_ss, SWKBD_SHIFT_ON);
-    C2D_Image swkbd_shiftoff = C2D_SpriteSheetGetImage(Common_ss, SWKBD_SHIFT_OFF);
+    C2D_Image swkbd_shifton = C2D_SpriteSheetGetImage(Swkbd_ss, SWKBD_SHIFT_ON);
+    C2D_Image swkbd_shiftoff = C2D_SpriteSheetGetImage(Swkbd_ss, SWKBD_SHIFT_OFF);
+    C2D_Image swkbd_confirm = C2D_SpriteSheetGetImage(Swkbd_ss, SWKBD_CONFIRM);
     ((Tex3DS_SubTexture *)button.subtex)->right -= 0.005f;
-    ((Tex3DS_SubTexture *)swkbd_shifton.subtex)->right -= 0.005f;
-    ((Tex3DS_SubTexture *)swkbd_shiftoff.subtex)->right -= 0.005f;
+    ((Tex3DS_SubTexture *)swkbd_shifton.subtex)->right -= 0.010f;
+    ((Tex3DS_SubTexture *)swkbd_shiftoff.subtex)->right -= 0.010f;
+    ((Tex3DS_SubTexture *)swkbd_confirm.subtex)->right -= 0.010f;
 
     /* Init Tints */
     C2D_PlainImageTint(GreyFilter, COLOR_GREY_FILTER, 1.0f);
