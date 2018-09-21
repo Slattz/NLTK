@@ -1,5 +1,11 @@
-#include "player.h"
+#include <3ds.h>
+#include <string>
+#include <citro2d.h>
+#include "gfx.h"
+#include "item.h"
 #include "pattern.h"
+#include "jpeg.h"
+#include "player.h"
 
 Player::Player() { }
 

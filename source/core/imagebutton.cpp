@@ -1,3 +1,7 @@
+#include <3ds.h>
+#include <string>
+#include <citro2d.h>
+#include "gfx.h"
 #include "imagebutton.h"
 
 ImageButton::ImageButton(void) : Button() { }

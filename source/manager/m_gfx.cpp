@@ -1,8 +1,14 @@
-#include "common.h"
+#include <3ds.h>
+#include <string>
+#include <citro2d.h>
+#include "gfx.h"
+#include "utils.h"
+#include "cursor.h"
 #include "core/label.h"
 #include "core/imagebutton.h"
 #include "manager/m_gfx.h"
 
+extern Cursor g_cursor;
 
 void draw_manager_main_menu(void)
 {
@@ -11,6 +17,6 @@ void draw_manager_main_menu(void)
     DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
     C2D_SceneBegin(top);
     draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Manager Main Menu!");
-    draw_cursor();
+    g_cursor.Draw();
     C3D_FrameEnd(0);
 }

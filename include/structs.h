@@ -3,6 +3,9 @@
 #ifndef STRUCTS_H
 #define STRUCTS_H
 
+#include <3ds.h>
+#include <string>
+
 enum GameType {
 	NL_JPN,
 	NL_USA,
@@ -21,15 +24,6 @@ struct NLTK_Settings
     bool    LoadedItemBin : 1;
     bool    LoadedItemIcons : 1;
     u8      NLTK_Mode;
-};
-
-//Cursor position info
-struct cursorinfo_s
-{
-    s16     x;
-    s16     y;
-    bool    show;
-    bool    A_held;
 };
 
 //Item Icon Info
@@ -72,12 +66,6 @@ struct Point_t {
 
 struct Size_t {
 	u32 Width, Height;
-};
-
-struct Region_Lock {
-    u8 DerivedID;
-    CFG_Region RegionID;
-    u8 RawByte;
 };
 
 #endif

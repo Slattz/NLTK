@@ -1,9 +1,21 @@
-#include "common.h"
+#include <3ds.h>
+#include <string>
+#include <algorithm>
+#include "CTRFont.hpp"
+#include "gfx.h"
+#include "utils.h"
+#include "config.h"
+#include "core/nfs.h"
+#include "core/keyboard.h"
 #include "core/textbox.h"
 #include "core/imagebutton.h"
 #include "manager/manager.h"
 #include "editor/editor.h"
-#include <algorithm>
+#include "menus.h"
+
+extern FS_MediaType currentMediaType;
+extern NLTK_Titles_Info MediaInfo;
+extern NLTK_config config;
 
 s16  g_CheckX[2];
 s16  g_CheckY[2];

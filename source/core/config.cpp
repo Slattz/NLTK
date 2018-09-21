@@ -1,4 +1,9 @@
+#include <3ds.h>
+#include <string>
+#include "gfx.h"
+#include "nfs.h"
 #include "common.h"
+#include "config.h"
 
 static const char* configPath = WORKDIR "/cfg.bin";
 NLTK_config config;

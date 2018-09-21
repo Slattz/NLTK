@@ -3,6 +3,9 @@
 #ifndef SWKBD_H
 #define SWKBD_H
 
+#include <string>
+#include "CTRFont.hpp"
+
 typedef struct
 {
     int mode;

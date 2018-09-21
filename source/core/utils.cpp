@@ -1,12 +1,29 @@
+#include <3ds.h>
+#include <string>
+#include <stdarg.h>
+#include <citro2d.h>
 #include <codecvt>
 #include <locale>
 #include <memory>
 #include <fstream>
 #include <sstream>
 #include <iostream>
+#include <map>
+#include "CtrFont.hpp"
+#include "gfx.h"
+#include "cursor.h"
+#include "nfs.h"
+#include "structs.h"
+#include "common.h"
 #include "utils.h"
 
-cursorinfo_s g_cursorpos;
+extern Cursor g_cursor;
+extern s16 g_CheckX[2];
+extern s16 g_CheckY[2];
+extern bool g_disabled[2];
+extern u32 g_key[2];
+extern u64 currentTitleId;
+
 std::map<u16, std::string> g_itemDatabase;
 
 /*
@@ -101,70 +118,6 @@ void draw_centered_text(float StartX, float WidthX, float StartY, float HeightY,
     Msg.Draw();
 }
 
-void updatePointerPosition(void)
-{
-    hidScanInput();
-
-    if (hidKeysHeld() & KEY_A)
-    {
-        g_cursorpos.A_held = true;
-        return;
-    }
-
-    else
-        g_cursorpos.A_held = false;
-    //CPad
-    if (hidKeysHeld() & KEY_CPAD)
-    {
-        if (hidKeysHeld() & KEY_CPAD_RIGHT)
-            g_cursorpos.x += 3;
-
-        if (hidKeysHeld() & KEY_CPAD_LEFT)
-            g_cursorpos.x -= 3;
-
-        if (hidKeysHeld() & KEY_CPAD_UP)
-            g_cursorpos.y -= 3;
-
-        if (hidKeysHeld() & KEY_CPAD_DOWN)
-            g_cursorpos.y += 3;
-
-        g_cursorpos.show = true;
-    }
-
-    //C-Stick
-    if (hidKeysHeld() & KEY_CSTICK)
-    {
-        if (hidKeysHeld() & KEY_CSTICK_RIGHT)
-            g_cursorpos.x += 4;
-
-        if (hidKeysHeld() & KEY_CSTICK_LEFT)
-            g_cursorpos.x -= 4;
-
-        if (hidKeysHeld() & KEY_CSTICK_UP)
-            g_cursorpos.y -= 4;
-
-        if (hidKeysHeld() & KEY_CSTICK_DOWN)
-            g_cursorpos.y += 4;
-
-        g_cursorpos.show = true;
-    }
-
-    if (hidKeysHeld() & KEY_TOUCH)
-        g_cursorpos.show = false;
-
-    if (g_cursorpos.y < -5)
-        g_cursorpos.y = 235;
-
-    if (g_cursorpos.y > 235)
-        g_cursorpos.y = -5;
-
-    if (g_cursorpos.x < -5)
-        g_cursorpos.x = 315;
-
-    if (g_cursorpos.x > 315)
-        g_cursorpos.x = -5;
-}
-
 void updateCursorInfo(void)
 {
     touchPosition touch;
@@ -172,10 +125,10 @@ void updateCursorInfo(void)
 
     g_CheckX[0] = touch.px;
     g_CheckY[0] = touch.py;
-    g_CheckX[1] = g_cursorpos.x;
-    g_CheckY[1] = g_cursorpos.y;
-    g_disabled[0] = !g_cursorpos.show;
-    g_disabled[1] = g_cursorpos.show;
+    g_CheckX[1] = g_cursor.m_LocX;
+    g_CheckY[1] = g_cursor.m_LocY;
+    g_disabled[0] = !g_cursor.m_Visible;
+    g_disabled[1] = g_cursor.m_Visible;
 }
 
 std::string u16tou8(std::u16string src)

@@ -1,3 +1,8 @@
+#include <3ds.h>
+#include <string>
+#include <citro2d.h>
+#include "gfx.h"
+#include "utils.h"
 #include "keyboard.h"
 #define KEYS_PER_ROW 10
 #define KEYBOARD_ROWS 4

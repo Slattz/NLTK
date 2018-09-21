@@ -1,9 +1,16 @@
 #pragma once
 
-#ifndef SAVE
-#define SAVE
+#ifndef SAVE_H
+#define SAVE_H
 
-#include "common.h"
+#include "player.h"
+#include "offsets.h"
+
+struct Region_Lock {
+    u8 DerivedID;
+    CFG_Region RegionID;
+    u8 RawByte;
+};
 
 class Player;
 

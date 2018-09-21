@@ -1,5 +1,6 @@
-#include "common.h"
+#include <3ds.h>
 #include <random>
+#include "encryptedInt32.h"
 
 EncryptedInt32::EncryptedInt32() { }
 

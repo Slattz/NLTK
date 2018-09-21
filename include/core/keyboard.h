@@ -3,7 +3,9 @@
 #ifndef KEYBOARD_H
 #define KEYBOARD_H
 
-#include "common.h"
+#include <vector>
+#include "CTRFont.hpp"
+
 enum class KeyboardStatus : s8
 {
     Abort = -1,

@@ -1,5 +1,16 @@
-#include "gfx.h"
+#include <3ds.h>
+#include "CTRFont.hpp"
+#include "unicode.h"
+#include "common.h"
+#include "structs.h"
 #include "about.h"
+#include "cursor.h"
+#include "config.h"
+#include "gfx.h"
+#include "utils.h"
+
+extern NLTK_config config;
+extern NLTK_Titles_Info MediaInfo;
 
 C3D_RenderTarget* top;
 C3D_RenderTarget* bottom;
@@ -16,7 +27,24 @@ C2D_SpriteSheet Items_ss;
 C2D_SpriteSheet Players_ss;
 C2D_SpriteSheet Swkbd_ss;
 
-struct C2D_SpriteSheet_s
+const u32 COLOR_BG              =    C2D_Color32(92,188,105,255);
+const u32 COLOR_MENU_BARS       =    C2D_Color32(33,139,43,255);
+const u32 COLOR_WHITE           =    C2D_Color32(255,255,255,255);
+const u32 COLOR_BLACK           =    C2D_Color32(0,0,0,255);
+const u32 COLOR_GREEN           =    C2D_Color32(124,255,142,255);
+const u32 COLOR_BROWN           =    C2D_Color32(80,78,45,255);
+const u32 COLOR_LIGHT_BROWN     =    C2D_Color32(99,93,31,255);
+const u32 COLOR_GREY_FILTER     =    C2D_Color32(0,0,0,170);
+const u32 COLOR_GREY            =    C2D_Color32(210,210,210,255);
+const u32 COLOR_DARK_GREY       =    C2D_Color32(145,145,145,255);
+const u32 COLOR_RED             =    C2D_Color32(255,0,0,255);
+const u32 COLOR_YELLOW          =    C2D_Color32(255,255,0,255);
+const u32 COLOR_ORANGE          =    C2D_Color32(255,106,0,255);
+const u32 COLOR_TRANSPARENT     =    C2D_Color32(0,0,0,0);
+
+Cursor g_cursor;
+
+    struct C2D_SpriteSheet_s
 {
     Tex3DS_Texture t3x;
     C3D_Tex        tex;
@@ -131,22 +159,6 @@ void draw_base_interface(void)
     C2D_Flush();
 }
 
-void draw_cursor(void)
-{
-    C2D_SceneBegin(bottom);
-    updatePointerPosition();
-
-    if (g_cursorpos.show)
-    {
-        if (g_cursorpos.A_held)
-            DrawSprite(Common_ss, CURSOR_SELECT, g_cursorpos.x, g_cursorpos.y, nullptr, 1.0f, 1.0f, 1.0f);
-        
-        else
-            DrawSprite(Common_ss, CURSOR_POINT, g_cursorpos.x, g_cursorpos.y, nullptr, 1.0f, 1.0f, 1.0f);
-    }
-    C2D_Flush();
-}
-
 bool MsgDisp(C3D_RenderTarget *target, std::string message, MsgType Type, u32 bgColor, u32 textColor, 
     float textsize, float x, float y, float width, float height)
 {
@@ -255,7 +267,7 @@ void draw_main_menu(void)
     
     C2D_SceneBegin(top);
     //draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Actual Main Menu!");
-    draw_cursor();
+    g_cursor.Draw();
     C3D_FrameEnd(0);
 }
 
@@ -291,7 +303,7 @@ void draw_config_menu(void)
         DrawSprite(Common_ss, CHECKBOX_FILLED, 20, 20+(28*(configamount-1)));
         ConfigText[configamount-1].Draw(52, 23+(28*(configamount-1)));
     }
-    draw_cursor();
+    g_cursor.Draw();
     C3D_FrameEnd(0);
 }
 
@@ -332,7 +344,7 @@ void draw_about_menu(bool discord, bool twitter)
     else if (twitter)
         MsgDisp(bottom, twittertext, MsgTypeNone, COLOR_BROWN, COLOR_GREY, 0.6f, 60.f, 100.f, 200.f, 70.f);
 
-    draw_cursor();
+    g_cursor.Draw();
     C3D_FrameEnd(0);
 }
 
@@ -452,6 +464,6 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
 
     C2D_SceneBegin(top);
     draw_centered_text(0, 400, 90, 0, 0.8, 0.8, COLOR_BLACK, "Select your installed ACNL game:");
-    draw_cursor();
+    g_cursor.Draw();
     C3D_FrameEnd(0);
 }

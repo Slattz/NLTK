@@ -3,7 +3,7 @@
 #ifndef E_MENUS_H
 #define E_MENUS_H
 
-#include "common.h"
+#include "button.h"
 
 extern s32 currentAcreId;
 

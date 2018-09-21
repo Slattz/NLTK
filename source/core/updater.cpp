@@ -1,7 +1,15 @@
-#include "updater.h"
-#include "utils.h"
+#include <3ds.h>
+#include <string>
 #include "jsmn.h"
 #include "httpc.h"
+#include "gfx.h"
+#include "nfs.h"
+#include "config.h"
+#include "utils.h"
+#include "common.h"
+#include "updater.h"
+
+extern NLTK_config config;
 
 static char     newVerString[50];
 static char     newChangelog[2048];

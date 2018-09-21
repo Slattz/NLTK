@@ -1,3 +1,7 @@
+#include <3ds.h>
+#include <string>
+#include <citro2d.h>
+#include "gfx.h"
 #include "control.h"
 
 Control::Control() {

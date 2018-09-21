@@ -1,5 +1,17 @@
-#include "common.h"
+#include <3ds.h>
+#include <string>
+#include "gfx.h"
+#include "nfs.h"
+#include "save.h"
+#include "utils.h"
+#include "config.h"
+#include "menus.h"
 #include "editor/editor.h"
+
+extern u64 g_tid;
+extern NLTK_config config;
+extern FS_MediaType currentMediaType;
+extern Save saveFile;
 
 u8* g_ItemBin;
 u64 currentTitleId;

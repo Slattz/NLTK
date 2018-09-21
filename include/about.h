@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef CREDITS_H
-#define CREDITS_H
+#ifndef ABOUT_H
+#define ABOUT_H
 
 static const int creditsCount = 6;
 static const char* credits[] =

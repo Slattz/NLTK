@@ -1,18 +1,17 @@
+#include <3ds.h>
+#include <string>
+#include <citro2d.h>
+#include "gfx.h"
 #include "button.h"
 
-Button::Button() {
-	Location = { 0, 0 };
-	Size = { 0, 0 };
-
-	BackgroundColor = COLOR_WHITE;
+Button::Button() 
+    : Control({0, 0}, {0, 0}, COLOR_WHITE) {
 	Visible = true;
 }
 
-Button::Button(Point_t location, Size_t size, u32 bgColor, u32 activatorKeys) {
-	Location = location;
-	Size = size;
+Button::Button(Point_t location, Size_t size, u32 bgColor, u32 activatorKeys) 
+    : Control(location, size, bgColor) {
 
-	BackgroundColor = bgColor;
 	m_activatorKeys = activatorKeys;
 	Visible = true;
 }

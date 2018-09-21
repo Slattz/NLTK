@@ -1,9 +1,10 @@
 #pragma once
 
-#ifndef PLAYER
-#define PLAYER
+#ifndef PLAYER_H
+#define PLAYER_H
 
-#include "common.h"
+#include <citro2d.h>
+#include "encryptedInt32.h"
 
 class Save;
 class Item;

@@ -1,8 +1,13 @@
 #pragma once
-#include "save.h"
 
+#ifndef PATTERN_H
+#define PATTERN_H
+
+#include <3ds.h>
+#include <string>
 #include <array>
 #include <vector>
+#include "save.h"
 
 class Player;
 
@@ -48,3 +53,5 @@ private:
     void Decompress(void);
     void Compress(void);
 };
+
+#endif

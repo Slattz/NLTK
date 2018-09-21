@@ -1,4 +1,6 @@
-#include "common.h"
+#include <3ds.h>
+#include <string>
+#include "swkbd.h"
 
 std::string getKeyboardInput(Text myText, const char *hintText, u32 maxLength, SwkbdType keyboardType) {
 	SwkbdState swkbdState;

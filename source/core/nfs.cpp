@@ -1,6 +1,17 @@
-#include "nfs.h"
+#include <3ds.h>
+#include <string>
+#include <cstring>
+#include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
+#include "gfx.h"
+#include "structs.h"
+#include "utils.h"
+#include "save.h"
+#include "common.h"
+#include "nfs.h"
+
+extern FS_MediaType currentMediaType;
 
 NLTK_Titles_Info MediaInfo;
 bool loadedFromCart = true;

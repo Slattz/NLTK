@@ -1,7 +1,15 @@
-#include "common.h"
+#include <3ds.h>
+#include <sys/stat.h> //For mkdir
+#include "CTRFont.hpp"
+#include "save.h"
+#include "gfx.h"
+#include "config.h"
+#include "menus.h"
 #include "core/updater.h"
 #include "editor/editor.h"
 #include "libs/httpc-curl/httpc.h"
+
+extern NLTK_config config;
 
 static FontHandle g_acnlFont;
 u64 g_tid = 0;
@@ -38,8 +46,6 @@ void InitApp(void) {
     httpc.Init(0);
 	cfguInit();
 	InitGFX();
-    g_cursorpos.x = 160;
-    g_cursorpos.y = 120;
 }
 
 void PrepareToCloseApp(void) {

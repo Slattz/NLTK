@@ -1,5 +1,7 @@
 #pragma once
+
 #include "control.h"
+#include "CTRFont.hpp"
 
 class TextBox : public Control {
 public:

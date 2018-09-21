@@ -1,5 +1,18 @@
-#include "common.h"
+#include <3ds.h>
+#include <sys/stat.h> //For mkdir
+#include "gfx.h"
+#include "nfs.h"
+#include "save.h"
+#include "utils.h"
+#include "config.h"
+#include "structs.h"
+#include "menus.h"
 #include "manager/manager.h"
+
+extern NLTK_config config;
+extern u64 g_tid;
+extern FS_MediaType currentMediaType;
+extern Save saveFile;
 
 bool m_ManagerInitiated = false;
 

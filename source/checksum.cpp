@@ -1,3 +1,6 @@
+#include <3ds.h>
+#include <string>
+#include "save.h"
 #include "checksum.h"
 
 const u32 crcTable_1[256] = {

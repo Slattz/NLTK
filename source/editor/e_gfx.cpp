@@ -1,8 +1,20 @@
-#include "common.h"
+#include <3ds.h>
+#include <string>
+#include <citro2d.h>
+#include "unicode.h"
+#include "gfx.h"
+#include "save.h"
+#include "item.h"
+#include "utils.h"
+#include "cursor.h"
+#include "pattern.h"
 #include "core/label.h"
 #include "core/imagebutton.h"
+#include "editor/e_utils.h"
+#include "editor/e_menus.h"
 #include "editor/e_gfx.h"
-#include "pattern.h"
+
+extern Cursor g_cursor;
 
 C2D_ImageTint* AcreTint = new C2D_ImageTint[sizeof(C2D_ImageTint)];
 
@@ -166,7 +178,7 @@ void draw_editor_main_menu(void)
 
     C2D_SceneBegin(top);
     draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Editor Main Menu!");
-    draw_cursor();
+    g_cursor.Draw();
     C3D_FrameEnd(0);
 }
 
@@ -190,7 +202,7 @@ void draw_save_acres(Save *saveFile)
         c->Draw();
     }
 
-    draw_cursor();
+    g_cursor.Draw();
     C3D_FrameEnd(0);
 }
 
@@ -276,7 +288,7 @@ void draw_player_menu(Save *saveFile, int selectedplayer, int selectedmode, u32 
             draw_centered_text(1, 53, 35+(39*i), 8, 0.4, 0.4, COLOR_GREY, ButtonText[i]); //Text
     }
 
-    draw_cursor();
+    g_cursor.Draw();
     C3D_FrameEnd(0);
 }
 
@@ -289,7 +301,7 @@ void draw_player_menu_info(Save *saveFile, int selectedPlayer, u32 LColor, u32 R
         c->Draw();
     }
 
-    draw_cursor();
+    g_cursor.Draw();
     C3D_FrameEnd(0);
 }
 
@@ -323,7 +335,7 @@ void draw_player_menu_inventory(Save *saveFile, int selectedplayer, u32 LColor, 
         x += 38;
     }
 
-    draw_cursor();
+    g_cursor.Draw();
     C3D_FrameEnd(0);
 }
 /*
@@ -358,7 +370,7 @@ void draw_player_menu_patterns(Save *saveFile, int selectedPlayer, u32 LColor, u
         C2D_DrawImageAt(saveFile->players[selectedPlayer].Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
     }
 
-    draw_cursor();
+    g_cursor.Draw();
     C3D_FrameEnd(0);
 }
 

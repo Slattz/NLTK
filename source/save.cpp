@@ -1,5 +1,10 @@
-#include "save.h"
+#include <3ds.h>
+#include <string>
+#include <citro2d.h>
+#include "gfx.h"
+#include "player.h"
 #include "checksum.h"
+#include "save.h"
 
 Save::Save() { }
 

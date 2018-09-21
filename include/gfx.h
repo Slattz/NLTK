@@ -3,7 +3,8 @@
 #ifndef GFX_H
 #define GFX_H
 
-#include "common.h"
+#include <string>
+#include <citro2d.h>
 #include "SpriteIDs.h"
 
 typedef struct
@@ -33,23 +34,21 @@ extern C2D_SpriteSheet Items_ss;
 extern C2D_SpriteSheet Players_ss;
 extern C2D_SpriteSheet Swkbd_ss;
 
-extern std::vector<Text> DebugText;
-
 //Colors
-static const u32 COLOR_BG              =    C2D_Color32(92,188,105,255);
-static const u32 COLOR_MENU_BARS       =    C2D_Color32(33,139,43,255);
-static const u32 COLOR_WHITE           =    C2D_Color32(255,255,255,255);
-static const u32 COLOR_BLACK           =    C2D_Color32(0,0,0,255);
-static const u32 COLOR_GREEN           =    C2D_Color32(124,255,142,255);
-static const u32 COLOR_BROWN           =    C2D_Color32(80,78,45,255);
-static const u32 COLOR_LIGHT_BROWN     =    C2D_Color32(99,93,31,255);
-static const u32 COLOR_GREY_FILTER     =    C2D_Color32(0,0,0,170);
-static const u32 COLOR_GREY            =    C2D_Color32(210,210,210,255);
-static const u32 COLOR_DARK_GREY       =    C2D_Color32(145,145,145,255);
-static const u32 COLOR_RED             =    C2D_Color32(255,0,0,255);
-static const u32 COLOR_YELLOW          =    C2D_Color32(255,255,0,255);
-static const u32 COLOR_ORANGE          =    C2D_Color32(255,106,0,255);
-static const u32 COLOR_TRANSPARENT     =    C2D_Color32(0,0,0,0);
+extern const u32 COLOR_BG;  
+extern const u32 COLOR_MENU_BARS; 
+extern const u32 COLOR_WHITE;   
+extern const u32 COLOR_BLACK;
+extern const u32 COLOR_GREEN;   
+extern const u32 COLOR_BROWN;
+extern const u32 COLOR_LIGHT_BROWN;
+extern const u32 COLOR_GREY_FILTER;
+extern const u32 COLOR_GREY;   
+extern const u32 COLOR_DARK_GREY;   
+extern const u32 COLOR_RED;
+extern const u32 COLOR_YELLOW; 
+extern const u32 COLOR_ORANGE; 
+extern const u32 COLOR_TRANSPARENT;
 
 /* Image IDs */;
 
@@ -126,7 +125,6 @@ bool MsgDisp(C3D_RenderTarget *target, std::string message, MsgType Type = MsgTy
 void DisplayCardError();
 
 void draw_base_interface(void);
-void draw_cursor(void);
 void draw_main_menu(void);
 void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmedia);
 void draw_about_menu(bool discord, bool twitter);

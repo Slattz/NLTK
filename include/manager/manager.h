@@ -1,7 +1,7 @@
 #pragma once
 
-#ifndef NMANAGER_H
-#define NMANAGER_H
+#ifndef MANAGER_H
+#define MANAGER_H
 
 #include "manager/m_gfx.h"
 #include "manager/m_menus.h"

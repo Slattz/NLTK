@@ -3,7 +3,8 @@
 #ifndef E_UTILS_H
 #define E_UTILS_H
 
-#include "common.h"
+#include <vector>
+#include "save.h"
 
 class Item;
 

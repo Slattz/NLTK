@@ -3,7 +3,7 @@
 #ifndef FS_H
 #define FS_H
 
-#include "common.h"
+#include <cstdio>
 
 class Save;
 struct NLTK_Media_Installed;

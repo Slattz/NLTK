@@ -1,5 +1,7 @@
 #pragma once
-#include "common.h"
+
+#ifndef ITEM_H
+#define ITEM_H
 
 class Item {
 public:
@@ -12,3 +14,5 @@ public:
     std::string Name;
 	s32 Icon;
 };
+
+#endif

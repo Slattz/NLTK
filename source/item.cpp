@@ -1,3 +1,6 @@
+#include <3ds.h>
+#include <string>
+#include "e_utils.h"
 #include "item.h"
 
 Item::Item() {

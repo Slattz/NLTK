@@ -1,6 +1,7 @@
 #pragma once
 
 #include "control.h"
+#include "CTRFont.hpp"
 
 class Label : public Control {
 public:

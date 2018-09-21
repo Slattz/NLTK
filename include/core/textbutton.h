@@ -1,6 +1,7 @@
 #pragma once
 
 #include "button.h"
+#include "CTRFont.hpp"
 
 class TextButton : public Button {
 public:

@@ -1,5 +1,10 @@
+#include <3ds.h>
+#include <string>
+#include <citro2d.h>
 #include <turbojpeg.h>
+#include "gfx.h"
 #include "common.h"
+#include "jpeg.h"
 
 #define TPC_SIZE        0x1400
 #define TPC_MAX_WIDTH   64

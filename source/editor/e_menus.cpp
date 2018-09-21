@@ -1,8 +1,24 @@
-#include "common.h"
+#include <3ds.h>
+#include <string>
+#include <citro2d.h>
+#include <algorithm>
+#include "gfx.h"
+#include "save.h"
+#include "e_utils.h"
+#include "utils.h"
+#include "cursor.h"
 #include "editor/editor.h"
 #include "core/textbox.h"
 #include "core/imagebutton.h"
-#include <algorithm>
+#include "common.h"
+#include "menus.h"
+#include "e_menus.h"
+
+extern Cursor g_cursor;
+extern s16  g_CheckX[2];
+extern s16  g_CheckY[2];
+extern bool g_disabled[2];
+extern u32  g_key[2];
 
 static int g_selectedplayer = 0;
 static bool drawingMenu = false;

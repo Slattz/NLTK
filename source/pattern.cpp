@@ -1,5 +1,9 @@
-#include "pattern.h"
+#include <3ds.h>
+#include <string>
+#include <citro2d.h>
+#include "utils.h"
 #include "player.h"
+#include "pattern.h"
 
 static const u32 PaletteColors[] = {
     0xFFEFFFFF, 0xFF9AADFF, 0xEF559CFF, 0xFF65ADFF, 0xFF0063FF, 0xBD4573FF, 0xCE0052FF, 0x9C0031FF, 0x522031FF, 0x000009FF, 0x00000AFF, 0x00000BFF, 0x00000CFF, 0x00000DFF, 0x00000EFF, 0xFFFFFFFF,

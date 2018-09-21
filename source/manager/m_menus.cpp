@@ -1,8 +1,12 @@
-#include "common.h"
-#include "manager/manager.h"
+#include <3ds.h>
+#include <string>
+#include <algorithm>
+#include "save.h"
+#include "utils.h"
 #include "core/textbox.h"
 #include "core/imagebutton.h"
-#include <algorithm>
+#include "menus.h"
+#include "manager/manager.h"
 
 //static int g_selectedplayer = 0;
 //static bool drawingMenu = false;

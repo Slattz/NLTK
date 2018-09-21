@@ -1,3 +1,6 @@
+#include <citro2d.h>
+#include "gfx.h"
+#include "swkbd.h"
 #include "textbox.h"
 
 TextBox::TextBox() {

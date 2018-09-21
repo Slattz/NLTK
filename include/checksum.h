@@ -1,8 +1,7 @@
 #pragma once
-#ifndef CHECKSUM
-#define CHECKSUM
-#include <3ds.h>
-#include "save.h"
+
+#ifndef CHECKSUM_H
+#define CHECKSUM_H
 
 //class Save;
 
