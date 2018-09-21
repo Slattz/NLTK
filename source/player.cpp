@@ -12,7 +12,7 @@ Player::Player() { }
 Player::~Player()
 {
     if (m_TPCData != nullptr)
-    	delete[] m_TPCData;
+        delete[] m_TPCData;
 }
 
 Player::Player(Save *save, u32 offset, u32 index) {
@@ -28,8 +28,8 @@ Player::Player(Save *save, u32 offset, u32 index) {
     Pockets = new Item[16];
 
     for (int i = 0; i < 16; i++) {
-    	u32 itemOffset = offset + 0x6BD0 + i * 4;
-    	Pockets[i] = Item(save->ReadU16(itemOffset), save->ReadU8(itemOffset + 2), save->ReadU8(itemOffset + 3));
+        u32 itemOffset = offset + 0x6BD0 + i * 4;
+        Pockets[i] = Item(save->ReadU16(itemOffset), save->ReadU8(itemOffset + 2), save->ReadU8(itemOffset + 3));
     }
 
     Savings = EncryptedInt32(save->ReadU64(offset + 0x6B8C));
@@ -39,11 +39,11 @@ Player::Player(Save *save, u32 offset, u32 index) {
     MeowCoupons = EncryptedInt32(save->ReadU64(offset + 0x8D1C));
 
     if (Exists(save)) {
-    	RefreshTPC(save);
+        RefreshTPC(save);
     }
 
     for (u32 i = 0; i < 10; i++) {
-    	Patterns[i] = new Pattern(save, this, i);
+        Patterns[i] = new Pattern(save, this, i);
     }
 }
 
@@ -83,18 +83,18 @@ void Player::Write(Save *save) {
 u8* Player::RefreshTPC(Save *save) {
 
     if (save->ReadU16(m_offset + 0x5738) == 0xD8FF) { // 0xFFD8 = JPEG File Marker
-    	if (m_TPCData == nullptr)
-    		m_TPCData = new u8[0x1400];
-    	save->ReadArray(m_TPCData, m_offset + 0x5738, 0x1400);
-    	m_TPCPic = LoadPlayerPicture(m_TPCData);
+        if (m_TPCData == nullptr)
+            m_TPCData = new u8[0x1400];
+        save->ReadArray(m_TPCData, m_offset + 0x5738, 0x1400);
+        m_TPCPic = LoadPlayerPicture(m_TPCData);
     }
     else { //No TPC
-    	if (m_TPCData != nullptr)
-    	{
-    		delete[] m_TPCData;
-    		m_TPCData = nullptr;
-    	}
-    	m_TPCPic = C2D_SpriteSheetGetImage(Players_ss, NO_TPC_PIC);
+        if (m_TPCData != nullptr)
+        {
+            delete[] m_TPCData;
+            m_TPCData = nullptr;
+        }
+        m_TPCPic = C2D_SpriteSheetGetImage(Players_ss, NO_TPC_PIC);
     }
 
     return m_TPCData;
@@ -104,7 +104,7 @@ bool Player::Exists(Save *save) {
     u16 id = save->ReadU16(m_offset + 0x55A6);
 
     if (id == 0 || id == 0xFFFF) {
-    	return false;
+        return false;
     }
 
     return true;

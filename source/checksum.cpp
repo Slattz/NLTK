@@ -114,13 +114,13 @@ const u32 crcTable_2[256] = {
 };
 
 u32 CalculateCRC32Type1(u8 *buf, u32 size) {
-	u32 crc = 0xFFFFFFFF;
-	while (size-- != 0) {
-		crc = crcTable_1[(crc ^ *buf) & 0xFF] ^ (crc >> 8);
-		buf++;
-	}
+    u32 crc = 0xFFFFFFFF;
+    while (size-- != 0) {
+        crc = crcTable_1[(crc ^ *buf) & 0xFF] ^ (crc >> 8);
+        buf++;
+    }
 
-	return ~crc;
+    return ~crc;
 }
 
 u32 CalculateCRC32Type2(u8 *buf, u32 size) {
@@ -147,32 +147,32 @@ u32 UpdateCRC32(Save *save, u32 startOffset, u32 size, ChecksumType type) {
         crc32 = CalculateCRC32Type2(save->GetRawSaveData() + startOffset + 4, size);
     }
 
-	else {
+    else {
         crc32 = CalculateCRC32Type1(save->GetRawSaveData() + startOffset + 4, size);
     }
-	save->Write(startOffset, crc32); // write calculated crc32
+    save->Write(startOffset, crc32); // write calculated crc32
 
-	return crc32;
+    return crc32;
 }
 
 void FixCRC32s(Save *save) {
-	UpdateCRC32(save, 0x80, 0x1C); //Save Header
+    UpdateCRC32(save, 0x80, 0x1C); //Save Header
 
-	// Rehash players
-	for (int i = 0; i < 4; i++) {
-		UpdateCRC32(save, 0xA0 + (0xA480 * i), 0x6B84);           //Players Checksum1
-		UpdateCRC32(save, 0xA0 + (0xA480 * i) + 0x6B88, 0x38F4);  //Players Checksum2
-	}
+    // Rehash players
+    for (int i = 0; i < 4; i++) {
+        UpdateCRC32(save, 0xA0 + (0xA480 * i), 0x6B84);           //Players Checksum1
+        UpdateCRC32(save, 0xA0 + (0xA480 * i) + 0x6B88, 0x38F4);  //Players Checksum2
+    }
 
-	UpdateCRC32(save, 0x292A0, 0x22BC8); 	//VillagerData Checksum
-	UpdateCRC32(save, 0x4BE80, 0x44B8); 	//GeneralTownData Checksum
+    UpdateCRC32(save, 0x292A0, 0x22BC8); 	//VillagerData Checksum
+    UpdateCRC32(save, 0x4BE80, 0x44B8); 	//GeneralTownData Checksum
     UpdateCRC32(save, 0x53424, 0x1E4D8);    //ItemAndAcreData Checksum
     UpdateCRC32(save, 0x71900, 0x20);       //Unknown1 Checksum
     UpdateCRC32(save, 0x71924, 0xBE4);      //Unknown2 Checksum
     UpdateCRC32(save, 0x73954, 0x16188);    //LetterStorage Checksum
 
-	UpdateCRC32(save, 0x5033C, 0x28F0, CHECKSUM_2); 	//Unknown3 Checksum
+    UpdateCRC32(save, 0x5033C, 0x28F0, CHECKSUM_2); 	//Unknown3 Checksum
     UpdateCRC32(save, 0x52C30, 0x7F0, CHECKSUM_2);      //Unknown4 Checksum
-	UpdateCRC32(save, 0x7250C, 0x1444, CHECKSUM_2); 	//Unknown5 Checksum
+    UpdateCRC32(save, 0x7250C, 0x1444, CHECKSUM_2); 	//Unknown5 Checksum
 
 }

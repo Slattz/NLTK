@@ -197,43 +197,43 @@ bool MsgDisp(C3D_RenderTarget *target, std::string message, MsgType Type, u32 bg
 }
 
 void DisplayCardError() {
-	// TODO: This shouldn't just check if the card is inserted, but rather, if Animal Crossing is the inserted card.
-	if (IsGameCartInserted() && checkGameCartIsACNL()) {
-		return;
-	}
+    // TODO: This shouldn't just check if the card is inserted, but rather, if Animal Crossing is the inserted card.
+    if (IsGameCartInserted() && checkGameCartIsACNL()) {
+        return;
+    }
 
-	bool show = true;
-	u32 timer = 0;
-	u32 maxTimer = 60; // 60 FPS?
-	const char *cardRemovedErrorMessage = "To continue editing, please\nreinsert your Animal Crossing: New Leaf\nGame Card.\n" \
-		"Press " FONT_A " when done.";
+    bool show = true;
+    u32 timer = 0;
+    u32 maxTimer = 60; // 60 FPS?
+    const char *cardRemovedErrorMessage = "To continue editing, please\nreinsert your Animal Crossing: New Leaf\nGame Card.\n" \
+        "Press " FONT_A " when done.";
 
-	while (aptMainLoop())
-	{
-		hidScanInput();
+    while (aptMainLoop())
+    {
+        hidScanInput();
 
-		if (IsGameCartInserted() && checkGameCartIsACNL() && hidKeysDown() & KEY_A) break;
+        if (IsGameCartInserted() && checkGameCartIsACNL() && hidKeysDown() & KEY_A) break;
 
-		draw_base_interface();
-		C2D_SceneBegin(top);
-		C2D_DrawRectSolid(50, 33.5, 0, 300, 180, COLOR_BROWN);
-		draw_centered_text(0, 400, 100, 0, 0.5, 0.5, COLOR_GREY, cardRemovedErrorMessage);
+        draw_base_interface();
+        C2D_SceneBegin(top);
+        C2D_DrawRectSolid(50, 33.5, 0, 300, 180, COLOR_BROWN);
+        draw_centered_text(0, 400, 100, 0, 0.5, 0.5, COLOR_GREY, cardRemovedErrorMessage);
 
-		if (show || IsGameCartInserted()) {
-			DrawSprite(GameSelect_ss, GAME_CART, 176, 40); // NOTE: Top Screen resolution 400x240, Bottom Screen Resolution: 320x240
-		}
-		else {
-			DrawSprite(GameSelect_ss, GAME_CART, 176, 40, GreyFilter);
-		}
+        if (show || IsGameCartInserted()) {
+            DrawSprite(GameSelect_ss, GAME_CART, 176, 40); // NOTE: Top Screen resolution 400x240, Bottom Screen Resolution: 320x240
+        }
+        else {
+            DrawSprite(GameSelect_ss, GAME_CART, 176, 40, GreyFilter);
+        }
 
-		C3D_FrameEnd(0);
+        C3D_FrameEnd(0);
 
-		timer++;
-		if (timer >= maxTimer) {
-			timer = 0;
-			show = !show;
-		}
-	}
+        timer++;
+        if (timer >= maxTimer) {
+            timer = 0;
+            show = !show;
+        }
+    }
 }
 
 void draw_main_menu(void)
@@ -354,42 +354,42 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
     draw_base_interface();
     C2D_SceneBegin(bottom);
 
-	if (selectedmedia == -1 || selectedgame == -1 || selectedregion == -1) {
-		C2D_DrawRectSolid(75, 190, 0, 170, 30, COLOR_BROWN); //Confirm Button
-	}
-	else {
-		C2D_DrawRectSolid(75, 190, 0, 170, 30, COLOR_LIGHT_BROWN); //Confirm Button (Can Confirm)
-	}
+    if (selectedmedia == -1 || selectedgame == -1 || selectedregion == -1) {
+        C2D_DrawRectSolid(75, 190, 0, 170, 30, COLOR_BROWN); //Confirm Button
+    }
+    else {
+        C2D_DrawRectSolid(75, 190, 0, 170, 30, COLOR_LIGHT_BROWN); //Confirm Button (Can Confirm)
+    }
 
-	// Media Type
-	if (selectedmedia == 1) { //Game Card
-		C2D_DrawRectSolid(98, 3, 0, 54, 54, COLOR_GREY); //Grey Outline
-		DrawSprite(GameSelect_ss, GAME_CART, 101, 6); //Game Card is selected
-		DrawSprite(GameSelect_ss, SD_CARD, 169, 6, GreyFilter); //Grey filter over SD card
-	}
-	else if (selectedmedia == 0) { //SD Card
+    // Media Type
+    if (selectedmedia == 1) { //Game Card
+        C2D_DrawRectSolid(98, 3, 0, 54, 54, COLOR_GREY); //Grey Outline
+        DrawSprite(GameSelect_ss, GAME_CART, 101, 6); //Game Card is selected
+        DrawSprite(GameSelect_ss, SD_CARD, 169, 6, GreyFilter); //Grey filter over SD card
+    }
+    else if (selectedmedia == 0) { //SD Card
         C2D_DrawRectSolid(166, 3, 0, 54, 54, COLOR_GREY); //Grey Outline
         DrawSprite(GameSelect_ss, SD_CARD, 169, 6); //SD Card is selected
-		DrawSprite(GameSelect_ss, GAME_CART, 101, 6, GreyFilter); //Grey Filter over Game Cart
-	}
-	else { //No Media selected yet
-		if (MediaInfo.GameCartInfo.HasACNLData) {
-			DrawSprite(GameSelect_ss, GAME_CART, 101, 6);
-		}
-		else {
-			DrawSprite(GameSelect_ss, GAME_CART, 101, 6, GreyFilter);
-		}
+        DrawSprite(GameSelect_ss, GAME_CART, 101, 6, GreyFilter); //Grey Filter over Game Cart
+    }
+    else { //No Media selected yet
+        if (MediaInfo.GameCartInfo.HasACNLData) {
+            DrawSprite(GameSelect_ss, GAME_CART, 101, 6);
+        }
+        else {
+            DrawSprite(GameSelect_ss, GAME_CART, 101, 6, GreyFilter);
+        }
 
-		if (MediaInfo.SDCardInfo.HasACNLData) {
-			DrawSprite(GameSelect_ss, SD_CARD, 169, 6);
-		}
-		else {
-			DrawSprite(GameSelect_ss, SD_CARD, 169, 6, GreyFilter);
-		}
-	}
+        if (MediaInfo.SDCardInfo.HasACNLData) {
+            DrawSprite(GameSelect_ss, SD_CARD, 169, 6);
+        }
+        else {
+            DrawSprite(GameSelect_ss, SD_CARD, 169, 6, GreyFilter);
+        }
+    }
 
-	NLTK_Media_Installed mediaInstalled = selectedmedia == 0
-		? MediaInfo.SDCardInfo : MediaInfo.GameCartInfo;
+    NLTK_Media_Installed mediaInstalled = selectedmedia == 0
+        ? MediaInfo.SDCardInfo : MediaInfo.GameCartInfo;
 
     /* Grey Outlines */
     if (selectedgame == 1) //Orig ACNL

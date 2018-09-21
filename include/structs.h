@@ -7,14 +7,14 @@
 #include <string>
 
 enum GameType {
-	NL_JPN,
-	NL_USA,
-	NL_EUR,
-	NL_KOR,
-	WA_JPN,
-	WA_USA,
-	WA_EUR,
-	WA_KOR
+    NL_JPN,
+    NL_USA,
+    NL_EUR,
+    NL_KOR,
+    WA_JPN,
+    WA_USA,
+    WA_EUR,
+    WA_KOR
 };
 
 //NLTK Settings
@@ -30,7 +30,7 @@ struct NLTK_Settings
 struct LoadItem_s
 {
     int     X;
-	int     Y;
+    int     Y;
     std::string  ItemName;
 };
 
@@ -51,21 +51,21 @@ struct NLTK_ACNLs_Installed
 };
 
 struct NLTK_Media_Installed {
-	bool HasACNLData = false;
-	NLTK_ACNLs_Installed InstalledTitles;
+    bool HasACNLData = false;
+    NLTK_ACNLs_Installed InstalledTitles;
 };
 
 struct NLTK_Titles_Info {
-	NLTK_Media_Installed GameCartInfo;
-	NLTK_Media_Installed SDCardInfo;
+    NLTK_Media_Installed GameCartInfo;
+    NLTK_Media_Installed SDCardInfo;
 };
 
 struct Point_t {
-	u32 X, Y;
+    u32 X, Y;
 };
 
 struct Size_t {
-	u32 Width, Height;
+    u32 Width, Height;
 };
 
 #endif

@@ -3,25 +3,25 @@
 #include "swkbd.h"
 
 std::string getKeyboardInput(Text myText, const char *hintText, u32 maxLength, SwkbdType keyboardType) {
-	SwkbdState swkbdState;
-	SwkbdButton button = SWKBD_BUTTON_NONE;
-	swkbdInit(&swkbdState, keyboardType, 2, maxLength);
-	swkbdSetHintText(&swkbdState, hintText);
-	swkbdSetInitialText(&swkbdState, myText.GetText().c_str());
+    SwkbdState swkbdState;
+    SwkbdButton button = SWKBD_BUTTON_NONE;
+    swkbdInit(&swkbdState, keyboardType, 2, maxLength);
+    swkbdSetHintText(&swkbdState, hintText);
+    swkbdSetInitialText(&swkbdState, myText.GetText().c_str());
 
-	char *outputBuffer = new char[maxLength + 1];
-	button = swkbdInputText(&swkbdState, outputBuffer, maxLength + 1);
-	std::string str;
+    char *outputBuffer = new char[maxLength + 1];
+    button = swkbdInputText(&swkbdState, outputBuffer, maxLength + 1);
+    std::string str;
 
-	if (button == SWKBD_BUTTON_CONFIRM) {
-		str = std::string(outputBuffer);
-	}
-	else {
-		str = std::string(" ");
-	}
+    if (button == SWKBD_BUTTON_CONFIRM) {
+        str = std::string(outputBuffer);
+    }
+    else {
+        str = std::string(" ");
+    }
 
-	delete[] outputBuffer;
-	return str;
+    delete[] outputBuffer;
+    return str;
 }
 
 void DictInit(SwkbdState* swkbd)

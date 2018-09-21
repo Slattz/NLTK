@@ -41,21 +41,21 @@ void __appInit(void)
 
 void InitApp(void) {
     romfsInit();
-	mkdir(WORKDIR, 777);
+    mkdir(WORKDIR, 777);
     amInit();
     httpc.Init(0);
-	cfguInit();
-	InitGFX();
+    cfguInit();
+    InitGFX();
 }
 
 void PrepareToCloseApp(void) {
-	if (envIsHomebrew()) {
-		fsEndUseSession();
-	}
+    if (envIsHomebrew()) {
+        fsEndUseSession();
+    }
 
     saveConfig();
-	ExitGFX();
-	cfguExit();
+    ExitGFX();
+    cfguExit();
     httpc.Exit();
     amExit();
     romfsExit();
@@ -63,9 +63,9 @@ void PrepareToCloseApp(void) {
 
 int main() {
     InitApp();
-	g_acnlFont = Font::Open("romfs:/ACNL_font.bcfnt");
+    g_acnlFont = Font::Open("romfs:/ACNL_font.bcfnt");
 
-	if (g_acnlFont->IsLoaded()) {
+    if (g_acnlFont->IsLoaded()) {
         MsgDisp(top, "Error: ACNL font failed to open.\n", MsgTypeAccept);
     }
 
@@ -73,16 +73,16 @@ int main() {
 
     hidScanInput();
     u32 keys = (hidKeysDown() | hidKeysHeld());
-	if (keys & KEY_SELECT) {
-		resetConfig();
-	}
+    if (keys & KEY_SELECT) {
+        resetConfig();
+    }
 
     configInit();
 
     if (config.autoupdate) {
-		if (launchUpdater()) {
-			return 0;
-		}
+        if (launchUpdater()) {
+            return 0;
+        }
     }
 
     spawn_main_menu();

@@ -18,7 +18,7 @@ void load_player_invitems(Save *saveFile , int selectedplayer)
 {
     for (int num = 0; num < 16; num++)
     {
-		Item item = saveFile->players[selectedplayer].Pockets[num];
+        Item item = saveFile->players[selectedplayer].Pockets[num];
 
         item.Name = GetItemName(&item);
         item.Icon = GetItemIcon(&item);
@@ -28,9 +28,9 @@ void load_player_invitems(Save *saveFile , int selectedplayer)
 bool CheckUnreadMail(int selectedplayer)
 {
     /* STUB until player struct finished*/
-	if (selectedplayer == 0) { // TODO: REMOVE THIS (It's here to stop compiler warnings)
-		return true;
-	}
+    if (selectedplayer == 0) { // TODO: REMOVE THIS (It's here to stop compiler warnings)
+        return true;
+    }
     return true;
 }
 
@@ -39,7 +39,7 @@ Item GetItemFromSave(Save *saveFile, u32 offset)
     Item item;
     item.Id = saveFile->ReadU16(offset);
     item.Flag1 = saveFile->ReadU16(offset + 2);
-	item.Flag2 = saveFile->ReadU16(offset + 3);
+    item.Flag2 = saveFile->ReadU16(offset + 3);
     return item;
 }
 
@@ -118,67 +118,67 @@ u16 GetIconID(Item *item)
         return 0;
 
     u16 iconID = (g_ItemBin[offset + 1] << 8) + g_ItemBin[offset]; //Reading from BE file; 2nd u8 comes first to convert to LE
-	if (iconID >= 0x1FB) {
-		return 0;
-	}
+    if (iconID >= 0x1FB) {
+        return 0;
+    }
 
     u8 category = GetItemCategory(item);
-	if (category == 0xE && (item->Id == 0x334D || item->Id == 0x334E)) {
-		iconID = GetAxeDamageIcon(item, iconID);
-	}
+    if (category == 0xE && (item->Id == 0x334D || item->Id == 0x334E)) {
+        iconID = GetAxeDamageIcon(item, iconID);
+    }
 
     return iconID;
 }
 
 s32 GetItemIcon(Item *item)
 {
-	if (item->Id == 0x7FFE) {
-		return -1;
-	}
+    if (item->Id == 0x7FFE) {
+        return -1;
+    }
 
     u16 iconID = 0;
-	if (g_ItemBin != NULL) {
-		iconID = GetIconID(item);
-	}
+    if (g_ItemBin != NULL) {
+        iconID = GetIconID(item);
+    }
 
-	return iconIdTable[iconID];
+    return iconIdTable[iconID];
 }
 
 std::string GetItemName(Item *item)
 {
-	for (auto const& entry : g_itemDatabase) {
-		if (entry.first == item->Id) {
-			return entry.second;
-		}
-	}
+    for (auto const& entry : g_itemDatabase) {
+        if (entry.first == item->Id) {
+            return entry.second;
+        }
+    }
 
-	return std::string("???");
+    return std::string("???");
 }
 
 std::vector<u32> findPlayerReferences(Save *saveFile, Player *player) {
-	// Read u16 ID + Name
-	u16 *dataArray = new u16[11];
-	for (u32 i = 0; i < 11; i++) {
-		dataArray[i] = saveFile->ReadU16(player->m_offset + 0x55A6 + i * 2);
-	}
+    // Read u16 ID + Name
+    u16 *dataArray = new u16[11];
+    for (u32 i = 0; i < 11; i++) {
+        dataArray[i] = saveFile->ReadU16(player->m_offset + 0x55A6 + i * 2);
+    }
 
-	std::vector<u32> references = std::vector<u32>();
-	u32 Size = saveFile->GetSaveSize() - 22;
-	for (u32 i = 0; i < Size; i += 2) { // subtract 22 so we don't read past the end of the file
-		bool foundMatch = true;
-		for (int x = 0; x < 11; x++) {
-			if (saveFile->ReadU16(i + x * 2) != dataArray[x]) {
-				foundMatch = false;
-				break;
-			}
-		}
-		// add the offset to the vector
-		if (foundMatch) {
-			references.push_back(i);
-			i += 20; // skip the rest of this data
-		}
-	}
+    std::vector<u32> references = std::vector<u32>();
+    u32 Size = saveFile->GetSaveSize() - 22;
+    for (u32 i = 0; i < Size; i += 2) { // subtract 22 so we don't read past the end of the file
+        bool foundMatch = true;
+        for (int x = 0; x < 11; x++) {
+            if (saveFile->ReadU16(i + x * 2) != dataArray[x]) {
+                foundMatch = false;
+                break;
+            }
+        }
+        // add the offset to the vector
+        if (foundMatch) {
+            references.push_back(i);
+            i += 20; // skip the rest of this data
+        }
+    }
 
-	delete[] dataArray;
-	return references;
+    delete[] dataArray;
+    return references;
 }

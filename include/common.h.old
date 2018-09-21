@@ -48,15 +48,15 @@ extern FS_MediaType currentMediaType;
 extern std::map<u16, std::string> g_itemDatabase;
 
 static u64 *g_titleIds = new u64[8]{
-	0x0004000000086200, // New Leaf Japan
-	0x0004000000086300, // New Leaf USA
-	0x0004000000086400, // New Leaf Europe
-	0x0004000000086500, // New Leaf Korea
+    0x0004000000086200, // New Leaf Japan
+    0x0004000000086300, // New Leaf USA
+    0x0004000000086400, // New Leaf Europe
+    0x0004000000086500, // New Leaf Korea
 
-	0x0004000000198D00, // Welcome Amiibo Japan
-	0x0004000000198E00, // Welcome Amiibo USA
-	0x0004000000198F00, // Welcome Amiibo Europe
-	0x0004000000199000  // Welcome Amiibo Korea
+    0x0004000000198D00, // Welcome Amiibo Japan
+    0x0004000000198E00, // Welcome Amiibo USA
+    0x0004000000198F00, // Welcome Amiibo Europe
+    0x0004000000199000  // Welcome Amiibo Korea
 };
 
 #define STRINGIFY(x)   #x

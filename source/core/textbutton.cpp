@@ -3,8 +3,8 @@
 TextButton::TextButton(void) : Button() { }
 
 TextButton::TextButton(Point_t location, Size_t size, u32 bgColor, u32 activatorKeys, u32 textColor, std::string text)
-	: Button(location, size, bgColor, activatorKeys), myText(text) {
-	
+    : Button(location, size, bgColor, activatorKeys), myText(text) {
+    
     SetTextColor(textColor);
     SetTextSize(FontScale, FontScale);
     SetTextPos(Location.X + 2, Location.Y + 2);
@@ -12,7 +12,7 @@ TextButton::TextButton(Point_t location, Size_t size, u32 bgColor, u32 activator
 };
 
 TextButton::TextButton(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 activatorKeys, u32 textColor, std::string text)
-	: TextButton(Point_t{ x, y }, Size_t{ width, height }, bgColor, activatorKeys, textColor, text) { }
+    : TextButton(Point_t{ x, y }, Size_t{ width, height }, bgColor, activatorKeys, textColor, text) { }
 
 void TextButton::Draw(void) {
     Button::Draw();

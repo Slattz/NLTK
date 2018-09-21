@@ -33,7 +33,7 @@ int spawn_main_menu(void) {
     static int ret = -1;
 
     while (aptMainLoop()) {
-		checkIfCardInserted();
+        checkIfCardInserted();
 
         hidScanInput();
         draw_main_menu();
@@ -55,10 +55,10 @@ int spawn_main_menu(void) {
         {
             if (hidKeysDown() & g_key[i] && g_disabled[i])
             { 
-				if (g_CheckX[i] >= 60 && g_CheckX[i] <= 124 && g_CheckY[i] >= 50 && g_CheckY[i] <= 114) //Editor Icon
+                if (g_CheckX[i] >= 60 && g_CheckX[i] <= 124 && g_CheckY[i] >= 50 && g_CheckY[i] <= 114) //Editor Icon
                     ret = editor_main();
     
-				else if (g_CheckX[i] >= 180 && g_CheckX[i] <= 244 && g_CheckY[i] >= 50 && g_CheckY[i] <= 114) //Manager Icon
+                else if (g_CheckX[i] >= 180 && g_CheckX[i] <= 244 && g_CheckY[i] >= 50 && g_CheckY[i] <= 114) //Manager Icon
                     ret = manager_main();
 
                 else if (g_CheckX[i] >= 20 && g_CheckX[i] <= 100 && g_CheckY[i] >= 30 && g_CheckY[i] <= 66) //About Menu
@@ -88,7 +88,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
 {
     int selectedgame = -1;
     int selectedregion = -1;
-	int selectedmedia = -1;
+    int selectedmedia = -1;
 
     checkInstalledTitles();
 
@@ -100,9 +100,9 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
 
     while (aptMainLoop())
     {
-		if (selectedmedia == 1 && !IsGameCartInserted()) {
-			DisplayCardError();
-		}
+        if (selectedmedia == 1 && !IsGameCartInserted()) {
+            DisplayCardError();
+        }
 
         hidScanInput();
         draw_game_select_menu(selectedgame, selectedregion, selectedmedia);
@@ -111,23 +111,23 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
         if (hidKeysDown() & KEY_START)
             break;
 
-		NLTK_Media_Installed mediaInstalled = selectedmedia == 0
-			? MediaInfo.SDCardInfo : MediaInfo.GameCartInfo;
+        NLTK_Media_Installed mediaInstalled = selectedmedia == 0
+            ? MediaInfo.SDCardInfo : MediaInfo.GameCartInfo;
 
         for (int i = 0; i < 2; i++)
         {
             if (hidKeysDown() & g_key[i] && g_disabled[i])
             { 
-				if (g_CheckX[i] >= 101 && g_CheckX[i] <= 145 && g_CheckY[i] >= 6 && g_CheckY[i] <= 54 && MediaInfo.GameCartInfo.HasACNLData) {
-					selectedmedia = 1;
-					selectedgame = -1;
-					selectedregion = -1;
-				}
-				else if (g_CheckX[i] >= 169 && g_CheckX[i] <= 213 && g_CheckY[i] >= 6 && g_CheckY[i] <= 54 && MediaInfo.SDCardInfo.HasACNLData) {
-					selectedmedia = 0;
-					selectedgame = -1;
-					selectedregion = -1;
-				}
+                if (g_CheckX[i] >= 101 && g_CheckX[i] <= 145 && g_CheckY[i] >= 6 && g_CheckY[i] <= 54 && MediaInfo.GameCartInfo.HasACNLData) {
+                    selectedmedia = 1;
+                    selectedgame = -1;
+                    selectedregion = -1;
+                }
+                else if (g_CheckX[i] >= 169 && g_CheckX[i] <= 213 && g_CheckY[i] >= 6 && g_CheckY[i] <= 54 && MediaInfo.SDCardInfo.HasACNLData) {
+                    selectedmedia = 0;
+                    selectedgame = -1;
+                    selectedregion = -1;
+                }
                 else if (selectedmedia != -1 && g_CheckX[i] >= 101 && g_CheckX[i] <= 145 && g_CheckY[i] >= 60 && g_CheckY[i] <= 104
                     && mediaInstalled.InstalledTitles.ORIG_installed)
                 {
@@ -140,7 +140,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
                     selectedgame = 2; //WA ACNL
                     selectedregion = -1; //Reset region, user may not have same regions installed for orig ACNL
                 }
-				else if (g_CheckX[i] >= 170 && g_CheckX[i] <= 214 && g_CheckY[i] >= 130 && g_CheckY[i] <= 160)
+                else if (g_CheckX[i] >= 170 && g_CheckX[i] <= 214 && g_CheckY[i] >= 130 && g_CheckY[i] <= 160)
                 {
                     if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_JPN_installed) //orig ACNL
                         selectedregion = 0; //JPN
@@ -148,7 +148,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
                     else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_JPN_installed) //WA ACNL
                         selectedregion = 0; //JPN
                 }
-				else if (g_CheckX[i] >= 106 && g_CheckX[i] <= 150 && g_CheckY[i] >= 130 && g_CheckY[i] <= 160)
+                else if (g_CheckX[i] >= 106 && g_CheckX[i] <= 150 && g_CheckY[i] >= 130 && g_CheckY[i] <= 160)
                 {
                     if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_USA_installed) //orig ACNL
                         selectedregion = 1; //USA
@@ -156,7 +156,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
                     else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_USA_installed) //WA ACNL
                         selectedregion = 1; //USA
                 }
-				else if (g_CheckX[i] >= 42 && g_CheckX[i] <= 86 && g_CheckY[i] >= 130 && g_CheckY[i] <= 160)
+                else if (g_CheckX[i] >= 42 && g_CheckX[i] <= 86 && g_CheckY[i] >= 130 && g_CheckY[i] <= 160)
                 {
                     if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_EUR_installed) //orig ACNL
                         selectedregion = 2; //EUR
@@ -172,10 +172,10 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
                     else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_KOR_installed) //WA ACNL
                         selectedregion = 3; //KOR
                 }
-				else if (g_CheckX[i] >= 75 && g_CheckX[i] <= 245 && g_CheckY[i] >= 190 && g_CheckY[i] <= 220) //Confirm Button
+                else if (g_CheckX[i] >= 75 && g_CheckX[i] <= 245 && g_CheckY[i] >= 190 && g_CheckY[i] <= 220) //Confirm Button
                 {
-					if (selectedmedia == -1)
-						MsgDisp(top, "Please select a media type!");
+                    if (selectedmedia == -1)
+                        MsgDisp(top, "Please select a media type!");
 
                     else if (selectedgame == -1)
                         MsgDisp(top, "Please select a game!");
@@ -185,8 +185,8 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
     
                     else
                     {
-						// Set Media Type
-						*mediaType = static_cast<FS_MediaType>(selectedmedia + 1);
+                        // Set Media Type
+                        *mediaType = static_cast<FS_MediaType>(selectedmedia + 1);
 
                         if (selectedgame == 1)
                             return JPN_TID + (selectedregion * 0x100); //Form orig TID
@@ -197,7 +197,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
                         else
                         {
                             MsgDisp(top, Format("Error:\nSelected Media Type is: %d\nSelected Game is: %d\nSelected Region is: %d",
-								selectedmedia, selectedgame, selectedregion));
+                                selectedmedia, selectedgame, selectedregion));
                             return 0;
                         }
                     }
@@ -210,16 +210,16 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
 
 void spawn_about_menu(void)
 {
-	if (drawingMenu)
-		return;
+    if (drawingMenu)
+        return;
 
-	drawingMenu = true;
+    drawingMenu = true;
 
     static bool discord = false;
     static bool twitter = false;
     while (aptMainLoop())
     {
-		checkIfCardInserted();
+        checkIfCardInserted();
 
         hidScanInput();
         draw_about_menu(discord, twitter);
@@ -250,21 +250,21 @@ void spawn_about_menu(void)
         }
     }
 
-	drawingMenu = false;
+    drawingMenu = false;
 }
 
 void spawn_config_menu(void)
 {
-	if (drawingMenu)
-		return;
+    if (drawingMenu)
+        return;
 
-	drawingMenu = true;
+    drawingMenu = true;
 
     static bool debugcomplete = false;
 
     while (aptMainLoop())
     {
-		checkIfCardInserted();
+        checkIfCardInserted();
 
         hidScanInput();
         draw_config_menu();
@@ -302,5 +302,5 @@ void spawn_config_menu(void)
         }
     }
     saveConfig();
-	drawingMenu = false;
+    drawingMenu = false;
 }

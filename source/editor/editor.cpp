@@ -18,75 +18,75 @@ u64 currentTitleId;
 bool m_editorInitiated = false;
 
 void CleanupEditor(void) {
-	if (g_ItemBin) {
-		delete[] g_ItemBin;
-		g_ItemBin = NULL;
-	}
+    if (g_ItemBin) {
+        delete[] g_ItemBin;
+        g_ItemBin = NULL;
+    }
     m_editorInitiated = false;
 }
 
 void init_editor(void) {
-	// Load Item Database
-	loadItemDatabase();
-	InitEditorGFX();
+    // Load Item Database
+    loadItemDatabase();
+    InitEditorGFX();
 
-	g_ItemBin = new u8[0x2B720];
-	file_read(g_ItemBin, "romfs:/Item.bin", 0x2B720);
+    g_ItemBin = new u8[0x2B720];
+    file_read(g_ItemBin, "romfs:/Item.bin", 0x2B720);
 
-	m_editorInitiated = true;
+    m_editorInitiated = true;
 }
 
 int editor_main(void) {
-	if (!m_editorInitiated) {
-		init_editor();
-	}
+    if (!m_editorInitiated) {
+        init_editor();
+    }
 
 GameSelect:
     Handle saveHandle;
     FS_Archive saveArch;
 
-	{
-		if (config.autoloadprefGame && !(hidKeysDown() & KEY_DOWN) && is_ACNL(config.prefGame)) {
-			g_tid = config.prefGame; // TODO: Support media type in config
-		}
-		else {
-			g_tid = spawn_game_select_menu(&currentMediaType);
-		}
+    {
+        if (config.autoloadprefGame && !(hidKeysDown() & KEY_DOWN) && is_ACNL(config.prefGame)) {
+            g_tid = config.prefGame; // TODO: Support media type in config
+        }
+        else {
+            g_tid = spawn_game_select_menu(&currentMediaType);
+        }
 
         if (g_tid == 0) {
-			CleanupEditor();
+            CleanupEditor();
             return 0;
         }
     }
 
-	bool successfullyOpenedArchive = openSaveArchive(&saveArch, g_tid, currentMediaType);
+    bool successfullyOpenedArchive = openSaveArchive(&saveArch, g_tid, currentMediaType);
     if (!successfullyOpenedArchive && !(tryOpenSaveArchive(&saveArch, g_tid, &currentMediaType))) {
         MsgDisp(top, "Unable to Open the Save Archive\nSave file may not have been created!");
-		CleanupEditor();
+        CleanupEditor();
         return 0;
     }
 
-	// Set current title id
-	currentTitleId = g_tid;
+    // Set current title id
+    currentTitleId = g_tid;
 
-	// Initialize a new Save class
-	saveFile = Save(saveArch, &saveHandle, true);
+    // Initialize a new Save class
+    saveFile = Save(saveArch, &saveHandle, true);
 
-	if (saveFile.GetSaveSize() != SIZE_SAVE) {
-		MsgDisp(top, "Save file is the incorrect size!");
-		CleanupEditor();
-		saveFile.Close();
-		return 0;
-	}
+    if (saveFile.GetSaveSize() != SIZE_SAVE) {
+        MsgDisp(top, "Save file is the incorrect size!");
+        CleanupEditor();
+        saveFile.Close();
+        return 0;
+    }
 
-	if (config.autosavebackup) {
-		saveBackup(&saveFile, g_tid);
-	}
+    if (config.autosavebackup) {
+        saveBackup(&saveFile, g_tid);
+    }
 
-	saveFile.FixSaveRegion();		//Update Region of the Save
-	saveFile.FixInvalidBuildings(); //Fix any invalid buildings (fixes 7dd6 crash caused by ntr plg)
+    saveFile.FixSaveRegion();		//Update Region of the Save
+    saveFile.FixInvalidBuildings(); //Fix any invalid buildings (fixes 7dd6 crash caused by ntr plg)
 
-	int mode = spawn_editor_main_menu(&saveFile);
+    int mode = spawn_editor_main_menu(&saveFile);
 
     saveFile.Close();
 
