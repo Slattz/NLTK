@@ -12,6 +12,16 @@ Cursor::Cursor() {
     m_ActivatorHeld = false;
 }
 
+void Cursor::SetVisibility(bool visible) {
+    m_ManualVisibility = true; //Stops cursor from automatically appearing and disappearing
+    m_Visible = visible;
+}
+
+/* Allows cursor to automatically appear and disappear again */
+void Cursor::RemoveManualVisibility(void) {
+    m_ManualVisibility = false;
+}
+
 void Cursor::Draw() {
     C2D_SceneBegin(bottom);
     UpdatePos();
@@ -39,7 +49,7 @@ void Cursor::UpdatePos() {
     else
         m_ActivatorHeld = false;
 
-    if (hidKeysHeld() & KEY_TOUCH) {
+    if (hidKeysHeld() & KEY_TOUCH && !m_ManualVisibility) {
         m_Visible = false;
         return;
     }
@@ -59,7 +69,8 @@ void Cursor::UpdatePos() {
         if (hidKeysHeld() & KEY_CPAD_DOWN)
             m_LocY += 3;
 
-        m_Visible = true;
+        if (!m_ManualVisibility)
+            m_Visible = true;
     }
 
     //C-Stick
@@ -77,7 +88,8 @@ void Cursor::UpdatePos() {
         if (hidKeysHeld() & KEY_CSTICK_DOWN)
             m_LocY += 4;
 
-        m_Visible = true;
+        if (!m_ManualVisibility)
+            m_Visible = true;
     }
 
     if (m_LocY < -5)
