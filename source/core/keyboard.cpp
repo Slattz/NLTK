@@ -4,8 +4,12 @@
 #include "gfx.h"
 #include "utils.h"
 #include "keyboard.h"
+#include "cursor.h"
+
 #define KEYS_PER_ROW 10
 #define KEYBOARD_ROWS 4
+
+extern Cursor g_cursor;
 
 static const u32 SWKBD_BG = C2D_Color32(0x21, 0x8B, 0x2B, 0xFF);
 static const u32 SWKBD_BAR = C2D_Color32(0x14, 0x56, 0x1A, 0xFF);
@@ -33,14 +37,13 @@ const char16_t NinSymbols[] = { //Laid out in same layout as characters per keyb
 
 Keyboard::Keyboard(void)
 {
-    m_InputType = InputTypes::None;
+    m_InputType = KType_None;
     m_MaxSize = 100;
     m_CanAbort = true;
     m_ShiftOn = false;
-    m_ButtonIndex = 0;
     m_NinSymbolsPage = 0;
     m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KeyboardTab::Text;
+    m_KeyboardTab = KTab_Letters;
     SetupLetters();
     SetupSymbols();
     SetupACNLSymbols();
@@ -55,31 +58,29 @@ Keyboard::~Keyboard(void) {
     m_ACNLSymbols.shrink_to_fit();
 }
 
-Keyboard::Keyboard(InputTypes InType, u32 MaxSize, bool CanAbort) {
+Keyboard::Keyboard(u8 InType, u32 MaxSize, bool CanAbort) {
     m_InputType = InType;
     m_MaxSize = MaxSize;
     m_CanAbort = CanAbort;
     m_ShiftOn = false;
-    m_ButtonIndex = 0;
     m_NinSymbolsPage = 0;
     m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KeyboardTab::Text;
+    m_KeyboardTab = KTab_Letters;
     SetupCommonText();
     SetupLetters();
     SetupSymbols();
     SetupACNLSymbols();
 }
-Keyboard::Keyboard(InputTypes InType, u32 MaxSize, bool CanAbort, const std::string &HintText, const std::string &DefaultText)
+Keyboard::Keyboard(u8 InType, u32 MaxSize, bool CanAbort, const std::string &HintText, const std::string &DefaultText)
     : m_HintText(COLOR_DARK_GREY, HintText, 1.f, 1.f), m_Text(COLOR_WHITE, DefaultText, 1.f, 1.f)
 {
     m_InputType = InType;
     m_MaxSize = MaxSize;
     m_CanAbort = CanAbort;
     m_ShiftOn = false;
-    m_ButtonIndex = 0;
     m_NinSymbolsPage = 0;
     m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KeyboardTab::Text;
+    m_KeyboardTab = KTab_Letters;
     SetupCommonText();
     SetupLetters();
     SetupSymbols();
@@ -88,14 +89,13 @@ Keyboard::Keyboard(InputTypes InType, u32 MaxSize, bool CanAbort, const std::str
 Keyboard::Keyboard(u32 MaxSize, bool CanAbort, const std::string &HintText, const u32 &DefaultValue)
     : m_HintText(COLOR_DARK_GREY, HintText, 1.f, 1.f), m_Text(COLOR_WHITE, std::to_string(DefaultValue), 1.f, 1.f)
 {
-    m_InputType = InputTypes::Numbers;
+    m_InputType = KType_Numbers;
     m_MaxSize = MaxSize;
     m_CanAbort = CanAbort;
     m_ShiftOn = false;
-    m_ButtonIndex = 0;
     m_NinSymbolsPage = 0;
     m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KeyboardTab::Text;
+    m_KeyboardTab = KTab_Letters;
     SetupCommonText();
     SetupLetters();
     SetupSymbols();
@@ -218,7 +218,7 @@ void Keyboard::SetMaxLength(u32 maxSize) {
     m_MaxSize = maxSize;
 }
 
-void Keyboard::SetInputType(InputTypes InType) {
+void Keyboard::SetInputType(u8 InType) {
     m_InputType = InType;
 }
 
@@ -248,7 +248,7 @@ void Keyboard::Draw() {
 
     switch (m_KeyboardTab) //Draw correct keys per tab
     {
-        case KeyboardTab::Text :
+        case KTab_Letters :
             for (u32 i = 0; i < m_Characters.size(); i++)
                 m_Characters[i].Draw();
 
@@ -257,14 +257,14 @@ void Keyboard::Draw() {
             C2D_DrawRectSolid(0.f, 200.f, 0.f, 100.f, 40.f, SWKBD_TAB_CLR);    //Highlight selected tab
             break;
 
-        case KeyboardTab::Symbols :
+        case KTab_Symbols :
             for (u32 i = 0; i < m_Symbols.size(); i++)
                 m_Symbols[i].Draw();
 
             C2D_DrawRectSolid(100.f, 200.f, 0.f, 124.f, 40.f, SWKBD_TAB_CLR);    //Highlight selected tab
             break;
 
-        case KeyboardTab::ACNLSymbols :
+        case KTab_ACNLSymbols :
             for (u32 i = 0; i < m_ACNLSymbols.size()/3; i++) {
                 m_ACNLSymbols[i + (m_ACNLSymbols.size()/3 * m_NinSymbolsPage)].Draw(); //Should be 36 is amount of characters in one page
             }
@@ -283,25 +283,15 @@ void Keyboard::Draw() {
     for (int i = 0; i < 3; i++)
         m_CommonText[i+2].Draw(); //Draw text for the tabs (+2 as comma and fstop before)
 
+    g_cursor.Draw();
+
     C3D_FrameEnd(0);
 }
 void Keyboard::UpdateHID() {
-    u32 kDown/*, kHeld, kUp*/;
-    hidScanInput();
-    kDown = hidKeysDown();
-    //kHeld = hidKeysHeld();
-    //kUp = hidKeysUp();
+    u32 kDown = hidKeysDown();
+    updateCursorInfo(); //Update cursor info
 
-    if (kDown & KEY_RIGHT) {
-        m_ButtonIndex++;
-    }
-
-    if (kDown & KEY_LEFT) {
-        m_ButtonIndex--;
-    }
-
-    if (kDown & KEY_DOWN) {
-        m_ButtonIndex += KEYS_PER_ROW;
+    if (kDown & KEY_DUP && m_KeyboardTab == KTab_ACNLSymbols) {
 
         if (m_NinSymbolsPage == 0)
             m_NinSymbolsPage = 2;
@@ -309,8 +299,7 @@ void Keyboard::UpdateHID() {
         else m_NinSymbolsPage--;        
     }
 
-    if (kDown & KEY_UP) {
-        m_ButtonIndex -= KEYS_PER_ROW;
+    if (kDown & KEY_DDOWN && m_KeyboardTab == KTab_ACNLSymbols) {
 
         if (m_NinSymbolsPage == 2)
             m_NinSymbolsPage = 0;
@@ -318,8 +307,12 @@ void Keyboard::UpdateHID() {
         else m_NinSymbolsPage++;
     }
 
-    if (kDown & KEY_A)
-    {
+    if (kDown & KEY_Y) { //Toggle Shift
+        m_ShiftOn = !m_ShiftOn; //Toggle m_ShiftOn
+        SetupLetters(); //UPPER <-> lower
+    }
+
+    if (kDown & KEY_DLEFT) { //Remove Character
         std::string str = m_Text.GetText();
         if (!str.empty())
         {
@@ -328,37 +321,31 @@ void Keyboard::UpdateHID() {
         }
     }
 
-    if (kDown & KEY_SELECT) {
-        m_ShiftOn = !m_ShiftOn; //Toggle m_ShiftOn
-        SetupLetters();
+    if (kDown & KEY_DRIGHT) { //Add Space
+        std::string str = m_Text.GetText();
+            str.push_back(' '); //Add space
+            m_Text = str;
     }
 
-    if (kDown & KEY_X)
-    {
-        SetHint("Lmao");
+    if (kDown & KEY_A || kDown & KEY_TOUCH) {
+
     }
 
-    if (kDown & KEY_Y)
-    {
-        m_Text += "L";
+    if (kDown & KEY_L) {
+        if (m_KeyboardTab == 0)
+            m_KeyboardTab = 2;
+       
+        else m_KeyboardTab--;
     }
 
-    if (kDown & KEY_R)
-    {
-        m_KeyboardTab = KeyboardTab::ACNLSymbols;
+    if (kDown & KEY_R) {
+        if (m_KeyboardTab == 2)
+            m_KeyboardTab = 0;
+       
+        else m_KeyboardTab++;
     }
 
-    else if (kDown & KEY_L)
-    {
-        m_KeyboardTab = KeyboardTab::Text;
-    }
-
-    else if (kDown & KEY_CPAD_RIGHT)
-    {
-        m_KeyboardTab = KeyboardTab::Symbols;
-    }
-
-    if (kDown & KEY_B && m_CanAbort)
+    if (kDown & KEY_B && m_CanAbort) //Abort
     {
         m_KeyboardStatus = KeyboardStatus::Abort;
     }

@@ -13,26 +13,26 @@ enum class KeyboardStatus : s8
     Close = 1
 };
 
-enum class InputTypes : u8 //Used to enable and disable different input types
+enum InputTypes : u8 //Used to enable and disable different input types
 {
-    None = 0,
-    Text = 1,
-    Numbers = 2,
-    Symbols = 4
+    KType_None = 0,
+    KType_Letters = 1,
+    KType_Numbers = 2,
+    KType_Symbols = 4
 };
 
-enum class KeyboardTab : u8
+enum KeyboardTab : u8
 {
-    Text = 0,
-    Symbols = 1,
-    ACNLSymbols = 2
+    KTab_Letters = 0,
+    KTab_Symbols = 1,
+    KTab_ACNLSymbols = 2
 };
 
 class Keyboard {
 public:
     Keyboard(void);
-    Keyboard(InputTypes InType, u32 MaxSize = 30, bool CanAbort = true);
-    Keyboard(InputTypes InType, u32 MaxSize, bool CanAbort, const std::string &HintText, const std::string &DefaultText = "");
+    Keyboard(u8 InType, u32 MaxSize = 30, bool CanAbort = true);
+    Keyboard(u8 InType, u32 MaxSize, bool CanAbort, const std::string &HintText, const std::string &DefaultText = "");
     Keyboard(u32 MaxSize, bool CanAbort, const std::string &HintText, const u32 &DefaultValue);
     ~Keyboard(void);
 
@@ -41,7 +41,7 @@ public:
     void SetValue(const u32 &DefaultValue);
     void CanAbort(bool canAbort);
     void SetMaxLength(u32 maxSize);
-    void SetInputType(InputTypes InType);
+    void SetInputType(u8 InType);
 
     int Open(std::string& output);
     int Open(u32& output);
@@ -58,11 +58,10 @@ private:
 
   bool m_CanAbort;
   bool m_ShiftOn;
-  u32 m_ButtonIndex;
   u32 m_MaxSize;
   u32 m_NinSymbolsPage;
-  InputTypes m_InputType;
-  KeyboardTab m_KeyboardTab;
+  u8 m_InputType;
+  u8 m_KeyboardTab;
   KeyboardStatus m_KeyboardStatus;
   Text m_HintText;
   Text m_Text;
