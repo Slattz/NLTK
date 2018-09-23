@@ -15,10 +15,12 @@ static const u32 SWKBD_BG = C2D_Color32(0x21, 0x8B, 0x2B, 0xFF);
 static const u32 SWKBD_BAR = C2D_Color32(0x14, 0x56, 0x1A, 0xFF);
 static const u32 SWKBD_TAB_CLR = C2D_Color32(0x35, 0xCC, 0x1A, 0xFF);
 static const u32 SWKBD_CHAR_BG = C2D_Color32(0x19, 0x68, 0x1F, 0xFF);
+static const u32 SWKBD_INFILTER = C2D_Color32(119, 119, 119, 170);
 
-const char Letters[] = "1234567890qwertyuiopasdfghjklzxcvbnmOOBTEXT";
-const wchar_t Symbols[] = L"@#$_&-+=!?*\"\':;()<>%&[]{}▲▼◀▶£€|\\/♂♀OOBSYML"; //Needs to be wchar_t as £ and € are utf-16 :/
-const char16_t NinSymbols[] = { //Laid out in same layout as characters per keyboard row: 10,10,9,7
+static const u8 kbd_lyt[] = {0,0,1,3};
+static const char Letters[] = "1234567890qwertyuiopasdfghjklzxcvbnmOOBTEXT";
+static const wchar_t Symbols[] = L"@#$_&-+=!?*\"\':;()<>%&[]{}▲▼◀▶£€|\\/♂♀OOBSYML"; //Needs to be wchar_t as £ and € are utf-16 :/
+static const char16_t NinSymbols[] = { //Laid out in same layout as characters per keyboard row: 10,10,9,7
     0xE000, 0xE001, 0xE002, 0xE003, 0xE004, 0xE005, 0xE006, 0xE077, 0xE008, 0xE009, //10
     0xE070, 0xE06F, 0xE06C, 0xE00C, 0xE00D, 0xE00E, 0xE00F, 0xE010, 0xE011, 0xE012, //10
     0xE013, 0xE03C, 0xE03B, 0xE03D, 0xE072, 0xE019, 0xE01A, 0xE01B, 0xE01C,         //9
@@ -37,13 +39,13 @@ const char16_t NinSymbols[] = { //Laid out in same layout as characters per keyb
 
 Keyboard::Keyboard(void)
 {
-    m_InputType = KType_None;
+    m_InputType = 0|KeyboardInType::None;
     m_MaxSize = 100;
     m_CanAbort = true;
     m_ShiftOn = false;
     m_NinSymbolsPage = 0;
     m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KTab_Letters;
+    m_KeyboardTab = KeyboardTab::Letters;
     SetupLetters();
     SetupSymbols();
     SetupACNLSymbols();
@@ -65,7 +67,7 @@ Keyboard::Keyboard(u8 InType, u32 MaxSize, bool CanAbort) {
     m_ShiftOn = false;
     m_NinSymbolsPage = 0;
     m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KTab_Letters;
+    m_KeyboardTab = KeyboardTab::Letters;
     SetupCommonText();
     SetupLetters();
     SetupSymbols();
@@ -80,7 +82,7 @@ Keyboard::Keyboard(u8 InType, u32 MaxSize, bool CanAbort, const std::string &Hin
     m_ShiftOn = false;
     m_NinSymbolsPage = 0;
     m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KTab_Letters;
+    m_KeyboardTab = KeyboardTab::Letters;
     SetupCommonText();
     SetupLetters();
     SetupSymbols();
@@ -89,13 +91,13 @@ Keyboard::Keyboard(u8 InType, u32 MaxSize, bool CanAbort, const std::string &Hin
 Keyboard::Keyboard(u32 MaxSize, bool CanAbort, const std::string &HintText, const u32 &DefaultValue)
     : m_HintText(COLOR_DARK_GREY, HintText, 1.f, 1.f), m_Text(COLOR_WHITE, std::to_string(DefaultValue), 1.f, 1.f)
 {
-    m_InputType = KType_Numbers;
+    m_InputType = 0|KeyboardInType::Numbers;
     m_MaxSize = MaxSize;
     m_CanAbort = CanAbort;
     m_ShiftOn = false;
     m_NinSymbolsPage = 0;
     m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KTab_Letters;
+    m_KeyboardTab = KeyboardTab::Letters;
     SetupCommonText();
     SetupLetters();
     SetupSymbols();
@@ -128,7 +130,6 @@ void Keyboard::SetupCommonText() {
 
 void Keyboard::SetupLetters() {
     u8 CurIndex = 0;
-    const u8 kbd_lyt[] = {0,0,1,3};
     m_Characters.clear();
 
     for (u32 i = 0; i < KEYBOARD_ROWS; i++)
@@ -150,7 +151,6 @@ void Keyboard::SetupLetters() {
 
 void Keyboard::SetupSymbols() {
     u8 CurIndex = 0;
-    const u8 kbd_lyt[] = {0,0,1,3};
     m_Symbols.clear();
 
     for (u32 i = 0; i < KEYBOARD_ROWS; i++) //Take 1 as only 3 rows of symbols
@@ -172,7 +172,6 @@ void Keyboard::SetupSymbols() {
 
 void Keyboard::SetupACNLSymbols() {
     u8 CurIndex = 0;
-    const u8 kbd_lyt[] = {0,0,1,3};
     m_ACNLSymbols.clear();
 
     for(u8 page = 0; page < 3; page++)
@@ -248,23 +247,36 @@ void Keyboard::Draw() {
 
     switch (m_KeyboardTab) //Draw correct keys per tab
     {
-        case KTab_Letters :
+        case KeyboardTab::Letters :
             for (u32 i = 0; i < m_Characters.size(); i++)
                 m_Characters[i].Draw();
 
             if (m_ShiftOn) DrawSprite(Swkbd_ss, SWKBD_SHIFT_ON, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
             else  DrawSprite(Swkbd_ss, SWKBD_SHIFT_OFF, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
             C2D_DrawRectSolid(0.f, 200.f, 0.f, 100.f, 40.f, SWKBD_TAB_CLR);    //Highlight selected tab
+            if (!(m_InputType & BIT(0))) {//Check if Letters not enabled
+                for (u32 i = 1; i < KEYBOARD_ROWS; i++)
+                {
+                    float indent = 0.f;
+                    u8 KeysPerRow = KEYS_PER_ROW - kbd_lyt[i];
+                    if (kbd_lyt[i] == 1) indent = 15.f; //'asdfghjkl' indent
+                    else if (kbd_lyt[i] == 3) indent = 39.5f; //'zxcvbnm' indent
+                    C2D_DrawRectSolid(38.f+indent, 40.f + (30.f * i), 0.5f, (24.5f*KeysPerRow), 30.f, SWKBD_INFILTER);
+                }
+            }
+            if (!(m_InputType & BIT(1))) { //Check if Numbers not enabled
+                C2D_DrawRectSolid(38.f, 37.f, 0.5f, (24.5f*KEYS_PER_ROW), 33.f, SWKBD_INFILTER);
+            }
             break;
 
-        case KTab_Symbols :
+        case KeyboardTab::Symbols :
             for (u32 i = 0; i < m_Symbols.size(); i++)
                 m_Symbols[i].Draw();
 
             C2D_DrawRectSolid(100.f, 200.f, 0.f, 124.f, 40.f, SWKBD_TAB_CLR);    //Highlight selected tab
             break;
 
-        case KTab_ACNLSymbols :
+        case KeyboardTab::ACNLSymbols :
             for (u32 i = 0; i < m_ACNLSymbols.size()/3; i++) {
                 m_ACNLSymbols[i + (m_ACNLSymbols.size()/3 * m_NinSymbolsPage)].Draw(); //Should be 36 is amount of characters in one page
             }
@@ -291,7 +303,7 @@ void Keyboard::UpdateHID() {
     u32 kDown = hidKeysDown();
     updateCursorInfo(); //Update cursor info
 
-    if (kDown & KEY_DUP && m_KeyboardTab == KTab_ACNLSymbols) {
+    if (kDown & KEY_DUP && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
 
         if (m_NinSymbolsPage == 0)
             m_NinSymbolsPage = 2;
@@ -299,7 +311,7 @@ void Keyboard::UpdateHID() {
         else m_NinSymbolsPage--;        
     }
 
-    if (kDown & KEY_DDOWN && m_KeyboardTab == KTab_ACNLSymbols) {
+    if (kDown & KEY_DDOWN && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
 
         if (m_NinSymbolsPage == 2)
             m_NinSymbolsPage = 0;
@@ -327,27 +339,37 @@ void Keyboard::UpdateHID() {
             m_Text = str;
     }
 
-    if (kDown & KEY_A || kDown & KEY_TOUCH) {
-
-    }
-
     if (kDown & KEY_L) {
-        if (m_KeyboardTab == 0)
-            m_KeyboardTab = 2;
-       
-        else m_KeyboardTab--;
+        if (m_KeyboardTab == static_cast<KeyboardTab>(0))
+            m_KeyboardTab = static_cast<KeyboardTab>(2);
+
+        else --m_KeyboardTab;
+        if (m_KeyboardTab == KeyboardTab::ACNLSymbols && !(m_InputType & BIT(3))) //If ACNL Symbols not allowed, skip tab
+            --m_KeyboardTab;
+
+        if (m_KeyboardTab == KeyboardTab::Symbols && !(m_InputType & BIT(2))) //If Symbols not allowed, skip tab
+            --m_KeyboardTab;
     }
 
     if (kDown & KEY_R) {
-        if (m_KeyboardTab == 2)
-            m_KeyboardTab = 0;
-       
-        else m_KeyboardTab++;
+        if (m_KeyboardTab == static_cast<KeyboardTab>(2))
+            m_KeyboardTab = static_cast<KeyboardTab>(0);
+
+        else ++m_KeyboardTab;
+        if (m_KeyboardTab == KeyboardTab::Symbols && !(m_InputType & BIT(2))) //If Symbols not allowed, skip tab
+            ++m_KeyboardTab;
+
+        if (m_KeyboardTab == KeyboardTab::ACNLSymbols && !(m_InputType & BIT(3))) //If ACNL Symbols not allowed, skip tab
+            m_KeyboardTab = static_cast<KeyboardTab>(0);
     }
 
     if (kDown & KEY_B && m_CanAbort) //Abort
     {
         m_KeyboardStatus = KeyboardStatus::Abort;
+    }
+
+    else if (kDown & KEY_A || kDown & KEY_TOUCH) {
+
     }
 }
 
@@ -365,6 +387,10 @@ void Keyboard::Update() {
 
 int Keyboard::_Open(std::string &output)
 {
+    if (m_InputType == 0) { //KeyboardInType::None
+        MsgDisp(top, std::string("Keyboard Error (-2):\n\nNo Input Type has been specified."));
+        return -2;
+    } 
     while (aptMainLoop() && m_KeyboardStatus == KeyboardStatus::Loop) {
         Update();
         Draw();
@@ -383,4 +409,40 @@ int Keyboard::Open(u32& output) {
     int res = _Open(str);
     output = stoul(str);
     return res;
+}
+
+KeyboardTab& operator++(KeyboardTab& tab)
+{
+    switch(tab)
+    {
+        case KeyboardTab::Letters:     return tab = KeyboardTab::Symbols;
+        case KeyboardTab::Symbols:     return tab = KeyboardTab::ACNLSymbols;
+        case KeyboardTab::ACNLSymbols: return tab = KeyboardTab::Letters;
+    }
+    return tab = KeyboardTab::Letters;
+}
+
+KeyboardTab& operator--(KeyboardTab& tab)
+{
+    switch(tab)
+    {
+        case KeyboardTab::Letters:     return tab = KeyboardTab::ACNLSymbols;
+        case KeyboardTab::Symbols:     return tab = KeyboardTab::Letters;
+        case KeyboardTab::ACNLSymbols: return tab = KeyboardTab::Symbols;
+    }
+    return tab = KeyboardTab::Letters;
+}
+
+u8 operator|(KeyboardInType val, KeyboardInType orval)
+{
+    u8 value = static_cast<u8>(val);
+    u8 ORval = static_cast<u8>(orval);
+
+    return value|ORval;
+}
+
+u8 operator|(u8 val, KeyboardInType orval)
+{
+    u8 ORval = static_cast<u8>(orval);
+    return val|ORval;
 }

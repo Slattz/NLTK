@@ -13,20 +13,26 @@ enum class KeyboardStatus : s8
     Close = 1
 };
 
-enum InputTypes : u8 //Used to enable and disable different input types
+enum class KeyboardInType : u8 //Used to enable and disable different input types
 {
-    KType_None = 0,
-    KType_Letters = 1,
-    KType_Numbers = 2,
-    KType_Symbols = 4
+    None = 0,
+    Letters = 1,
+    Numbers = 2,
+    Symbols = 4,
+    ACNLSymbols = 8
 };
 
-enum KeyboardTab : u8
+enum class KeyboardTab : u8
 {
-    KTab_Letters = 0,
-    KTab_Symbols = 1,
-    KTab_ACNLSymbols = 2
+    Letters = 0,
+    Symbols = 1,
+    ACNLSymbols = 2
 };
+
+KeyboardTab& operator++(KeyboardTab& tab);
+KeyboardTab& operator--(KeyboardTab& tab);
+u8 operator|(KeyboardInType val, KeyboardInType orval);
+u8 operator|(u8 val, KeyboardInType orval);
 
 class Keyboard {
 public:
@@ -60,8 +66,8 @@ private:
   bool m_ShiftOn;
   u32 m_MaxSize;
   u32 m_NinSymbolsPage;
-  u8 m_InputType;
-  u8 m_KeyboardTab;
+  u8  m_InputType;
+  KeyboardTab m_KeyboardTab;
   KeyboardStatus m_KeyboardStatus;
   Text m_HintText;
   Text m_Text;
