@@ -34,3 +34,7 @@ void TextButton::SetTextColor(u32 color) {
 void TextButton::SetTextPos(float posX, float posY) {
     myText.SetPos(posX, posY);
 }
+
+void TextButton::CentreText(void) {
+    myText.CenterInBounds(Location.X+2, Location.Y+2, Size.Width-4, Size.Height-4);
+}

@@ -15,7 +15,8 @@ public:
     void SetTextSize(float scaleX, float scaleY);
     void SetTextColor(u32 color);
     void SetTextPos(float posX, float posY);
+    void CentreText(void);
 
     Text myText;
-    float FontScale = 1;
+    float FontScale = 1.f;
 };
