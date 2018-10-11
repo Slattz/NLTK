@@ -42,13 +42,7 @@ Keyboard::Keyboard(void)
     m_InputType = 0|KeyboardInType::None;
     m_MaxSize = 100;
     m_CanAbort = true;
-    m_ShiftOn = false;
-    m_NinSymbolsPage = 0;
-    m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KeyboardTab::Letters;
-    SetupLetters();
-    SetupSymbols();
-    SetupACNLSymbols();
+    SetupCommon();
 }
 
 Keyboard::~Keyboard(void) {
@@ -64,14 +58,7 @@ Keyboard::Keyboard(u8 InType, u32 MaxSize, bool CanAbort) {
     m_InputType = InType;
     m_MaxSize = MaxSize;
     m_CanAbort = CanAbort;
-    m_ShiftOn = false;
-    m_NinSymbolsPage = 0;
-    m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KeyboardTab::Letters;
-    SetupCommonText();
-    SetupLetters();
-    SetupSymbols();
-    SetupACNLSymbols();
+    SetupCommon();
 }
 Keyboard::Keyboard(u8 InType, u32 MaxSize, bool CanAbort, const std::string &HintText, const std::string &DefaultText)
     : m_HintText(COLOR_DARK_GREY, HintText, 1.f, 1.f), m_Text(COLOR_WHITE, DefaultText, 1.f, 1.f)
@@ -79,14 +66,7 @@ Keyboard::Keyboard(u8 InType, u32 MaxSize, bool CanAbort, const std::string &Hin
     m_InputType = InType;
     m_MaxSize = MaxSize;
     m_CanAbort = CanAbort;
-    m_ShiftOn = false;
-    m_NinSymbolsPage = 0;
-    m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KeyboardTab::Letters;
-    SetupCommonText();
-    SetupLetters();
-    SetupSymbols();
-    SetupACNLSymbols();
+    SetupCommon();
 }
 Keyboard::Keyboard(u32 MaxSize, bool CanAbort, const std::string &HintText, const u32 &DefaultValue)
     : m_HintText(COLOR_DARK_GREY, HintText, 1.f, 1.f), m_Text(COLOR_WHITE, std::to_string(DefaultValue), 1.f, 1.f)
@@ -94,38 +74,46 @@ Keyboard::Keyboard(u32 MaxSize, bool CanAbort, const std::string &HintText, cons
     m_InputType = 0|KeyboardInType::Numbers;
     m_MaxSize = MaxSize;
     m_CanAbort = CanAbort;
-    m_ShiftOn = false;
-    m_NinSymbolsPage = 0;
-    m_KeyboardStatus = KeyboardStatus::Loop;
-    m_KeyboardTab = KeyboardTab::Letters;
-    SetupCommonText();
+    SetupCommon();
+}
+
+void Keyboard::SetupCommon() {
     SetupLetters();
     SetupSymbols();
     SetupACNLSymbols();
-}
-
-void Keyboard::SetupCommonText() {
-    Text Comma(COLOR_WHITE, ",", 1.0f, 1.0f, 85.f, 157.f);
-    Text FStop(COLOR_WHITE, ".", 1.0f, 1.0f, 237.f, 157.f);
-    Text LetterTab(COLOR_WHITE, "ABC\n123", 0.8f, 0.8f);
-    Text SymTab(COLOR_WHITE, "Symbols", 0.8f, 0.8f);
-    Text NinSymTab(COLOR_WHITE, "Nintendo\nSymbols", 0.8f, 0.8f);
-    Text Up(COLOR_GREY, "▲", 0.9f, 0.9f, 295.f, 45.f);
-    Text Down(COLOR_GREY, "▼", 0.9f, 0.9f, 295.f, 95.f);
-    Text Page(COLOR_GREY, "Page", 0.6f, 0.6f, 290.f, 65.f);
-    Text PageNum(COLOR_GREY, "1", 0.8f, 0.8f, 297.f, 80.f);
-    LetterTab.CenterInBounds(2.f, 202.f, 98.f, 38.f);
-    SymTab.CenterInBounds(100.f, 202.f, 124.f, 38.f);
-    NinSymTab.CenterInBounds(224.f, 202.f, 96.f, 38.f);
-    m_CommonText.push_back(Comma);
-    m_CommonText.push_back(FStop);
-    m_CommonText.push_back(LetterTab);
-    m_CommonText.push_back(SymTab);
-    m_CommonText.push_back(NinSymTab);
-    m_CommonText.push_back(Up);
-    m_CommonText.push_back(Down);
-    m_CommonText.push_back(Page);
-    m_CommonText.push_back(PageNum);
+    Comma = new TextButton(83.f, 155.f, 1.f, 1.f, SWKBD_CHAR_BG, KEY_A | KEY_TOUCH, COLOR_WHITE, ",");
+    FStop = new TextButton(235.f, 155.f, 1.f, 1.f, SWKBD_CHAR_BG, KEY_A | KEY_TOUCH, COLOR_WHITE, ".");
+    LetterTab = new TextButton(0.f, 200.f, 100.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "ABC\n123");
+    SymTab = new TextButton(100.f, 200.f, 124.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "Symbols");
+    NinSymTab = new TextButton(224.f, 200.f, 98.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "Nintendo\nSymbols");
+    UpBtn = new TextButton(293.f, 43.f, 1.f, 1.f, SWKBD_BG, KEY_A|KEY_TOUCH, COLOR_GREY, "▲");
+    DownBtn = new TextButton(293.f, 93.f, 1.f, 1.f, SWKBD_BG, KEY_A|KEY_TOUCH, COLOR_GREY, "▼");
+    SpaceButton = new Button(100.f, 162.f, 124.f, 20.f, COLOR_GREY, KEY_A|KEY_TOUCH);
+    BackButton = new ImageButton(255.f, 127.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_BACK, Swkbd_ss);
+    EnterButton = new ImageButton(256.f, 160.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_ENTER, Swkbd_ss);
+    ConfirmButton = new ImageButton(287.f, 127.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_CONFIRM, Swkbd_ss);
+    CancelButton = new ImageButton(287.f, 160.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_CANCEL, Swkbd_ss);
+    Page = Text(COLOR_GREY, "Page", 0.6f, 0.6f, 290.f, 65.f);
+    PageNum = Text(COLOR_GREY, "1", 0.8f, 0.8f, 299.f, 80.f);
+    Comma->SetTextSize(0.8f, 0.8f);
+    FStop->SetTextSize(0.8f, 0.8f);
+    LetterTab->SetTextSize(0.6f, 0.6f);
+    SymTab->SetTextSize(0.6f, 0.6f);
+    NinSymTab->SetTextSize(0.6f, 0.6f);
+    UpBtn->SetTextSize(0.8f, 0.8f);
+    DownBtn->SetTextSize(0.8f, 0.8f);
+    BackButton->SetScale(0.8f);
+    EnterButton->SetScale(0.8f);
+    ConfirmButton->SetScale(0.8f);
+    CancelButton->SetScale(0.8f);
+    SpaceButton->SetZPos(0.5f);
+    BackButton->SetZPos(0.5f);
+    EnterButton->SetZPos(0.5f);
+    ConfirmButton->SetZPos(0.5f);
+    CancelButton->SetZPos(0.5f);
+    LetterTab->CentreText();
+    SymTab->CentreText();
+    NinSymTab->CentreText();
 }
 
 void Keyboard::SetupLetters() {
@@ -153,7 +141,7 @@ void Keyboard::SetupSymbols() {
     u8 CurIndex = 0;
     m_Symbols.clear();
 
-    for (u32 i = 0; i < KEYBOARD_ROWS; i++) //Take 1 as only 3 rows of symbols
+    for (u32 i = 0; i < KEYBOARD_ROWS; i++)
     {
         float indent = 0.f;
         if (kbd_lyt[i] == 1) indent = 15.f; //1st indent
@@ -174,7 +162,7 @@ void Keyboard::SetupACNLSymbols() {
     u8 CurIndex = 0;
     m_ACNLSymbols.clear();
 
-    for(u8 page = 0; page < 3; page++)
+    for(u32 page = 0; page < 3; page++)
     {
         for (u32 i = 0; i < KEYBOARD_ROWS; i++)
         {
@@ -225,18 +213,17 @@ void Keyboard::Draw() {
     draw_base_interface();
     C2D_SceneBegin(bottom);
     C2D_TargetClear(bottom, SWKBD_BG);
-    C2D_DrawRectSolid(0.f, 0.f, 0.f, 320.f, 25.f, SWKBD_BAR); //Bar for (Hint) Text Background (Top)
-    C2D_DrawRectSolid(0.f, 200.f, 0.f, 320.f, 40.f, SWKBD_BAR); //Bar for Tabs and Exit (Bottom)
-    C2D_DrawRectSolid(283.f, 122.f, 0.f, 33.f, 68.f, SWKBD_CHAR_BG);  //Bar for Confirm/Cancel (Right)
-    C2D_DrawRectSolid(38.f, 37.f, 0.5f, 245.f, 153.f, SWKBD_CHAR_BG); //Characters BG
+    C2D_DrawRectSolid(0.f, 0.f, 0.f, 320.f, 25.f, SWKBD_BAR);           //Bar for (Hint) Text Background (Top)
+    C2D_DrawRectSolid(283.f, 122.f, 0.f, 33.f, 68.f, SWKBD_CHAR_BG);    //Bar for Confirm/Cancel (Right)
+    C2D_DrawRectSolid(38.f, 37.f, 0.5f, 245.f, 153.f, SWKBD_CHAR_BG);   //Characters BG
     C2D_DrawRectSolid(99.f, 161.f, 0.5f, 126.f, 22.f, COLOR_DARK_GREY); //Spacebar Outline
-    C2D_DrawRectSolid(100.f, 162.f, 0.5f, 124.f, 20.f, COLOR_GREY);     //Spacebar
-    DrawSprite(Swkbd_ss, SWKBD_BACK, 255.f, 127.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Back Icon
-    DrawSprite(Swkbd_ss, SWKBD_ENTER, 256.f, 160.f, nullptr, 0.8f, 0.8f, 0.5f);  //Keyboard Enter Icon
-    DrawSprite(Swkbd_ss, SWKBD_CONFIRM, 287.f, 127.f, nullptr, 0.8f, 0.8f); //Keyboard Confirm Icon
-    DrawSprite(Swkbd_ss, SWKBD_CANCEL, 287.f, 160.f, nullptr, 0.8f, 0.8f); //Keyboard Cancel Icon
-    m_CommonText[0].Draw(); //Comma
-    m_CommonText[1].Draw(); //F Stop
+    SpaceButton->Draw();                                                //Spacebar
+    BackButton->Draw();                                                 //Keyboard Back Icon
+    EnterButton->Draw();                                                //Keyboard Enter Icon
+    ConfirmButton->Draw();                                              //Keyboard Confirm Icon
+    CancelButton->Draw();                                               //Keyboard Cancel Icon
+    Comma->Draw();                                                      //Comma
+    FStop->Draw();                                                      //Full Stops
 
     m_HintText.CenterInBounds(2.5f, 2.5f, 317.5f, 22.5f); //Update Hint text position + width
     m_Text.CenterInBounds(2.5f, 2.5f, 317.5f, 22.5f); //Update Text position + width
@@ -244,6 +231,10 @@ void Keyboard::Draw() {
         m_HintText.Draw();
     else
         m_Text.Draw();
+
+    LetterTab->SetActive(false);
+    SymTab->SetActive(false);
+    NinSymTab->SetActive(false);
 
     switch (m_KeyboardTab) //Draw correct keys per tab
     {
@@ -253,7 +244,7 @@ void Keyboard::Draw() {
 
             if (m_ShiftOn) DrawSprite(Swkbd_ss, SWKBD_SHIFT_ON, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
             else  DrawSprite(Swkbd_ss, SWKBD_SHIFT_OFF, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
-            C2D_DrawRectSolid(0.f, 200.f, 0.f, 100.f, 40.f, SWKBD_TAB_CLR);    //Highlight selected tab
+            LetterTab->SetActive(true);                                                         //Highlight selected tab
             if (!(m_InputType & BIT(0))) {//Check if Letters not enabled
                 for (u32 i = 1; i < KEYBOARD_ROWS; i++)
                 {
@@ -273,7 +264,7 @@ void Keyboard::Draw() {
             for (u32 i = 0; i < m_Symbols.size(); i++)
                 m_Symbols[i].Draw();
 
-            C2D_DrawRectSolid(100.f, 200.f, 0.f, 124.f, 40.f, SWKBD_TAB_CLR);    //Highlight selected tab
+            SymTab->SetActive(true); //Highlight selected tab
             break;
 
         case KeyboardTab::ACNLSymbols :
@@ -281,19 +272,21 @@ void Keyboard::Draw() {
                 m_ACNLSymbols[i + (m_ACNLSymbols.size()/3 * m_NinSymbolsPage)].Draw(); //Should be 36 is amount of characters in one page
             }
 
-            C2D_DrawRectSolid(224.f, 200.f, 0.f, 98.f, 40.f, SWKBD_TAB_CLR);   //Highlight selected tab
-            m_CommonText[8] = std::to_string(m_NinSymbolsPage+1);              //Update page number text
+            NinSymTab->SetActive(true);                    //Highlight selected tab
+            PageNum = std::to_string(m_NinSymbolsPage + 1); //Update page number text
 
-            for (int i = 0; i < 4; i++)
-                m_CommonText[i+5].Draw(); //Draw text for pages (arrow up, arrow down, "Page", page num)
+            UpBtn->Draw();
+            DownBtn->Draw();
+            Page.Draw();
+            PageNum.Draw();
             break;
 
         default:
             break;
     }
-
-    for (int i = 0; i < 3; i++)
-        m_CommonText[i+2].Draw(); //Draw text for the tabs (+2 as comma and fstop before)
+    LetterTab->Draw();
+    SymTab->Draw();
+    NinSymTab->Draw();
 
     g_cursor.Draw();
 
@@ -363,14 +356,19 @@ void Keyboard::UpdateHID() {
             m_KeyboardTab = static_cast<KeyboardTab>(0);
     }
 
-    if (kDown & KEY_B && m_CanAbort) //Abort
-    {
+    if (kDown & KEY_B && m_CanAbort) { //Abort
         m_KeyboardStatus = KeyboardStatus::Abort;
     }
 
-    else if (kDown & KEY_A || kDown & KEY_TOUCH) {
+    else if (kDown & KEY_A) {
+        std::string str = m_Text.GetText();
+        if (g_cursor.m_LocX >= 99 && g_cursor.m_LocX <= 225 && g_cursor.m_LocY >= 161 && g_cursor.m_LocY <= 183) {
+            str.push_back(' ');
+        }
 
+        m_Text = str;
     }
+
 }
 
 void Keyboard::Update() {

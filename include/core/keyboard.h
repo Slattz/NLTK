@@ -5,6 +5,9 @@
 
 #include <vector>
 #include "CTRFont.hpp"
+#include "button.h"
+#include "imagebutton.h"
+#include "textbutton.h"
 
 enum class KeyboardStatus : s8
 {
@@ -53,7 +56,7 @@ public:
     int Open(u32& output);
 
 private:
-  void SetupCommonText();
+  void SetupCommon();
   void SetupLetters();
   void SetupSymbols();
   void SetupACNLSymbols();
@@ -62,19 +65,33 @@ private:
   void Draw();
   int _Open(std::string& output);
 
-  bool m_CanAbort;
-  bool m_ShiftOn;
+  bool m_CanAbort = true;
+  bool m_ShiftOn = false;
   u32 m_MaxSize;
-  u32 m_NinSymbolsPage;
+  u32 m_NinSymbolsPage = 0;
   u8  m_InputType;
-  KeyboardTab m_KeyboardTab;
-  KeyboardStatus m_KeyboardStatus;
+  KeyboardTab m_KeyboardTab = KeyboardTab::Letters;
+  KeyboardStatus m_KeyboardStatus = KeyboardStatus::Loop;
   Text m_HintText;
   Text m_Text;
-  std::vector<Text> m_CommonText;
   std::vector<Text> m_Characters;
   std::vector<Text> m_Symbols;
   std::vector<Text> m_ACNLSymbols;
+
+  Button*      SpaceButton;
+  ImageButton* BackButton;
+  ImageButton* EnterButton;
+  ImageButton* ConfirmButton;
+  ImageButton* CancelButton;
+  TextButton*  LetterTab;
+  TextButton*  SymTab;
+  TextButton*  NinSymTab;
+  TextButton*  Comma;
+  TextButton*  FStop;
+  TextButton*  UpBtn;
+  TextButton*  DownBtn;
+  Text         Page;
+  Text         PageNum;
 };
 
 
