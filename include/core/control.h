@@ -13,10 +13,12 @@ public:
     Control(u32 x, u32 y, u32 width, u32 height, u32 backgroundColor);
 
     virtual void Draw();
+    void SetZPos(float Zpos);
 
     Point_t Location;
     Size_t Size;
 
     u32 BackgroundColor;
     bool Visible;
+    float ZPos = 0.f;
 };

@@ -22,10 +22,10 @@ Button::Button(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 activatorKe
 void Button::Draw(void) {
     if (Visible) {
         if (m_active) {
-            C2D_DrawRectSolid(Location.X, Location.Y, 0, Size.Width, Size.Height, BackgroundColor - 0x00101010); // NOTE: If we have a black button this won't work
+            C2D_DrawRectSolid(Location.X, Location.Y, ZPos, Size.Width, Size.Height, BackgroundColor - 0x00101010); // NOTE: If we have a black button this won't work
         }
         else {
-            C2D_DrawRectSolid(Location.X, Location.Y, 0, Size.Width, Size.Height, BackgroundColor);
+            C2D_DrawRectSolid(Location.X, Location.Y, ZPos, Size.Width, Size.Height, BackgroundColor);
         }
     }
 }

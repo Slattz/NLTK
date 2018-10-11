@@ -21,10 +21,10 @@ ImageButton::ImageButton(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 a
 void ImageButton::Draw(void) {
     if (Visible) {
         if (m_active) {
-            DrawSprite(m_sheet, m_imageId, Location.X, Location.Y, ImageTint, Scale, Scale);
+            DrawSprite(m_sheet, m_imageId, Location.X, Location.Y, ImageTint, Scale, Scale, ZPos);
         }
         else {
-            DrawSprite(m_sheet, m_imageId, Location.X, Location.Y, nullptr, Scale, Scale);
+            DrawSprite(m_sheet, m_imageId, Location.X, Location.Y, nullptr, Scale, Scale, ZPos);
         }
     }
 }

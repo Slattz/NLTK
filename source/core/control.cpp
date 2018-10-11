@@ -25,6 +25,10 @@ Control::Control(u32 x, u32 y, u32 width, u32 height, u32 bgColor)
 
 void Control::Draw() {
     if (Visible) {
-        C2D_DrawRectSolid(Location.X, Location.Y, 0, Size.Width, Size.Height, BackgroundColor);
+        C2D_DrawRectSolid(Location.X, Location.Y, ZPos, Size.Width, Size.Height, BackgroundColor);
     }
+}
+
+void Control::SetZPos(float Zpos) {
+    ZPos = Zpos;
 }
