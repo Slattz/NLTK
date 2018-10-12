@@ -13,7 +13,6 @@
 #include "utils.h"
 #include "cursor.h"
 #include "menus.h"
-#include "e_menus.h"
 #include "pattern.h"
 #include "gui/PlayerMenu.hpp"
 

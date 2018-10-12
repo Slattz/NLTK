@@ -9,15 +9,19 @@
 #include "utils.h"
 #include "cursor.h"
 #include "menus.h"
-#include "e_menus.h"
 #include "gui/MainMenu.hpp"
 #include "gui/PlayerMenu.hpp"
+#include "gui/AcreMenu.hpp"
 
 extern Cursor g_cursor;
 extern s16  g_CheckX[2];
 extern s16  g_CheckY[2];
 extern bool g_disabled[2];
 extern u32  g_key[2];
+
+bool Editor::SaveCheck(void) {
+    return MsgDisp(top, "Would you like to save changes\nmade to your save?", MsgTypeConfirm);
+}
 
 void Editor::Draw_MainMenu(void)
 {
@@ -102,7 +106,7 @@ int Editor::Spawn_MainMenu(Save *saveFile)
                     MsgDisp(top, "Town Menu Coming Soon!");
 
                 else if (g_CheckX[i] >= 89 && g_CheckX[i] <= 159 && g_CheckY[i] >= 110 && g_CheckY[i] <= 165) //Acres Menu
-                    spawn_acres_menu(saveFile);
+                    Editor::Spawn_AcresMenu(saveFile);
 
                 else if (g_CheckX[i] >= 163 && g_CheckX[i] <= 233 && g_CheckY[i] >= 110 && g_CheckY[i] <= 165) //Player Menu
                     Editor::Spawn_PlayerMenu(saveFile);
@@ -125,7 +129,7 @@ int Editor::Spawn_MainMenu(Save *saveFile)
                 /* Menu Columns */
                 else if (g_CheckX[i] >= 220 && g_CheckX[i] <= 300 && g_CheckY[i] >= 10 && g_CheckY[i] <= 44)
                 { //Save Column
-                    if (check_if_saving())
+                    if (SaveCheck())
                     {
                         if (saveFile->Commit(false))
                         {

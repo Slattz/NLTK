@@ -1,7 +1,6 @@
 #include <3ds.h>
 #include <string>
 #include <citro2d.h>
-#include <algorithm>
 #include "CTRFont.hpp"
 #include "textbox.h"
 #include "label.h"
@@ -11,7 +10,6 @@
 #include "utils.h"
 #include "cursor.h"
 #include "menus.h"
-#include "e_menus.h"
 #include "gui/PlayerMenu.hpp"
 
 extern Cursor g_cursor;

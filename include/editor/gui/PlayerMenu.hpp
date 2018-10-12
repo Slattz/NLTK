@@ -15,7 +15,7 @@ struct EditorSettings {
 
 extern EditorSettings EditorConfig;
 
-    namespace Editor
+namespace Editor
 {
     void Spawn_PlayerMenu(Save *saveFile);
     void Draw_PlayerMenu(Save *saveFile, int selectedplayer, int selectedmode);
