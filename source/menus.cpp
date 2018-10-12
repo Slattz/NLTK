@@ -57,7 +57,7 @@ int spawn_main_menu(void) {
             if (hidKeysDown() & g_key[i] && g_disabled[i])
             { 
                 if (g_CheckX[i] >= 60 && g_CheckX[i] <= 124 && g_CheckY[i] >= 50 && g_CheckY[i] <= 114) //Editor Icon
-                    ret = editor_main();
+                    ret = Editor::Main();
     
                 else if (g_CheckX[i] >= 180 && g_CheckX[i] <= 244 && g_CheckY[i] >= 50 && g_CheckY[i] <= 114) //Manager Icon
                     ret = manager_main();
@@ -75,7 +75,7 @@ int spawn_main_menu(void) {
         }
 
         else if (ret == MODE_EDITOR) {
-            ret = editor_main();
+            ret = Editor::Main();
         }
 
         else if (ret == MODE_MANAGER) {

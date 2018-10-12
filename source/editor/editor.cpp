@@ -17,7 +17,7 @@ u8* g_ItemBin;
 u64 currentTitleId;
 bool m_editorInitiated = false;
 
-void CleanupEditor(void) {
+void Editor::Cleanup(void) {
     if (g_ItemBin) {
         delete[] g_ItemBin;
         g_ItemBin = NULL;
@@ -25,10 +25,10 @@ void CleanupEditor(void) {
     m_editorInitiated = false;
 }
 
-void init_editor(void) {
+void Editor::Init(void) {
     // Load Item Database
     loadItemDatabase();
-    InitEditorGFX();
+    Editor::Player::InitInfoGFX();
 
     g_ItemBin = new u8[0x2B720];
     file_read(g_ItemBin, "romfs:/Item.bin", 0x2B720);
@@ -36,9 +36,9 @@ void init_editor(void) {
     m_editorInitiated = true;
 }
 
-int editor_main(void) {
+int Editor::Main(void) {
     if (!m_editorInitiated) {
-        init_editor();
+        Editor::Init();
     }
 
 GameSelect:
@@ -54,7 +54,7 @@ GameSelect:
         }
 
         if (g_tid == 0) {
-            CleanupEditor();
+            Editor::Cleanup();
             return 0;
         }
     }
@@ -62,7 +62,7 @@ GameSelect:
     bool successfullyOpenedArchive = openSaveArchive(&saveArch, g_tid, currentMediaType);
     if (!successfullyOpenedArchive && !(tryOpenSaveArchive(&saveArch, g_tid, &currentMediaType))) {
         MsgDisp(top, "Unable to Open the Save Archive\nSave file may not have been created!");
-        CleanupEditor();
+        Editor::Cleanup();
         return 0;
     }
 
@@ -74,7 +74,7 @@ GameSelect:
 
     if (saveFile.GetSaveSize() != SIZE_SAVE) {
         MsgDisp(top, "Save file is the incorrect size!");
-        CleanupEditor();
+        Editor::Cleanup();
         saveFile.Close();
         return 0;
     }
@@ -84,15 +84,15 @@ GameSelect:
     }
 
     saveFile.FixSaveRegion();		//Update Region of the Save
-    saveFile.FixInvalidBuildings(); //Fix any invalid buildings (fixes 7dd6 crash caused by ntr plg)
+    saveFile.FixInvalidBuildings(); //Fix any invalid buildings in save
 
-    int mode = spawn_editor_main_menu(&saveFile);
+    int mode = Editor::Spawn_MainMenu(&saveFile);
 
     saveFile.Close();
 
     if (mode == MODE_GAMESELECT) //Game Select
         goto GameSelect;
 
-    CleanupEditor();
+    Editor::Cleanup();
     return mode; //mode is always 0 when exiting the editor
 }

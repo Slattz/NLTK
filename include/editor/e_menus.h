@@ -8,11 +8,6 @@
 extern s32 currentAcreId;
 
 bool check_if_saving(void);
-int spawn_editor_main_menu(Save *saveFile);
-void spawn_player_menu(Save *saveFile);
-void spawn_player_menu_info(Save *saveFile);
-void spawn_player_menu_inventory(Save *saveFile);
-void spawn_player_menu_patterns(Save *saveFile);
 void view_acres_town_full(Save *saveFile);
 void view_acres_island_full(Save *saveFile);
 void view_acres_town_map(Save *saveFile);

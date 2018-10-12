@@ -41,7 +41,10 @@ BUILD			:=	build
 SOURCES         :=	source \
                     source/core \
                     source/editor \
+                    source/editor/gui \
+                    source/editor/gui/Player \
                     source/manager \
+                    source/manager/gui \
 					source/libs/CTRFont/source \
 					source/libs/jsmn \
                     source/libs/httpc-curl

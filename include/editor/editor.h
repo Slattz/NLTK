@@ -5,8 +5,15 @@
 
 #include "editor/e_gfx.h"
 #include "editor/e_menus.h"
+#include "gui/MainMenu.hpp"
+#include "gui/PlayerMenu.hpp"
 
-void CleanupEditor(void);
-int editor_main(void);
+namespace Editor
+{
+    void Cleanup(void);
+    void Init(void);
+    int  Main(void);
+
+}
 
 #endif
