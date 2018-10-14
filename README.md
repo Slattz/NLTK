@@ -31,7 +31,7 @@ The main developers of this project are [Slattz](https://github.com/Slattz) and 
 ## Building
 ### Requirements
 - First of all, make sure devkitPro is properly installed and added to your PATH.
-- Using [devkitPro's pacman](https://devkitpro.org/viewtopic.php?f=13&t=8702), install the following dkP packages: `3ds-curl`, `3ds-mbedtls`, `3ds-libjpeg-turbo`, `3ds-zlib`.
+- Using [devkitPro's pacman](https://devkitpro.org/viewtopic.php?f=13&t=8702), install the following dkP packages: `3ds-curl`, `3ds-mbedtls`, `3ds-libjpeg-turbo`, `3ds-zlib`, `3ds-freetype`, `3ds-jansson`.
 - [makerom](http://3dbrew.org/wiki/Makerom) and [bannertool](https://github.com/Steveice10/bannertool) somewhere in your `PATH` environment
 
 

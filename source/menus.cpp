@@ -4,7 +4,7 @@
 #include "CTRFont.hpp"
 #include "gfx.h"
 #include "utils.h"
-#include "config.h"
+#include "oldconfig.h"
 #include "core/nfs.h"
 #include "core/keyboard.h"
 #include "core/textbox.h"

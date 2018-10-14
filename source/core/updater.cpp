@@ -4,7 +4,7 @@
 #include "httpc.h"
 #include "gfx.h"
 #include "nfs.h"
-#include "config.h"
+#include "oldconfig.h"
 #include "utils.h"
 #include "common.h"
 #include "updater.h"

@@ -4,16 +4,12 @@
 #include <algorithm>
 #include "CTRFont.hpp"
 #include "unicode.h"
-#include "item.h"
-#include "textbox.h"
-#include "label.h"
 #include "gfx.h"
 #include "save.h"
 #include "e_utils.h"
 #include "utils.h"
 #include "cursor.h"
 #include "menus.h"
-#include "pattern.h"
 #include "gui/PlayerMenu.hpp"
 
 extern Cursor g_cursor;

@@ -3,7 +3,7 @@
 #include "CTRFont.hpp"
 #include "save.h"
 #include "gfx.h"
-#include "config.h"
+#include "oldconfig.h"
 #include "menus.h"
 #include "core/updater.h"
 #include "editor/editor.h"

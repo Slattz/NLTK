@@ -1,73 +1,113 @@
 #include <3ds.h>
-#include <string>
-#include "gfx.h"
-#include "nfs.h"
+#include <cstring>
 #include "common.h"
-#include "config.h"
+#include "config.hpp"
 
-static const char* configPath = WORKDIR "/cfg.bin";
-NLTK_config config;
+static const char* configPath = WORKDIR "/config.json";
+static const char* configRomPath = "romfs:/config.json";
 
-void saveConfig(void)
-{
-    if (fileExists((char *)configPath))
-        remove((char *)configPath);
+Config::Config(const char* path) {
+    m_configPath = path;
+    m_config = json_load_file(configRomPath, 0, m_jsonError); //load default config from romfs
+    m_configInit = (!m_config ? false : true);
 
-    if (!file_write(&config, (char *)configPath, sizeof(NLTK_config)))
-        MsgDisp(top, "Error writing the configuration file");
-
+    if (m_config && m_configInit)
+    {
+        m_configSize = json_object_size(m_config);
+        json_t *sd_config = json_load_file(path, 0, m_jsonError); //load config from sd
+        if (sd_config) //If sd config existed
+        {
+            json_object_update_existing(m_config, sd_config); //update the loaded romfs config with the values from sd config
+            json_decref(sd_config);
+        }
+        this->Save(); //Save (updated) config
+    }
 }
 
-void resetConfig(void)
-{
-    memcpy(&config.magic, "NLTK", 4);
-    config.configVersionMajor = CONFIG_VERSIONMAJOR;
-    config.configVersionMinor = CONFIG_VERSIONMINOR;
-    config.isdebug = false;
-    config.autoupdate = false;
-    config.autosavebackup = false;
-    config.autoloadprefGame = false;
-    config.prefGame = 0;
+Config::Config(void) : Config(configPath) {} //Default path config
 
-    saveConfig();
+Config::~Config(void) {
+    while(m_config->refcount > 0) {
+        json_decref(m_config);
+    }
 }
 
-bool loadConfigFromFile(void)
-{
-    if (!fileExists((char *)configPath))
-        return false;
-
-    file_read(&config, (char *)configPath, sizeof(NLTK_config));
-    return true;
+int Config::Save(void) {
+    if (m_configInit) {
+        return json_dump_file(m_config, m_configPath, JSON_INDENT(4));
+    }
+    return -2;
 }
 
-bool checkValidConfig(void)
-{
-    bool ret;
+int Config::GetValue(const char* key, char* val, size_t valsize) {
+    json_t* jsn = json_object_get(m_config, key);
+    
+    if (jsn == NULL) return -1;
 
-    if (sizeof(config) != sizeof(NLTK_config))
-        ret = false;
-
-    else if (memcmp(config.magic, "NLTK", 4) != 0)
-        ret = false;
-
-    else if (config.configVersionMajor != CONFIG_VERSIONMAJOR ||
-            config.configVersionMinor != CONFIG_VERSIONMINOR)
-        ret = false;
-
-    else ret = true;
-
-    if (!ret)
-        memset(&config, 0, sizeof(NLTK_config));
-
-    return ret;
+    const char* string = json_string_value(jsn);
+    strncpy(val, string, valsize);
+    
+    return 0;
 }
 
-void configInit(void)
-{
-    if (!loadConfigFromFile())
-        resetConfig();
+int Config::GetValue(const char* key, bool* val) {
+    json_t *jsn = json_object_get(m_config, key);
 
-    if (!checkValidConfig())
-        resetConfig();
+    if (jsn == NULL) return -1;
+
+    *val = json_boolean_value(jsn);
+
+    return 0;
+}
+
+int Config::GetValue(const char* key, int* val) {
+    json_t *jsn = json_object_get(m_config, key);
+
+    if (jsn == NULL) return -1;
+
+    *val = json_integer_value(jsn);
+    return 0;
+}
+
+int Config::GetValue(const char* key, u64* val) {
+    json_t *jsn = json_object_get(m_config, key);
+
+    if (jsn == NULL) return -1;
+
+    *val = json_integer_value(jsn);
+    return 0;
+}
+
+int Config::GetValue(const char* key, u32* val) {
+    json_t *jsn = json_object_get(m_config, key);
+
+    if (jsn == NULL) return -1;
+
+    *val = (json_integer_value(jsn)&0xFFFFFFFF);
+    return 0;
+}
+
+int Config::GetValue(const char* key, double* val) {
+    json_t *jsn = json_object_get(m_config, key);
+
+    if (jsn == NULL) return -1;
+
+    *val = json_real_value(jsn);
+    return 0;
+}
+
+int Config::SetValue(const char* key, char* val) {
+    return json_object_set(m_config, key, json_pack("s", val));
+}
+
+int Config::SetValue(const char* key, bool val) {
+    return json_object_set(m_config, key, json_pack("b", val));
+}
+
+int Config::SetValue(const char* key, int val) {
+    return json_object_set(m_config, key, json_pack("i", val));
+}
+
+int Config::SetValue(const char* key, double val) {
+    return json_object_set(m_config, key, json_pack("f", val));
 }

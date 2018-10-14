@@ -4,7 +4,7 @@
 #include "nfs.h"
 #include "save.h"
 #include "utils.h"
-#include "config.h"
+#include "oldconfig.h"
 #include "structs.h"
 #include "menus.h"
 #include "manager/manager.h"

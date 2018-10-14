@@ -5,7 +5,7 @@
 #include "structs.h"
 #include "about.h"
 #include "cursor.h"
-#include "config.h"
+#include "oldconfig.h"
 #include "gfx.h"
 #include "utils.h"
 
