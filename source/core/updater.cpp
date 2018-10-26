@@ -7,7 +7,7 @@
 #include "oldconfig.h"
 #include "utils.h"
 #include "common.h"
-#include "updater.h"
+#include "updater.hpp"
 
 extern NLTK_config config;
 
@@ -70,7 +70,7 @@ bool CheckVersion(const char *releaseName)
     return major >= MAJOR_VERSION && minor >= MINOR_VERSION && revision >= REV_VERSION && beta_ver > BETA_VERSION;
 }
 
-bool http_download(const char *src, u8 **output, u32 *outSize)
+bool HTTPDownload(const char *src, u8 **output, u32 *outSize)
 {
     Result res = 0;
     httpcContext context;
@@ -141,14 +141,14 @@ bool http_download(const char *src, u8 **output, u32 *outSize)
     return ret;
 }
 
-bool checkUpdate(void)
+bool CheckForUpdate(void)
 {
     Json    *json;
     char    *jsonstring = NULL;
     u32     size = 0;
     bool    ret = false;
 
-    if (http_download("https://api.github.com/repos/Slattz/NLTK/releases/latest", (u8 **)&jsonstring, &size))
+    if (HTTPDownload("https://api.github.com/repos/Slattz/NLTK/releases/latest", (u8 **)&jsonstring, &size))
     {
         if (envIsHomebrew()) strcpy(Filename, TITLE ".3dsx");
         else strcpy(Filename, TITLE ".cia");
@@ -205,7 +205,7 @@ bool checkUpdate(void)
     return ret;
 }
 
-bool installUpdate(void)
+bool InstallUpdate(void)
 {
     u32 downloadsize = 0;
     u8* downloadbuf;
@@ -213,7 +213,7 @@ bool installUpdate(void)
     Handle ciaHandle;
     Result res;
 
-    if (http_download(urlDownload, &downloadbuf, &downloadsize))
+    if (HTTPDownload(urlDownload, &downloadbuf, &downloadsize))
     {
         if (config.isdebug)
             MsgDisp(top, "Update Downloaded!");
@@ -264,7 +264,7 @@ bool installUpdate(void)
     return false;
 }
 
-bool launchUpdater(void)
+bool Updater::Launch(void)
 {
     bool ret = false;
     urlDownload = new char[1024];
@@ -274,7 +274,7 @@ bool launchUpdater(void)
 
     static const char* ProceedUpdate = "Would you like to proceed\nwith installing the update?";
 
-    if(checkUpdate())
+    if(CheckForUpdate())
     {
 
         if (config.isdebug)
@@ -283,7 +283,7 @@ bool launchUpdater(void)
         MsgDisp(top, Format("New Version: %s\n Changelog:\n%s", newVerString, newChangelog));
 
         if (MsgDisp(top, ProceedUpdate, MsgTypeConfirm))
-            ret = installUpdate();        
+            ret = InstallUpdate();        
 
     }
 

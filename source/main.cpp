@@ -5,7 +5,7 @@
 #include "gfx.h"
 #include "oldconfig.h"
 #include "menus.h"
-#include "core/updater.h"
+#include "core/updater.hpp"
 #include "editor/editor.h"
 #include "libs/httpc-curl/httpc.h"
 
@@ -80,7 +80,7 @@ int main() {
     configInit();
 
     if (config.autoupdate) {
-        if (launchUpdater()) {
+        if (Updater::Launch()) {
             return 0;
         }
     }
