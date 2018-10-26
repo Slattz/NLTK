@@ -46,7 +46,6 @@ SOURCES         :=	source \
                     source/manager \
                     source/manager/gui \
 					source/libs/CTRFont/source \
-					source/libs/jsmn \
                     source/libs/httpc-curl
                         
 INCLUDES        :=	include \
@@ -54,7 +53,6 @@ INCLUDES        :=	include \
                     include/editor \
                     include/manager \
                     source/libs/CTRFont/include \
-					source/libs/jsmn \
                     source/libs/httpc-curl
                         
 DATA			:=	data
