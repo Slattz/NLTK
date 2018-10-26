@@ -6,7 +6,7 @@
 #include "oldconfig.h"
 
 static const char* configPath = WORKDIR "/cfg.bin";
-NLTK_config config;
+static NLTK_config config;
 
 void saveConfig(void)
 {

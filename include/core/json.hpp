@@ -26,6 +26,8 @@ public:
     int  SetValue(const char* key, char* val);
     int  SetValue(const char* key, bool val);
     int  SetValue(const char* key, int val);
+    int  SetValue(const char* key, u64 val);
+    int  SetValue(const char* key, u32 val);
     int  SetValue(const char* key, double val);
 
     json_t *m_json = nullptr;

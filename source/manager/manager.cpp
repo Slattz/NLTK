@@ -4,12 +4,12 @@
 #include "nfs.h"
 #include "save.h"
 #include "utils.h"
-#include "oldconfig.h"
+#include "config.hpp"
 #include "structs.h"
 #include "menus.h"
 #include "manager/manager.h"
 
-extern NLTK_config config;
+extern Config *config;
 extern u64 g_tid;
 extern FS_MediaType currentMediaType;
 extern Save saveFile;
@@ -31,8 +31,8 @@ GameSelect:
     FS_Archive saveArch;
 
     {
-        if (config.autoloadprefGame && !(hidKeysDown() & KEY_DOWN) && is_ACNL(config.prefGame)) {
-            g_tid = config.prefGame; // TODO: Support media type in config
+        if (config->Auto_loadprefGame && !(hidKeysDown() & KEY_DOWN) && is_ACNL(config->prefGame|0x4000000000000)) {
+            g_tid = config->prefGame|0x4000000000000; // TODO: Support media type in config
         }
         else {
             g_tid = spawn_game_select_menu(&currentMediaType);
@@ -58,7 +58,7 @@ GameSelect:
         return 0;
     }
 
-    if (config.autosavebackup) {
+    if (config->Auto_SaveBackup) {
         saveBackup(&saveFile, g_tid);
     }
 

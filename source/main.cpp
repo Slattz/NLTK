@@ -3,16 +3,15 @@
 #include "CTRFont.hpp"
 #include "save.h"
 #include "gfx.h"
-#include "oldconfig.h"
+#include "config.hpp"
 #include "menus.h"
 #include "core/updater.hpp"
 #include "editor/editor.h"
 #include "libs/httpc-curl/httpc.h"
 
-extern NLTK_config config;
-
 static FontHandle g_acnlFont;
 u64 g_tid = 0;
+Config *config;
 Save saveFile;
 FS_MediaType currentMediaType;
 
@@ -53,7 +52,7 @@ void PrepareToCloseApp(void) {
         fsEndUseSession();
     }
 
-    saveConfig();
+    config->Save();
     ExitGFX();
     cfguExit();
     httpc.Exit();
@@ -63,6 +62,7 @@ void PrepareToCloseApp(void) {
 
 int main() {
     InitApp();
+    config = new Config();
     g_acnlFont = Font::Open("romfs:/ACNL_font.bcfnt");
 
     if (g_acnlFont->IsLoaded()) {
@@ -74,12 +74,10 @@ int main() {
     hidScanInput();
     u32 keys = (hidKeysDown() | hidKeysHeld());
     if (keys & KEY_SELECT) {
-        resetConfig();
+        config->Reset();
     }
 
-    configInit();
-
-    if (config.autoupdate) {
+    if (config->Auto_Update) {
         if (Updater::Launch()) {
             return 0;
         }

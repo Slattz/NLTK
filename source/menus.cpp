@@ -4,7 +4,7 @@
 #include "CTRFont.hpp"
 #include "gfx.h"
 #include "utils.h"
-#include "oldconfig.h"
+#include "config.hpp"
 #include "core/nfs.h"
 #include "core/keyboard.h"
 #include "core/textbox.h"
@@ -15,7 +15,7 @@
 
 extern FS_MediaType currentMediaType;
 extern NLTK_Titles_Info MediaInfo;
-extern NLTK_config config;
+extern Config *config;
 
 s16  g_CheckX[2];
 s16  g_CheckY[2];
@@ -44,7 +44,7 @@ int spawn_main_menu(void) {
         }
 
         /* For Debugging Keyboard atm, will eventually be removed */
-        if (hidKeysDown() & KEY_DLEFT && config.isdebug)
+        if (hidKeysDown() & KEY_DLEFT && config->IsDebug)
         {
             std::string lol;
             u8 intype = KeyboardInType::Letters | KeyboardInType::Numbers | KeyboardInType::Symbols | KeyboardInType::ACNLSymbols;
@@ -274,7 +274,7 @@ void spawn_config_menu(void)
         if (DebugCode(debugcomplete))
         {
             debugcomplete = true;
-            config.isdebug = true;
+            config->IsDebug = true;
         }
         
         if (hidKeysDown() & KEY_B)
@@ -283,25 +283,25 @@ void spawn_config_menu(void)
         for (int i = 0; i < 2; i++)
         {
             if (hidKeysDown() & g_key[i] && g_disabled[i])
-            { 
-                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 20 && g_CheckY[i] <= 44) //config.autoupdate
-                    config.autoupdate = !config.autoupdate;
+            {
+                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 20 && g_CheckY[i] <= 44) //config->Auto_Update
+                    config->Auto_Update = !config->Auto_Update;
+
+                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 48  && g_CheckY[i] <= 72) //config->Auto_SaveBackup
+                    config->Auto_SaveBackup = !config->Auto_SaveBackup;
     
-                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 48  && g_CheckY[i] <= 72) //config.autosavebackup
-                    config.autosavebackup = !config.autosavebackup;
+                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 76 && g_CheckY[i] <= 100) //config->Auto_loadprefGame
+                    config->Auto_loadprefGame = !config->Auto_loadprefGame;
     
-                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 76 && g_CheckY[i] <= 100) //config.autoloadprefGame
-                    config.autoloadprefGame = !config.autoloadprefGame;
-    
-                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 104 && g_CheckY[i] <= 128) //config.isdebug
-                    if (config.isdebug)
+                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 104 && g_CheckY[i] <= 128) //config->IsDebug
+                    if (config->IsDebug)
                     {
-                        config.isdebug = false;
+                        config->IsDebug = false;
                         debugcomplete = false;
                     }
             }
         }
     }
-    saveConfig();
+    config->Save();
     drawingMenu = false;
 }

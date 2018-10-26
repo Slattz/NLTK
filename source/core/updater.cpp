@@ -4,12 +4,12 @@
 #include "httpc.h"
 #include "gfx.h"
 #include "nfs.h"
-#include "oldconfig.h"
+#include "config.hpp"
 #include "utils.h"
 #include "common.h"
 #include "updater.hpp"
 
-extern NLTK_config config;
+extern Config *config;
 
 static char *newVerString = nullptr;
 static char *newChangelog = nullptr;
@@ -30,7 +30,7 @@ bool CheckVersion(const char *releaseName)
         releaseName++;
 
     major = strtol(releaseName, &next, 10); //Get major version
-    if (config.isdebug) MsgDisp(top, Format("Major: %d, Result: %d", major, major >= MAJOR_VERSION));
+    if (config->IsDebug) MsgDisp(top, Format("Major: %d, Result: %d", major, major >= MAJOR_VERSION));
 
     if (next && *next == '.') //If minor version
         next++;
@@ -38,7 +38,7 @@ bool CheckVersion(const char *releaseName)
         return major > MAJOR_VERSION;
 
     minor = strtol(next, &next, 10); //Get minor version
-    if (config.isdebug) MsgDisp(top, Format("Minor: %d, Result %d", minor, minor >= MINOR_VERSION));
+    if (config->IsDebug) MsgDisp(top, Format("Minor: %d, Result %d", minor, minor >= MINOR_VERSION));
 
     if (next && *next == '.') //If revision version
         next++;
@@ -47,7 +47,7 @@ bool CheckVersion(const char *releaseName)
     {
         next++;
         beta_ver = strtol(next, NULL, 10); //Get beta version
-        if (config.isdebug) MsgDisp(top, Format("Beta 1: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION));
+        if (config->IsDebug) MsgDisp(top, Format("Beta 1: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION));
 
         return major >= MAJOR_VERSION && minor >= MINOR_VERSION && beta_ver > BETA_VERSION;
     }
@@ -56,7 +56,7 @@ bool CheckVersion(const char *releaseName)
         return major >= MAJOR_VERSION && minor > MINOR_VERSION;
 
     revision = strtol(next, &next, 10); //Get revision version
-    if (config.isdebug) MsgDisp(top, Format("Revision: %d, Result %d", revision, revision >= REV_VERSION));
+    if (config->IsDebug) MsgDisp(top, Format("Revision: %d, Result %d", revision, revision >= REV_VERSION));
 
     if (next && *next == 'B') //If there's a beta ver after revision ver
         next++;
@@ -65,7 +65,7 @@ bool CheckVersion(const char *releaseName)
         return major >= MAJOR_VERSION && minor >= MINOR_VERSION && revision > REV_VERSION;
 
     beta_ver = strtol(next, NULL, 10); //Get beta version
-    if (config.isdebug)
+    if (config->IsDebug)
         MsgDisp(top, Format("Beta 2: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION));
     return major >= MAJOR_VERSION && minor >= MINOR_VERSION && revision >= REV_VERSION && beta_ver > BETA_VERSION;
 }
@@ -94,7 +94,7 @@ bool HTTPDownload(const char *src, u8 **output, u32 *outSize)
 
             if (responseCode >= 301 && responseCode <= 303)
             {
-                if (config.isdebug)
+                if (config->IsDebug)
                     MsgDisp(top, "redirecting URL");
                 memset(url, '\0', strlen(url));
                 if (R_SUCCEEDED(res = httpc.GetResponseHeader(&context, (char*)"Location", url, 1024)))
@@ -107,7 +107,7 @@ bool HTTPDownload(const char *src, u8 **output, u32 *outSize)
 
                 if (responseCode != 200)
                 {
-                    if (config.isdebug)
+                    if (config->IsDebug)
                         MsgDisp(top, Format("URL returned status: %ld", responseCode));
                     httpc.CloseContext(&context);
                     return false;       
@@ -158,12 +158,12 @@ bool CheckForUpdate(void)
         /* Assume the top-level element is an object */
         if (!json_is_object(json->m_json))
         {
-            if (config.isdebug) MsgDisp(top, "Json object expected");
+            if (config->IsDebug) MsgDisp(top, "Json object expected");
             return 0;
         }
 
         if (json->GetValue("tag_name", newVerString, 40) <= -1) {
-            if (config.isdebug) MsgDisp(top, "No tag_name found");
+            if (config->IsDebug) MsgDisp(top, "No tag_name found");
             return 0;
         }
 
@@ -172,7 +172,7 @@ bool CheckForUpdate(void)
 
         json_t *arr = json_object_get(json->m_json, "assets");
         if (arr == NULL) {
-            if (config.isdebug) MsgDisp(top, "No 'assets' array found");
+            if (config->IsDebug) MsgDisp(top, "No 'assets' array found");
             return 0;
         }
 
@@ -190,7 +190,7 @@ bool CheckForUpdate(void)
             res = object->GetValue("browser_download_url", urlDownload, 1000);
             
             if (res <= -1) {
-                if (config.isdebug) MsgDisp(top, "No 'browser_download_url' string found");
+                if (config->IsDebug) MsgDisp(top, "No 'browser_download_url' string found");
                 return 0;
             }
 
@@ -215,7 +215,7 @@ bool InstallUpdate(void)
 
     if (HTTPDownload(urlDownload, &downloadbuf, &downloadsize))
     {
-        if (config.isdebug)
+        if (config->IsDebug)
             MsgDisp(top, "Update Downloaded!");
 
         if (envIsHomebrew())
@@ -277,7 +277,7 @@ bool Updater::Launch(void)
     if(CheckForUpdate())
     {
 
-        if (config.isdebug)
+        if (config->IsDebug)
             MsgDisp(top, "Check Update: True!");
 
         MsgDisp(top, Format("New Version: %s\n Changelog:\n%s", newVerString, newChangelog));
@@ -290,7 +290,7 @@ bool Updater::Launch(void)
     else
     {
         ret = false;
-        if (config.isdebug) MsgDisp(top, "Check Update: False!");
+        if (config->IsDebug) MsgDisp(top, "Check Update: False!");
     }
 
     delete[] urlDownload;

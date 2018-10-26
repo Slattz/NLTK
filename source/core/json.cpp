@@ -131,6 +131,16 @@ int Json::SetValue(const char *key, int val)
     return json_object_set(m_json, key, json_pack("i", val));
 }
 
+int Json::SetValue(const char *key, u64 val)
+{
+    return json_object_set(m_json, key, json_pack("o", val));
+}
+
+int Json::SetValue(const char *key, u32 val)
+{
+    return json_object_set(m_json, key, json_pack("o", val));
+}
+
 int Json::SetValue(const char *key, double val)
 {
     return json_object_set(m_json, key, json_pack("f", val));

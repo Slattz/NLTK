@@ -5,11 +5,11 @@
 #include "structs.h"
 #include "about.h"
 #include "cursor.h"
-#include "oldconfig.h"
+#include "config.hpp"
 #include "gfx.h"
 #include "utils.h"
 
-extern NLTK_config config;
+extern Config *config;
 extern NLTK_Titles_Info MediaInfo;
 
 C3D_RenderTarget* top;
@@ -56,7 +56,7 @@ Cursor g_cursor;
         ButtonText.push_back(Text(COLOR_GREY, "Town", TextSize, TextSize, 37.f, 147.f));
     }
 
-    if (config.isdebug)
+    if (config->IsDebug)
     {
         Text Cursor()
         DrawText(100, 120, 0.5, 0.5, COLOR_GREY, Format("Cursor X: %d, Cursor Y: %d", g_cursorpos.x, g_cursorpos.y).c_str());
@@ -154,7 +154,7 @@ void draw_base_interface(void)
     C2D_DrawRectSolid(0, 0, 0, 400, 20, COLOR_MENU_BARS);
     BarText[0].Draw();
 
-    if (config.isdebug)
+    if (config->IsDebug)
         BarText[1].Draw();
     C2D_Flush();
 }
@@ -276,8 +276,8 @@ void draw_config_menu(void)
     static bool TextInit = false;
     static const float TextSize = 0.7f;
     static std::vector<Text> ConfigText;
-    bool  ConfigBools[] = {config.autoupdate, config.autosavebackup, config.autoloadprefGame, 
-                    config.isdebug};
+    bool  ConfigBools[] = {config->Auto_Update, config->Auto_SaveBackup, config->Auto_loadprefGame, 
+                    config->IsDebug};
     u32 configamount = 4;
 
     if (!TextInit) {
@@ -298,7 +298,7 @@ void draw_config_menu(void)
         ConfigText[i].Draw(52, 23+(28*i)); //ConfigText
     }
 
-    if (config.isdebug)
+    if (config->IsDebug)
     {
         DrawSprite(Common_ss, CHECKBOX_FILLED, 20, 20+(28*(configamount-1)));
         ConfigText[configamount-1].Draw(52, 23+(28*(configamount-1)));
