@@ -1,6 +1,6 @@
 #include <3ds.h>
 #include <string>
-#include "jsmn.h"
+#include "json.hpp"
 #include "httpc.h"
 #include "gfx.h"
 #include "nfs.h"
@@ -11,69 +11,26 @@
 
 extern NLTK_config config;
 
-static char     newVerString[50];
-static char     newChangelog[2048];
-static char     urlDownload[1024];
-static int      urlDownloadSize;
-static char     UserAgentStr[50] = TITLE "/" VERSION;
+static char *newVerString = nullptr;
+static char *newChangelog = nullptr;
+static char *urlDownload = nullptr;
+static char *Filename = nullptr;
+static char UserAgentStr[50] = TITLE "/" VERSION;
 HTTPC httpc;
 
-static int jsoneq(const char *json, jsmntok_t *tok, const char *s)
+bool CheckVersion(const char *releaseName)
 {
-    if (tok->type == JSMN_STRING && (int) strlen(s) == tok->end - tok->start &&
-            strncmp(json + tok->start, s, tok->end - tok->start) == 0) {
-        return 0;
-    }
-    return -1;
-}
+    int major = 0;
+    int minor = 0;
+    int revision = 0;
+    int beta_ver = 0;
+    char *next = NULL;
 
-void str_replace(char *target, const char *needle, const char *replacement)
-{
-    char buffer[1024] = { 0 };
-    char *insert_point = &buffer[0];
-    const char *tmp = target;
-    size_t needle_len = strlen(needle);
-    size_t repl_len = strlen(replacement);
-
-    while (1) {
-        const char *p = strstr(tmp, needle);
-
-        // walked past last occurrence of needle; copy remaining part
-        if (p == NULL) {
-            strcpy(insert_point, tmp);
-            break;
-        }
-
-        // copy part before needle
-        memcpy(insert_point, tmp, p - tmp);
-        insert_point += p - tmp;
-
-        // copy replacement string
-        memcpy(insert_point, replacement, repl_len);
-        insert_point += repl_len;
-
-        // adjust pointers, move on
-        tmp = p + needle_len;
-    }
-
-    // write altered string back to target
-    strcpy(target, buffer);
-}
-
-bool    CheckVersion(const char *releaseName)
-{
-    int     major = 0;
-    int     minor = 0;
-    int     revision = 0;
-    int     beta_ver = 0;
-    char    *next = NULL;
-    
     if (releaseName && *releaseName == 'v')
         releaseName++;
 
     major = strtol(releaseName, &next, 10); //Get major version
-    if (config.isdebug)
-        MsgDisp(top, Format("Major: %d, Result: %d", major, major >= MAJOR_VERSION));
+    if (config.isdebug) MsgDisp(top, Format("Major: %d, Result: %d", major, major >= MAJOR_VERSION));
 
     if (next && *next == '.') //If minor version
         next++;
@@ -81,8 +38,8 @@ bool    CheckVersion(const char *releaseName)
         return major > MAJOR_VERSION;
 
     minor = strtol(next, &next, 10); //Get minor version
-    if (config.isdebug)
-        MsgDisp(top, Format("Minor: %d, Result %d", minor, minor >= MINOR_VERSION));
+    if (config.isdebug) MsgDisp(top, Format("Minor: %d, Result %d", minor, minor >= MINOR_VERSION));
+
     if (next && *next == '.') //If revision version
         next++;
 
@@ -90,28 +47,27 @@ bool    CheckVersion(const char *releaseName)
     {
         next++;
         beta_ver = strtol(next, NULL, 10); //Get beta version
-        if (config.isdebug)
-            MsgDisp(top, Format("Beta 1: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION));
+        if (config.isdebug) MsgDisp(top, Format("Beta 1: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION));
+
         return major >= MAJOR_VERSION && minor >= MINOR_VERSION && beta_ver > BETA_VERSION;
     }
-            
-    else //If there's no revision ver & beta ver
-        return major >= MAJOR_VERSION && minor >= MINOR_VERSION;
 
-    revision = strtol(next,  &next, 10); //Get revision version
-    if (config.isdebug)
-        MsgDisp(top, Format("Revision: %d, Result %d", revision, revision >= REV_VERSION));
+    else //If there's no revision ver & beta ver
+        return major >= MAJOR_VERSION && minor > MINOR_VERSION;
+
+    revision = strtol(next, &next, 10); //Get revision version
+    if (config.isdebug) MsgDisp(top, Format("Revision: %d, Result %d", revision, revision >= REV_VERSION));
+
     if (next && *next == 'B') //If there's a beta ver after revision ver
         next++;
 
     else
         return major >= MAJOR_VERSION && minor >= MINOR_VERSION && revision > REV_VERSION;
-    
+
     beta_ver = strtol(next, NULL, 10); //Get beta version
     if (config.isdebug)
         MsgDisp(top, Format("Beta 2: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION));
-    return major >= MAJOR_VERSION && minor >= MINOR_VERSION 
-            && revision >= REV_VERSION && beta_ver > BETA_VERSION;
+    return major >= MAJOR_VERSION && minor >= MINOR_VERSION && revision >= REV_VERSION && beta_ver > BETA_VERSION;
 }
 
 bool http_download(const char *src, u8 **output, u32 *outSize)
@@ -187,143 +143,63 @@ bool http_download(const char *src, u8 **output, u32 *outSize)
 
 bool checkUpdate(void)
 {
-    char            *json = NULL;
-    u32             size = 0;
-    Result          res;
-    bool            ret = false;
-    jsmn_parser     jParser;
-    jsmntok_t       tokens[500];
-    jsmntok_t       obj_key;
-    jsmntok_t       obj_val;
-    jsmntok_t       assetName;
-    jsmntok_t       assetUrl;
-    bool            updateavailable = false;
-    int             value_length;
-    int             i; //Loop
-    int             j; //Loop 2
-    int             tok = 0;
-    int             tokoffset = 0;
-    int             objnum = 0;
-    int             objoffset = 0;
-    int             assetNameLoopVal = -1;
-    int             assetUrlLoopVal = -2;//Start value different to assetNameLoopVal
+    Json    *json;
+    char    *jsonstring = NULL;
+    u32     size = 0;
+    bool    ret = false;
 
-    if (http_download("https://api.github.com/repos/Slattz/NLTK/releases/latest", (u8 **)&json, &size))
+    if (http_download("https://api.github.com/repos/Slattz/NLTK/releases/latest", (u8 **)&jsonstring, &size))
     {
-        jsmn_init(&jParser);
-        res = jsmn_parse(&jParser, json, size, tokens, sizeof(tokens)/sizeof(tokens[0]));
+        if (envIsHomebrew()) strcpy(Filename, TITLE ".3dsx");
+        else strcpy(Filename, TITLE ".cia");
 
-        /* Check if the parse was a success */
-        if (res < 0) 
-        {
-                if (config.isdebug)
-                    MsgDisp(top, Format("Failed to parse JSON: %ld", res));
-            return 0;
-        }
+        json = new Json(jsonstring, size);
 
         /* Assume the top-level element is an object */
-        if (res < 1 || tokens[0].type != JSMN_OBJECT)
+        if (!json_is_object(json->m_json))
         {
-            if (config.isdebug)
-                MsgDisp(top, "Object expected");
+            if (config.isdebug) MsgDisp(top, "Json object expected");
             return 0;
         }
 
-        /* Loop over all keys of the root object */
-        for (i = 1; i < res; i++)
+        if (json->GetValue("tag_name", newVerString, 40) <= -1) {
+            if (config.isdebug) MsgDisp(top, "No tag_name found");
+            return 0;
+        }
+
+        if (!CheckVersion(newVerString))
+            return 0; //if no update
+
+        json_t *arr = json_object_get(json->m_json, "assets");
+        if (arr == NULL) {
+            if (config.isdebug) MsgDisp(top, "No 'assets' array found");
+            return 0;
+        }
+
+        for (size_t i = 0; i < json_array_size(arr); i++) //Go through the objects in the array
         {
-            jsmntok_t json_key = tokens[i];
-            jsmntok_t json_value = tokens[i+1];
-            value_length = json_value.end - json_value.start;
+            ret = false;
+            int res;
+            char name[50] = {0};
+            Json *object = new Json(json_array_get(arr, i));
 
-            if (jsoneq(json, &json_key, "tag_name") == 0 && json_value.type == JSMN_STRING)
-            {
-                Sstrncpy(newVerString, json + json_value.start, value_length);
-                if (CheckVersion(newVerString)) {
-                    updateavailable = true;
-                }
+            res = object->GetValue("name", name, 49); //Used to check if correct file based on if hb user or not
+            if (res <= -1 && strncmp(Filename, name, 49) != 0)
+                continue;
 
-                else return 0; //if no update
+            res = object->GetValue("browser_download_url", urlDownload, 1000);
+            
+            if (res <= -1) {
+                if (config.isdebug) MsgDisp(top, "No 'browser_download_url' string found");
+                return 0;
             }
 
-            else if (jsoneq(json, &json_key, "assets") == 0 && updateavailable && json_value.type == JSMN_ARRAY)
-            {
-                u32 tempsize = json_value.size; //store size of assets so it can be added to i later
-                for (j = 0; j < json_value.size; j++) //Loop for amount of assets found
-                {
-                    /*
-                    i = position in orig loop
-                    2 = to bring to start of first object of array
-                    j = which array
-                    tokoffset = calculated to get to start of next array
-                    */
-                    tok = i+2+j+tokoffset;
-                    jsmntok_t val = tokens[tok]; //Use tok to determine the token in the json
-                    if (val.type == JSMN_OBJECT) //If an object is found
-                    {
-                        /* Increment tokoffset by how big the obj is * 2 to include keys & values */
-                        tokoffset += val.size*2;
-                        for (int k = 1; k < (val.size*2)+1; k++) //start at 1 to skip original object
-                        {
-                            objnum = tok+k+objoffset;
-                            obj_key = tokens[objnum]; //object keys
-                            obj_val = tokens[objnum+1]; //object values
+            ret = true;
+            break;
+        }
 
-                            /* skip uploader object */
-                            if (jsoneq(json, &obj_key, "uploader") == 0 && obj_val.type == JSMN_OBJECT)
-                            {
-                                objoffset += 1+(obj_val.size*2); //+1 to get to proper end of object
-                                tokoffset += (obj_val.size*2);
-                            }
-
-                            if (jsoneq(json, &obj_key, "name") == 0 && obj_val.type == JSMN_STRING)
-                            {
-                                assetName = obj_val;
-                                assetNameLoopVal = j; //Ensure name is from same asset as url
-                            }
-
-                            else if (jsoneq(json, &obj_key, "browser_download_url") == 0 && obj_val.type == JSMN_STRING)
-                            {
-                                assetUrl = obj_val;
-                                assetUrlLoopVal = j; //Ensure url is from same asset as name
-                            }
-
-                            if (envIsHomebrew())
-                            {
-                                if (jsoneq(json, &assetName, TITLE ".3dsx") == 0
-                                    && assetUrl.type == JSMN_STRING
-                                    && assetNameLoopVal == assetUrlLoopVal)
-                                {
-                                    urlDownloadSize = assetUrl.end - assetUrl.start;
-                                    Sstrncpy(urlDownload, json + assetUrl.start, urlDownloadSize);
-                                    ret = true;
-                                }
-                            }
-
-                            else
-                            {
-                                if (jsoneq(json, &assetName, TITLE ".cia") == 0
-                                    && assetUrl.type == JSMN_STRING
-                                    && assetNameLoopVal == assetUrlLoopVal)
-                                {
-                                    urlDownloadSize = assetUrl.end - assetUrl.start;
-                                    Sstrncpy(urlDownload, json + assetUrl.start, urlDownloadSize);
-                                    ret = true;
-                                }
-                            }
-                        }
-                        objoffset = 0; //Reset objoffset for the next object
-                    }
-                }
-                i += tempsize; //Add size of assets array to loop to skip it
-            }
-
-            else if (jsoneq(json, &json_key, "body") == 0 && updateavailable && json_value.type == JSMN_STRING)
-            {
-                Sstrncpy(newChangelog, json + json_value.start, value_length);
-                str_replace(newChangelog, "\\r", "");
-                str_replace(newChangelog, "\\n", "\n");
-            }
+        if (json->GetValue("body", newChangelog, 2000) <= -1) {
+            strcpy(newChangelog, " "); //if body didn't exist, just copy a blank space.
         }
     }
     return ret;
@@ -391,6 +267,11 @@ bool installUpdate(void)
 bool launchUpdater(void)
 {
     bool ret = false;
+    urlDownload = new char[1024];
+    newChangelog = new char[2048];
+    newVerString = new char[50];
+    Filename = new char[50];
+
     static const char* ProceedUpdate = "Would you like to proceed\nwith installing the update?";
 
     if(checkUpdate())
@@ -404,14 +285,18 @@ bool launchUpdater(void)
         if (MsgDisp(top, ProceedUpdate, MsgTypeConfirm))
             ret = installUpdate();        
 
-        return ret;
     }
 
     else
     {
-        if (config.isdebug)
-            MsgDisp(top, "Check Update: False!");
-
-        return false;
+        ret = false;
+        if (config.isdebug) MsgDisp(top, "Check Update: False!");
     }
+
+    delete[] urlDownload;
+    delete[] newChangelog;
+    delete[] newVerString;
+    delete[] Filename;
+
+    return ret;
 }
