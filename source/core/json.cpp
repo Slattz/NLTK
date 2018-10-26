@@ -21,7 +21,17 @@ Json::Json(char *buf, size_t bufsize) {
     if (m_json && m_jsonInit)
     {
         m_size = json_object_size(m_json); //Get how many keys in the json object
+    }
+}
 
+/* Construct Json from json_t */
+Json::Json(json_t *json) {
+    m_json = json;
+    m_jsonInit = (!m_json ? false : true);
+
+    if (m_json && m_jsonInit)
+    {
+        m_size = json_object_size(m_json); //Get how many keys in the json object
     }
 }
 
@@ -41,7 +51,7 @@ int Json::GetValue(const char *key, char *val, size_t valsize)
 {
     json_t *jsn = json_object_get(m_json, key);
 
-    if (jsn == NULL)
+    if (jsn == NULL || !json_is_string(jsn))
         return -1;
 
     const char *string = json_string_value(jsn);
@@ -54,7 +64,7 @@ int Json::GetValue(const char *key, bool *val)
 {
     json_t *jsn = json_object_get(m_json, key);
 
-    if (jsn == NULL)
+    if (jsn == NULL || !json_is_boolean(jsn))
         return -1;
 
     *val = json_boolean_value(jsn);

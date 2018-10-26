@@ -10,6 +10,7 @@ class Json {
 public:
     Json(const char* path);
     Json(char *buf, size_t bufsize);
+    Json(json_t *json);
     Json(void);
     ~Json(void);
     
@@ -26,8 +27,6 @@ public:
     int  SetValue(const char* key, bool val);
     int  SetValue(const char* key, int val);
     int  SetValue(const char* key, double val);
-
-protected:
 
     json_t *m_json = nullptr;
     size_t m_size = 0; //How many keys in the json object
