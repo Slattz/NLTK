@@ -17,6 +17,6 @@ static const char* credits[] =
 static const char* discordtext = "Need help with NLTK?\n\
 Join the NLTK Discord Server:\nhttps://discord.gg/j2VUBBv\n";
 
-static const char* twittertext = "Follow me on Twitter for NLTK\nnews, ACNL Hacking and\nrandom things:\n@Slattz3D\n";
+static const char *twittertext = "Follow on Twitter for AC Hacking,\nNLTK stuff and random things:\n@Slattz3D\n@CuylerAC";
 
 #endif
