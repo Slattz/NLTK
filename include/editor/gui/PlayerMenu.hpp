@@ -5,7 +5,7 @@
 
 #include "save.h"
 
-struct EditorSettings {
+struct PlayerSettings {
     s32  SelectedPlayer = 0;
     bool DrawingMenu = false;
     bool DrawingSubmenu = false;
@@ -13,7 +13,7 @@ struct EditorSettings {
     u32 RColor = COLOR_GREY;
 };
 
-extern EditorSettings EditorConfig;
+extern PlayerSettings EditorConfig;
 
 namespace Editor
 {

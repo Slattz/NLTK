@@ -12,6 +12,7 @@
 #include "gui/MainMenu.hpp"
 #include "gui/PlayerMenu.hpp"
 #include "gui/AcreMenu.hpp"
+#include "gui/ShopsMenu.hpp"
 
 extern Cursor g_cursor;
 extern s16  g_CheckX[2];
@@ -30,7 +31,7 @@ void Editor::Draw_MainMenu(void)
     static std::vector<Text> ButtonText;
     static std::vector<Text> ColumnText;
     static int ButtonIcon[] = {TOWN_ICON, ACRES_ICON, PROFILE_ICON, VILLAGERS_ICON,
-                               PWP_ICON, ISLAND_ICON, MAIN_STREET_ICON, ABOUT_ICON};
+                               PWP_ICON, ISLAND_ICON, SHOPS_ICON, ABOUT_ICON};
 
     if (!TextInit) {
         ButtonText.push_back(Text(COLOR_GREY, "Town", TextSize, TextSize, 37.f, 147.f));
@@ -39,7 +40,7 @@ void Editor::Draw_MainMenu(void)
         ButtonText.push_back(Text(COLOR_GREY, "Villagers", TextSize, TextSize, 248.f, 147.f));
         ButtonText.push_back(Text(COLOR_GREY, "PWPs", TextSize, TextSize, 37.f, 217.f));
         ButtonText.push_back(Text(COLOR_GREY, "Island", TextSize, TextSize, 110.f, 217.f));
-        ButtonText.push_back(Text(COLOR_GREY, "Main Street", 0.55f, 0.55f, 168.f, 217.f));
+        ButtonText.push_back(Text(COLOR_GREY, "Shops", TextSize, TextSize, 182.f, 217.f));
         ButtonText.push_back(Text(COLOR_GREY, "About", TextSize, TextSize, 256.f, 217.f));
 
         ColumnText.push_back(Text(COLOR_GREY, "Game\nSelect", TextSize, TextSize, 44.f, 12.f));
@@ -121,7 +122,7 @@ int Editor::Spawn_MainMenu(Save *saveFile)
                     MsgDisp(top, "Island Menu Coming Soon!");
 
                 else if (g_CheckX[i] >= 163 && g_CheckX[i] <= 233 && g_CheckY[i] >= 180 && g_CheckY[i] <= 235) //Main Street Menu
-                    MsgDisp(top, "Main Street Menu Coming Soon!");
+                    Editor::Spawn_ShopsMenu(saveFile);
 
                 else if (g_CheckX[i] >= 237 && g_CheckX[i] <= 307 && g_CheckY[i] >= 180 && g_CheckY[i] <= 235) //About Menu
                     spawn_about_menu();

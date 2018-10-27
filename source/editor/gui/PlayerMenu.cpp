@@ -18,7 +18,7 @@ extern s16  g_CheckY[2];
 extern bool g_disabled[2];
 extern u32  g_key[2];
 
-EditorSettings EditorConfig;
+PlayerSettings EditorConfig;
 
 void Editor::Player::Draw_PlayerMenuTop(Save *saveFile, int selectedplayer) {
     static bool Init = false;

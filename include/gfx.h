@@ -59,7 +59,7 @@ extern const u32 COLOR_TRANSPARENT;
 #define VILLAGERS_ICON      Editor_ss_Villagers_idx
 #define PWP_ICON            Editor_ss_Pwp_idx
 #define ISLAND_ICON         Editor_ss_Island_idx
-#define MAIN_STREET_ICON    Editor_ss_Main_Street_idx
+#define SHOPS_ICON          Editor_ss_Shops_idx
 #define ABOUT_ICON          Editor_ss_About_idx
 #define BUTTON_MAIN         Editor_ss_Button_idx
 //Game Select Menu
