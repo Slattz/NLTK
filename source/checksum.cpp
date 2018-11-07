@@ -3,7 +3,7 @@
 #include "save.h"
 #include "checksum.h"
 
-const u32 crcTable_1[256] = {
+const u32 crcTable_1[256] = { //Polynomial: 0x1EDC6F41, 0xFFFFFFFF initial value, 0xFFFFFFFF xor, Input Reflection, Output Reflection
     0x00000000, 0xF26B8303, 0xE13B70F7, 0x1350F3F4, 0xC79A971F,
     0x35F1141C, 0x26A1E7E8, 0xD4CA64EB, 0x8AD958CF, 0x78B2DBCC,
     0x6BE22838, 0x9989AB3B, 0x4D43CFD0, 0xBF284CD3, 0xAC78BF27,
@@ -58,7 +58,7 @@ const u32 crcTable_1[256] = {
     0xAD7D5351
 };
 
-const u32 crcTable_2[256] = {
+const u32 crcTable_2[256] = { //Polynomial: 0x04C11DB7, 0x00000000 initial value, 0xFFFFFFFF xor, No Input Reflection, No Output Reflection
     0x00000000, 0x04C11DB7, 0x09823B6E, 0x0D4326D9, 0x130476DC,
     0x17C56B6B, 0x1A864DB2, 0x1E475005, 0x2608EDB8, 0x22C9F00F,
     0x2F8AD6D6, 0x2B4BCB61, 0x350C9B64, 0x31CD86D3, 0x3C8EA00A,
@@ -113,7 +113,7 @@ const u32 crcTable_2[256] = {
     0xB1F740B4
 };
 
-u32 CalculateCRC32Type1(u8 *buf, u32 size) {
+u32 CalculateCRC32Reflected(u8 *buf, u32 size) {
     u32 crc = 0xFFFFFFFF;
     while (size-- != 0) {
         crc = crcTable_1[(crc ^ *buf) & 0xFF] ^ (crc >> 8);
@@ -123,32 +123,32 @@ u32 CalculateCRC32Type1(u8 *buf, u32 size) {
     return ~crc;
 }
 
-u32 CalculateCRC32Type2(u8 *buf, u32 size) {
+u32 CalculateCRC32Normal(u8 *buf, u32 size) {
     u32 crc = 0;
     while (size-- != 0) {
-        crc = crcTable_2[*buf ^ (crc >> 24)] ^ (crc << 8);
+        crc = crcTable_2[((crc >> 24) ^ *buf) & 0xFF] ^ (crc << 8);
         buf++;
     }
     return ~crc;
 }
 
 bool VerifyCRC32(u32 crc, u8 *buf, u32 startOffset, u32 size, ChecksumType type) {
-    if (type == CHECKSUM_2)
+    if (type == CRC_NORMAL)
     {
-        return CalculateCRC32Type2(buf + startOffset + 4, size) == crc;
+        return CalculateCRC32Normal(buf + startOffset + 4, size) == crc;
     }
 
-    return CalculateCRC32Type1(buf + startOffset + 4, size) == crc;
+    return CalculateCRC32Reflected(buf + startOffset + 4, size) == crc;
 }
 
 u32 UpdateCRC32(Save *save, u32 startOffset, u32 size, ChecksumType type) {
     u32 crc32 = 0;
-    if (type == CHECKSUM_2) {
-        crc32 = CalculateCRC32Type2(save->GetRawSaveData() + startOffset + 4, size);
+    if (type == CRC_NORMAL) {
+        crc32 = CalculateCRC32Normal(save->GetRawSaveData() + startOffset + 4, size);
     }
 
     else {
-        crc32 = CalculateCRC32Type1(save->GetRawSaveData() + startOffset + 4, size);
+        crc32 = CalculateCRC32Reflected(save->GetRawSaveData() + startOffset + 4, size);
     }
     save->Write(startOffset, crc32); // write calculated crc32
 
@@ -171,8 +171,7 @@ void FixCRC32s(Save *save) {
     UpdateCRC32(save, 0x71924, 0xBE4);      //Unknown2 Checksum
     UpdateCRC32(save, 0x73954, 0x16188);    //LetterStorage Checksum
 
-    UpdateCRC32(save, 0x5033C, 0x28F0, CHECKSUM_2); 	//Unknown3 Checksum
-    UpdateCRC32(save, 0x52C30, 0x7F0, CHECKSUM_2);      //Unknown4 Checksum
-    UpdateCRC32(save, 0x7250C, 0x1444, CHECKSUM_2); 	//Unknown5 Checksum
-
+    UpdateCRC32(save, 0x5033C, 0x28F0, CRC_NORMAL);     //Unknown3 Checksum
+    UpdateCRC32(save, 0x52C30, 0x7F0, CRC_NORMAL);      //Unknown4 Checksum
+    UpdateCRC32(save, 0x7250C, 0x1444, CRC_NORMAL);     //Unknown5 Checksum
 }
