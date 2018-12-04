@@ -81,17 +81,19 @@ void Editor::Draw_MainMenu(void)
     C2D_SceneBegin(bottom);
     DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
 
+    // Draw main buttons
+    SaveButton->Draw();
+    OptionsButton->Draw();
+    GameSelectButton->Draw();
+    TownManagerButton->Draw();
+
     for (int i = 0; i < 2; i++)
     {
         ColumnText[i].Draw(); //Column 1 Text
         ColumnText[2+i].Draw(); //Column 2 Text
     }
 
-    SaveButton->Draw();
-    OptionsButton->Draw();
-    GameSelectButton->Draw();
-    TownManagerButton->Draw();
-
+    // Draw sub buttons
     TownButton->Draw();
     AcreButton->Draw();
     PlayerButton->Draw();
