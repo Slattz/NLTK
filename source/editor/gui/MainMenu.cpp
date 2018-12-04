@@ -87,6 +87,11 @@ void Editor::Draw_MainMenu(void)
         ColumnText[2+i].Draw(); //Column 2 Text
     }
 
+    SaveButton->Draw();
+    OptionsButton->Draw();
+    GameSelectButton->Draw();
+    TownManagerButton->Draw();
+
     TownButton->Draw();
     AcreButton->Draw();
     PlayerButton->Draw();
