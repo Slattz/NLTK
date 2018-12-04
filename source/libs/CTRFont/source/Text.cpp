@@ -23,6 +23,8 @@ static GlyphVector  GetGlyphsFromString(const FontHandle &font, const std::strin
     if (src.empty())
         return glyphs;
 
+    outWidth = 0.f;
+
     do
     {
         units = decode_utf8(&code, str);
@@ -72,7 +74,7 @@ static GlyphVector  GetGlyphsFromString(const FontHandle &font, const std::strin
 
     } while (true);
 
-    if (width > outWidth || (width < outWidth && line == 0))
+    if (width > outWidth)
         outWidth = width;
 
     outLines = line + 1;
