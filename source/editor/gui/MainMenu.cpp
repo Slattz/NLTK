@@ -37,14 +37,18 @@ bool Editor::SaveCheck(void) {
 
 void Editor::Draw_MainMenu(void)
 {
-    static bool TextInit = false;
+    static bool FuncInit = false;
     static const float TextSize = 0.6f;
     static std::vector<Text> ButtonText;
     static std::vector<Text> ColumnText;
     static int ButtonIcon[] = {TOWN_ICON, ACRES_ICON, PROFILE_ICON, VILLAGERS_ICON,
                                PWP_ICON, ISLAND_ICON, SHOPS_ICON, ABOUT_ICON};
 
-    if (!TextInit) {
+    if (!FuncInit) {
+        SaveButton->SetScale(1.15, 0.6);
+        OptionsButton->SetScale(1.15, 0.6);
+        GameSelectButton->SetScale(1.15, 0.6);
+        TownManagerButton->SetScale(1.15, 0.6);
         ButtonText.push_back(Text(COLOR_GREY, "Town", TextSize, TextSize, 37.f, 147.f));
         ButtonText.push_back(Text(COLOR_GREY, "Acres", TextSize, TextSize, 110.f, 147.f));
         ButtonText.push_back(Text(COLOR_GREY, "Players", TextSize, TextSize, 178.f, 147.f));
@@ -58,7 +62,7 @@ void Editor::Draw_MainMenu(void)
         ColumnText.push_back(Text(COLOR_GREY, "  Town\nManager", TextSize, TextSize, 40.f, 60.f));
         ColumnText.push_back(Text(COLOR_GREY, "Save", TextSize, TextSize, 248.f, 18.f));
         ColumnText.push_back(Text(COLOR_GREY, "Options", TextSize, TextSize, 240.f, 67.f));
-        TextInit = true;
+        FuncInit = true;
     }
 
     draw_base_interface();
@@ -67,8 +71,6 @@ void Editor::Draw_MainMenu(void)
 
     for (int i = 0; i < 2; i++)
     {
-        DrawSprite(Editor_ss, BUTTON_MAIN, 20,  10+(50*i), nullptr, 1.15, 0.6);  //w = 80, h = 33
-        DrawSprite(Editor_ss, BUTTON_MAIN, 220, 10+(50*i), nullptr, 1.15, 0.6);  //w = 80, h = 33
         ColumnText[i].Draw(); //Column 1 Text
         ColumnText[2+i].Draw(); //Column 2 Text
     }
