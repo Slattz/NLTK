@@ -17,8 +17,16 @@ InputManager* InputManager::Instance() {
     return m_pInputManager;
 }
 
+bool InputManager::IsButtonDown(int button) {
+    return this->_input.KeysDown & button;
+}
+
+bool InputManager::IsButtonHeld(int button) {
+    return this->_input.KeysHeld & button;
+}
+
 bool InputManager::IsButtonActive(int button) {
-    return this->_input.Keys & button;
+    return this->IsButtonDown(button) || this->IsButtonHeld(button);
 }
 
 void InputManager::RefreshInput() {
@@ -28,49 +36,50 @@ void InputManager::RefreshInput() {
     hidTouchRead(&touch);
 
     // Update input
-    this->_input.Keys = hidKeysHeld() | hidKeysDown();
+    this->_input.KeysDown = hidKeysDown();
+    this->_input.KeysHeld = hidKeysHeld();
     this->_input.Touch.X = touch.px;
     this->_input.Touch.Y = touch.py;
 
-    if (this->_input.Keys & KEY_TOUCH && !this->_input.CursorHeld) {
+    if (this->IsButtonActive(KEY_TOUCH) && !this->_input.CursorHeld) {
         this->_input.CursorEnabled = false;
         return;
     }
 
-    if (this->_input.Keys & KEY_A && _input.CursorEnabled) {
+    if (this->IsButtonActive(KEY_A) && _input.CursorEnabled) {
         this->_input.CursorHeld = true;
         return;
     }
     else _input.CursorHeld = false;
 
-    if (this->_input.Keys & KEY_CPAD) // C-Pad
+    if (this->IsButtonActive(KEY_CPAD)) // C-Pad
     {
-        if (this->_input.Keys & KEY_CPAD_RIGHT)
+        if (this->IsButtonActive(KEY_CPAD_RIGHT))
             this->_input.Cursor.X += 2;
 
-        if (this->_input.Keys & KEY_CPAD_LEFT)
+        if (this->IsButtonActive(KEY_CPAD_LEFT))
             this->_input.Cursor.X -= 2;
 
-        if (this->_input.Keys & KEY_CPAD_UP)
+        if (this->IsButtonActive(KEY_CPAD_UP))
             this->_input.Cursor.Y -= 2;
 
-        if (this->_input.Keys & KEY_CPAD_DOWN)
+        if (this->IsButtonActive(KEY_CPAD_DOWN))
             this->_input.Cursor.Y += 2;
 
         this->_input.CursorEnabled = true;
     }
-    else if (this->_input.Keys & KEY_CSTICK) // C-Stick
+    else if (this->IsButtonActive(KEY_CSTICK)) // C-Stick
     {
-        if (this->_input.Keys & KEY_CSTICK_RIGHT)
+        if (this->IsButtonActive(KEY_CSTICK_RIGHT))
             this->_input.Cursor.X += 3;
 
-        if (this->_input.Keys & KEY_CSTICK_LEFT)
+        if (this->IsButtonActive(KEY_CSTICK_LEFT))
             this->_input.Cursor.X -= 3;
 
-        if (this->_input.Keys & KEY_CSTICK_UP)
+        if (this->IsButtonActive(KEY_CSTICK_UP))
             this->_input.Cursor.Y -= 3;
 
-        if (this->_input.Keys & KEY_CSTICK_DOWN)
+        if (this->IsButtonActive(KEY_CSTICK_DOWN))
             this->_input.Cursor.Y += 3;
 
         this->_input.CursorEnabled = true;
