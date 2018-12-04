@@ -57,10 +57,11 @@ void Editor::Draw_MainMenu(void)
         GameSelectButton = new ImageButton(20.f, 10.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
         TownManagerButton = new ImageButton(20.f, 60.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
 
-        SaveButton->SetScale(1.15, 0.6);
-        OptionsButton->SetScale(1.15, 0.6);
-        GameSelectButton->SetScale(1.15, 0.6);
-        TownManagerButton->SetScale(1.15, 0.6);
+        SaveButton->SetScale(1.15f, 0.6f);
+        OptionsButton->SetScale(1.15f, 0.6f);
+        GameSelectButton->SetScale(1.15f, 0.6f);
+        TownManagerButton->SetScale(1.15f, 0.6f);
+
         ButtonText.push_back(Text(COLOR_GREY, "Town", TextSize, TextSize, 37.f, 147.f));
         ButtonText.push_back(Text(COLOR_GREY, "Acres", TextSize, TextSize, 110.f, 147.f));
         ButtonText.push_back(Text(COLOR_GREY, "Players", TextSize, TextSize, 178.f, 147.f));

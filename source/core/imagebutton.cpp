@@ -24,7 +24,7 @@ void ImageButton::Draw(void) {
             DrawSprite(m_sheet, m_imageId, Location.X, Location.Y, ImageTint, ScaleX, ScaleY, ZPos);
         }
         else {
-            DrawSprite(m_sheet, m_imageId, Location.X, Location.Y, nullptr, ScaleY, ScaleY, ZPos);
+            DrawSprite(m_sheet, m_imageId, Location.X, Location.Y, nullptr, ScaleX, ScaleY, ZPos);
         }
     }
 }
