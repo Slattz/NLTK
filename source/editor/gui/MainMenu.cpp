@@ -15,8 +15,6 @@
 #include "gui/AcreMenu.hpp"
 #include "gui/ShopsMenu.hpp"
 
-extern InputManager *input;
-
 ImageButton *TownButton = nullptr;
 ImageButton *AcreButton = nullptr;
 ImageButton *PlayerButton = nullptr;
@@ -108,7 +106,7 @@ void Editor::Draw_MainMenu(void)
 
     C2D_SceneBegin(top);
     draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Editor Main Menu!");
-    input->DrawCursor();
+    InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -119,7 +117,7 @@ int Editor::Spawn_MainMenu(Save *saveFile)
         checkIfCardInserted();
 
         Editor::Draw_MainMenu();
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
 
         if (hidKeysDown() & KEY_START)
         {
@@ -131,41 +129,41 @@ int Editor::Spawn_MainMenu(Save *saveFile)
             return MODE_MAINMENU;
         }
 
-        if (input->IsActive(TownButton->GetActiveArea())) //Town Menu
+        if (InputManager::Instance()->IsActive(TownButton->GetActiveArea())) //Town Menu
             MsgDisp(top, "Town Menu Coming Soon!");
 
-        else if (input->IsActive(AcreButton->GetActiveArea())) //Acres Menu
+        else if (InputManager::Instance()->IsActive(AcreButton->GetActiveArea())) //Acres Menu
             Editor::Spawn_AcresMenu(saveFile);
 
-        else if (input->IsActive(PlayerButton->GetActiveArea())) //Player Menu
+        else if (InputManager::Instance()->IsActive(PlayerButton->GetActiveArea())) //Player Menu
             Editor::Spawn_PlayerMenu(saveFile);
 
-        else if (input->IsActive(VillagerButton->GetActiveArea())) //Villagers Menu
+        else if (InputManager::Instance()->IsActive(VillagerButton->GetActiveArea())) //Villagers Menu
             MsgDisp(top, "Villagers Menu Coming Soon!");
 
-        else if (input->IsActive(PWPButton->GetActiveArea())) //Pwp Menu
+        else if (InputManager::Instance()->IsActive(PWPButton->GetActiveArea())) //Pwp Menu
             MsgDisp(top, "PWP Menu Coming Soon!");
 
-        else if (input->IsActive(IslandButton->GetActiveArea())) //Island Menu
+        else if (InputManager::Instance()->IsActive(IslandButton->GetActiveArea())) //Island Menu
             MsgDisp(top, "Island Menu Coming Soon!");
 
-        else if (input->IsActive(MainStreetButton->GetActiveArea())) //Main Street Menu
+        else if (InputManager::Instance()->IsActive(MainStreetButton->GetActiveArea())) //Main Street Menu
             Editor::Spawn_ShopsMenu(saveFile);
 
-        else if (input->IsActive(AboutButton->GetActiveArea())) //About Menu
+        else if (InputManager::Instance()->IsActive(AboutButton->GetActiveArea())) //About Menu
             spawn_about_menu();
 
         /* Menu Columns */
-        else if (input->IsActive(OptionsButton->GetActiveArea())) //Options Column
+        else if (InputManager::Instance()->IsActive(OptionsButton->GetActiveArea())) //Options Column
             spawn_config_menu();
 
-        else if (input->IsActive(GameSelectButton->GetActiveArea())) //Game Select Column
+        else if (InputManager::Instance()->IsActive(GameSelectButton->GetActiveArea())) //Game Select Column
             return MODE_GAMESELECT;
 
-        else if (input->IsActive(TownManagerButton->GetActiveArea())) //Town Manager Column
+        else if (InputManager::Instance()->IsActive(TownManagerButton->GetActiveArea())) //Town Manager Column
             return MODE_MANAGER;
 
-        else if (input->IsActive(SaveButton->GetActiveArea())) //Save Column
+        else if (InputManager::Instance()->IsActive(SaveButton->GetActiveArea())) //Save Column
         {
             if (SaveCheck())
             {

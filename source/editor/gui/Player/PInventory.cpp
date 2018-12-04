@@ -11,8 +11,6 @@
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
-extern InputManager *input;
-
 static void Draw_PlayerMenu_Inventory(Save *saveFile, int selectedplayer)
 {
     int x = 42;
@@ -45,7 +43,7 @@ static void Draw_PlayerMenu_Inventory(Save *saveFile, int selectedplayer)
         x += 38;
     }
 
-    input->DrawCursor();
+    InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -62,7 +60,7 @@ void Editor::Player::Spawn_PlayerMenu_Inventory(Save *saveFile) {
         checkIfCardInserted();
 
         Draw_PlayerMenu_Inventory(saveFile, EditorConfig.SelectedPlayer);
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
 

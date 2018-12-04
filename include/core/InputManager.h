@@ -11,19 +11,28 @@ enum EXTRA_HID
 typedef struct {
     Point_t Touch;
     Point_t Cursor;
+    u32 Keys;
     bool CursorEnabled;
     bool CursorHeld;
 } Input;
 
 class InputManager {
 public:
-    InputManager(void);
+    static InputManager* Instance();
+
+    bool IsButtonActive(int button);
     bool IsActive(Rect_t rect);
+    bool IsActive(Rect_t rect, std::initializer_list<u32> keys);
     void RefreshInput();
     void DrawCursor(void);
 
 private:
     bool IsActive(Rect_t rect, u32 x, u32 y);
+
+    InputManager(void);
+    InputManager(InputManager const&) {};
+    InputManager& operator=(InputManager const&) {};
+    static InputManager* m_pInputManager;
 
     Input _input;
 };

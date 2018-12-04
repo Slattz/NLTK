@@ -52,3 +52,7 @@ void Button::Activate(void) {
 void Button::SetActivatorKeys(u32 activatorKeys) {
     m_activatorKeys = activatorKeys;
 }
+
+bool Button::IsActive(void) {
+    return InputManager::Instance()->IsActive(this->ActiveArea, { this->m_activatorKeys });
+}

@@ -12,8 +12,6 @@
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
-extern InputManager *input;
-
 std::vector<Control*> editorPlayerInfoControls = {};
 
 TextBox playerNameBox;
@@ -64,7 +62,7 @@ static void Draw_PlayerMenu_Info(Save *saveFile, int selectedPlayer) {
         c->Draw();
     }
 
-    input->DrawCursor();
+    InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -92,7 +90,7 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
         checkIfCardInserted();
 
         Draw_PlayerMenu_Info(saveFile, EditorConfig.SelectedPlayer);
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
 
         m_keysDown = hidKeysDown();
         m_keysHeld = hidKeysHeld();
@@ -139,7 +137,7 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
         }
 
         // Check for input in the info menu
-        if (input->IsActive(playerNameBox.GetActiveArea())) { // Player Name Box
+        if (InputManager::Instance()->IsActive(playerNameBox.GetActiveArea())) { // Player Name Box
             // Find all references to the Player's id/name
             std::vector<u32> m_PlayerIdReferences = findPlayerReferences(saveFile, &saveFile->players[EditorConfig.SelectedPlayer]);
             saveFile->players[EditorConfig.SelectedPlayer].Name = u8tou16(playerNameBox.Activate().c_str());
@@ -153,22 +151,22 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
             saveFile->SetChangesMade(true);
         }
 
-        else if (input->IsActive(playerWalletBox.GetActiveArea())) {
+        else if (InputManager::Instance()->IsActive(playerWalletBox.GetActiveArea())) {
             saveFile->players[EditorConfig.SelectedPlayer].Wallet.value = static_cast<u32>(std::stoi(playerWalletBox.Activate()));
             saveFile->SetChangesMade(true);
         }
 
-        else if (input->IsActive(playerSavingsBox.GetActiveArea())) {
+        else if (InputManager::Instance()->IsActive(playerSavingsBox.GetActiveArea())) {
             saveFile->players[EditorConfig.SelectedPlayer].Savings.value = static_cast<u32>(std::stoi(playerSavingsBox.Activate()));
             saveFile->SetChangesMade(true);
         }
 
-        else if (input->IsActive(playerMedalsBox.GetActiveArea())) {
+        else if (InputManager::Instance()->IsActive(playerMedalsBox.GetActiveArea())) {
             saveFile->players[EditorConfig.SelectedPlayer].IslandMedals.value = static_cast<u32>(std::stoi(playerMedalsBox.Activate()));
             saveFile->SetChangesMade(true);
         }
                 
-        else if (input->IsActive(playerCouponsBox.GetActiveArea())) {
+        else if (InputManager::Instance()->IsActive(playerCouponsBox.GetActiveArea())) {
             saveFile->players[EditorConfig.SelectedPlayer].MeowCoupons.value = static_cast<u32>(std::stoi(playerCouponsBox.Activate()));
             saveFile->SetChangesMade(true);
         }

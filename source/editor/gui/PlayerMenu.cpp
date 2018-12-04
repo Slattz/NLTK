@@ -12,8 +12,6 @@
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
-extern InputManager *input;
-
 PlayerSettings EditorConfig;
 
 void Editor::Player::Draw_PlayerMenuTop(Save *saveFile, int selectedplayer) {
@@ -98,7 +96,7 @@ void Editor::Draw_PlayerMenu(Save *saveFile, int selectedplayer, int selectedmod
             draw_centered_text(1, 53, 35+(39*i), 8, 0.4, 0.4, COLOR_GREY, ButtonText[i]); //Text
     }
 
-    input->DrawCursor();
+    InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -116,7 +114,7 @@ void Editor::Spawn_PlayerMenu(Save *saveFile)
         checkIfCardInserted();
 
         Editor::Draw_PlayerMenu(saveFile, EditorConfig.SelectedPlayer, selectedmode);
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
 
@@ -165,30 +163,30 @@ void Editor::Spawn_PlayerMenu(Save *saveFile)
         static const Rect_t plyr_mail = {{0, 200}, {58, 240}};
 
         /* Menu Buttons */
-        if (input->IsActive(plyr_info)) //Info
+        if (InputManager::Instance()->IsActive(plyr_info)) //Info
         {
             selectedmode = 0;
             Editor::Player::Spawn_PlayerMenu_Info(saveFile);
         }
-        else if (input->IsActive(plyr_inv)) //Inv
+        else if (InputManager::Instance()->IsActive(plyr_inv)) //Inv
         {
             selectedmode = 1;
             Editor::Player::Spawn_PlayerMenu_Inventory(saveFile);
         }
-        else if (input->IsActive(plyr_looks)) //Appearance
+        else if (InputManager::Instance()->IsActive(plyr_looks)) //Appearance
         {
             selectedmode = 2;
         }
-        else if (input->IsActive(plyr_house)) //House
+        else if (InputManager::Instance()->IsActive(plyr_house)) //House
         {
             selectedmode = 3;
         }
-        else if (input->IsActive(plyr_pat)) //Patterns
+        else if (InputManager::Instance()->IsActive(plyr_pat)) //Patterns
         {
             selectedmode = 4;
             Editor::Player::Spawn_PlayerMenu_Patterns(saveFile);
         }
-        else if (input->IsActive(plyr_mail)) //Mail
+        else if (InputManager::Instance()->IsActive(plyr_mail)) //Mail
         {
             selectedmode = 5;
         }

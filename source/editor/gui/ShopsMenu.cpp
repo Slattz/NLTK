@@ -12,14 +12,12 @@
 #include "menus.h"
 #include "gui/ShopsMenu.hpp"
 
-extern InputManager *input;
-
 ShopsSettings ShopsConfig;
 
 void Editor::Draw_ShopsMenu(Save *saveFile)
 {
     draw_base_interface();
-    input->DrawCursor();
+    InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -36,7 +34,7 @@ void Editor::Spawn_ShopsMenu(Save *saveFile)
 
         hidScanInput();
         Editor::Draw_ShopsMenu(saveFile);
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
 
         if (hidKeysDown() & KEY_B)
             break;

@@ -13,8 +13,6 @@
 //static bool drawingMenu = false;
 //static bool drawingSubmenu = false;
 
-extern InputManager *input;
-
 int spawn_manager_main_menu(Save *saveFile)
 {
     while (aptMainLoop())
@@ -22,7 +20,7 @@ int spawn_manager_main_menu(Save *saveFile)
         checkIfCardInserted();
 
         draw_manager_main_menu();
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
 
         if (hidKeysDown() & KEY_START)
         {

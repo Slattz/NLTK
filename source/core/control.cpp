@@ -4,8 +4,6 @@
 #include "gfx.h"
 #include "control.h"
 
-// TODO: These should definitely be a struct that is handled by a class somewhere.
-
 Control::Control() {
     Location = { 0, 0 };
     Size = { 0, 0 };
@@ -38,4 +36,8 @@ void Control::SetZPos(float Zpos) {
 
 Rect_t Control::GetActiveArea(void) {
     return ActiveArea;
+}
+
+bool Control::IsActive(void) {
+    return InputManager::Instance()->IsActive(this->ActiveArea);
 }

@@ -17,7 +17,6 @@
 extern FS_MediaType currentMediaType;
 extern NLTK_Titles_Info MediaInfo;
 extern Config *config;
-extern InputManager *input;
 
 static bool drawingMenu = false;
 
@@ -34,7 +33,7 @@ int spawn_main_menu(void) {
         checkIfCardInserted();
 
         draw_main_menu();
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
 
         if (hidKeysDown() & KEY_START) {
             return MODE_EXIT;
@@ -54,16 +53,16 @@ int spawn_main_menu(void) {
         static const Rect_t manageract = {{180, 50}, {244, 114}};
         static const Rect_t aboutact = {{20, 30}, {100, 66}};
         static const Rect_t configact = {{220, 30}, {300, 66}};
-        if (input->IsActive(editoract)) //Editor Icon
+        if (InputManager::Instance()->IsActive(editoract)) //Editor Icon
             ret = Editor::Main();
 
-        else if (input->IsActive(manageract)) //Manager Icon
+        else if (InputManager::Instance()->IsActive(manageract)) //Manager Icon
             ret = manager_main();
 
-        else if (input->IsActive(aboutact)) //About Menu
+        else if (InputManager::Instance()->IsActive(aboutact)) //About Menu
             spawn_about_menu();
 
-        else if (input->IsActive(configact)) //Config Menu
+        else if (InputManager::Instance()->IsActive(configact)) //Config Menu
             spawn_config_menu();
 
         if (ret == MODE_EXIT) {
@@ -102,7 +101,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
         }
 
         draw_game_select_menu(selectedgame, selectedregion, selectedmedia);
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
 
         if (hidKeysDown() & KEY_START)
             break;
@@ -120,30 +119,30 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
         static const Rect_t KOR = {{234, 130}, {278, 160}};
         static const Rect_t confirm = {{75, 190}, {245, 220}};
 
-        if (input->IsActive(gamecart) && MediaInfo.GameCartInfo.HasACNLData)
+        if (InputManager::Instance()->IsActive(gamecart) && MediaInfo.GameCartInfo.HasACNLData)
         {
             selectedmedia = 1;
             selectedgame = -1;
             selectedregion = -1;
         }
-        else if (input->IsActive(sdcard) && MediaInfo.SDCardInfo.HasACNLData)
+        else if (InputManager::Instance()->IsActive(sdcard) && MediaInfo.SDCardInfo.HasACNLData)
         {
             selectedmedia = 0;
             selectedgame = -1;
             selectedregion = -1;
         }
-        else if (selectedmedia != -1 && input->IsActive(orig) && mediaInstalled.InstalledTitles.ORIG_installed)
+        else if (selectedmedia != -1 && InputManager::Instance()->IsActive(orig) && mediaInstalled.InstalledTitles.ORIG_installed)
         {
             selectedgame = 1;    //Orig ACNL
             selectedregion = -1; //Reset region, user mightn't have same regions installed for WA ACNL
         }
-        else if (selectedmedia != -1 && input->IsActive(WA) && mediaInstalled.InstalledTitles.WA_installed)
+        else if (selectedmedia != -1 && InputManager::Instance()->IsActive(WA) && mediaInstalled.InstalledTitles.WA_installed)
         {
             selectedgame = 2;    //WA ACNL
             selectedregion = -1; //Reset region, user may not have same regions installed for orig ACNL
         }
 
-        else if (input->IsActive(JPN))
+        else if (InputManager::Instance()->IsActive(JPN))
         {
             if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_JPN_installed) //if orig ACNL
                 selectedregion = 0;                                                     //JPN
@@ -152,7 +151,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
                 selectedregion = 0;                                                        //JPN
         }
 
-        else if (input->IsActive(USA))
+        else if (InputManager::Instance()->IsActive(USA))
         {
             if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_USA_installed) //if orig ACNL
                 selectedregion = 1;                                                     //USA
@@ -160,7 +159,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
             else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_USA_installed) //if WA ACNL
                 selectedregion = 1;                                                        //USA
         }
-        else if (input->IsActive(EUR))
+        else if (InputManager::Instance()->IsActive(EUR))
         {
             if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_EUR_installed) //if orig ACNL
                 selectedregion = 2;                                                     //EUR
@@ -168,7 +167,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
             else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_EUR_installed) //if WA ACNL
                 selectedregion = 2;                                                        //EUR
         }
-        else if (input->IsActive(KOR))
+        else if (InputManager::Instance()->IsActive(KOR))
         {
             if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_KOR_installed) //if orig ACNL
                 selectedregion = 3;                                                     //KOR
@@ -177,7 +176,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
                 selectedregion = 3;                                                        //KOR
         }
 
-        else if (input->IsActive(confirm)) //Confirm Button
+        else if (InputManager::Instance()->IsActive(confirm)) //Confirm Button
         {
             if (selectedmedia == -1)
                 MsgDisp(top, "Please select a media type!");
@@ -225,7 +224,7 @@ void spawn_about_menu(void)
         checkIfCardInserted();
 
         draw_about_menu(discord, twitter);
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
         
         if (hidKeysDown() & KEY_B)
             break;
@@ -233,13 +232,13 @@ void spawn_about_menu(void)
         static const Rect_t discordrect = {{55, 180}, {105, 230}};
         static const Rect_t twiterrect = {{215, 180}, {265, 230}};
 
-        if (input->IsActive(discordrect)) //Left Icon - Discord
+        if (InputManager::Instance()->IsActive(discordrect)) //Left Icon - Discord
             discord = true;
 
         else
             discord = false;
 
-        if (input->IsActive(twiterrect)) //Right Icon - Twitter
+        if (InputManager::Instance()->IsActive(twiterrect)) //Right Icon - Twitter
             twitter = true;
 
         else
@@ -263,7 +262,7 @@ void spawn_config_menu(void)
         checkIfCardInserted();
 
         draw_config_menu();
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
 
         if (DebugCode(debugcomplete))
         {
@@ -279,16 +278,16 @@ void spawn_config_menu(void)
         static const Rect_t prefgame = {{20, 76}, {44, 100}};
         static const Rect_t debugg = {{20, 104}, {44, 128}};
 
-        if (input->IsActive(aupdate)) //config->Auto_Update
+        if (InputManager::Instance()->IsActive(aupdate)) //config->Auto_Update
             config->Auto_Update = !config->Auto_Update;
 
-        if (input->IsActive(svebakup)) //config->Auto_SaveBackup
+        if (InputManager::Instance()->IsActive(svebakup)) //config->Auto_SaveBackup
             config->Auto_SaveBackup = !config->Auto_SaveBackup;
 
-        if (input->IsActive(prefgame)) //config->Auto_loadprefGame
+        if (InputManager::Instance()->IsActive(prefgame)) //config->Auto_loadprefGame
             config->Auto_loadprefGame = !config->Auto_loadprefGame;
 
-        if (input->IsActive(debugg)) { //config->IsDebug
+        if (InputManager::Instance()->IsActive(debugg)) { //config->IsDebug
             if (config->IsDebug)
             {
                 config->IsDebug = false;

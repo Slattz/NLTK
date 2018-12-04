@@ -1,5 +1,7 @@
 #include "InputManager.h"
 
+InputManager* InputManager::m_pInputManager = nullptr;
+
 InputManager::InputManager(void) {
     _input.Cursor.X = 160;
     _input.Cursor.Y = 120;
@@ -7,77 +9,84 @@ InputManager::InputManager(void) {
     _input.CursorHeld = false;
 }
 
+InputManager* InputManager::Instance() {
+    if (!m_pInputManager) {
+        m_pInputManager = new InputManager;
+    }
+
+    return m_pInputManager;
+}
+
+bool InputManager::IsButtonActive(int button) {
+    return this->_input.Keys & button;
+}
+
 void InputManager::RefreshInput() {
     touchPosition touch;
-    u32 kHeld;
 
     hidScanInput();
     hidTouchRead(&touch);
-    kHeld = hidKeysHeld();
 
-    _input.Touch.X = touch.px;
-    _input.Touch.Y = touch.py;
+    // Update input
+    this->_input.Keys = hidKeysHeld() | hidKeysDown();
+    this->_input.Touch.X = touch.px;
+    this->_input.Touch.Y = touch.py;
 
-    if (kHeld & KEY_TOUCH && !_input.CursorHeld) {
-        _input.CursorEnabled = false;
+    if (this->_input.Keys & KEY_TOUCH && !this->_input.CursorHeld) {
+        this->_input.CursorEnabled = false;
         return;
     }
 
-    
-    if (kHeld & KEY_A && _input.CursorEnabled) {
-        _input.CursorHeld = true;
+    if (this->_input.Keys & KEY_A && _input.CursorEnabled) {
+        this->_input.CursorHeld = true;
         return;
     }
-
     else _input.CursorHeld = false;
 
-    //CPad
-    if (kHeld & KEY_CPAD)
+    if (this->_input.Keys & KEY_CPAD) // C-Pad
     {
-        if (kHeld & KEY_CPAD_RIGHT)
-            _input.Cursor.X += 2;
+        if (this->_input.Keys & KEY_CPAD_RIGHT)
+            this->_input.Cursor.X += 2;
 
-        if (kHeld & KEY_CPAD_LEFT)
-            _input.Cursor.X -= 2;
+        if (this->_input.Keys & KEY_CPAD_LEFT)
+            this->_input.Cursor.X -= 2;
 
-        if (kHeld & KEY_CPAD_UP)
-            _input.Cursor.Y -= 2;
+        if (this->_input.Keys & KEY_CPAD_UP)
+            this->_input.Cursor.Y -= 2;
 
-        if (kHeld & KEY_CPAD_DOWN)
-            _input.Cursor.Y += 2;
+        if (this->_input.Keys & KEY_CPAD_DOWN)
+            this->_input.Cursor.Y += 2;
 
-        _input.CursorEnabled = true;
+        this->_input.CursorEnabled = true;
+    }
+    else if (this->_input.Keys & KEY_CSTICK) // C-Stick
+    {
+        if (this->_input.Keys & KEY_CSTICK_RIGHT)
+            this->_input.Cursor.X += 3;
+
+        if (this->_input.Keys & KEY_CSTICK_LEFT)
+            this->_input.Cursor.X -= 3;
+
+        if (this->_input.Keys & KEY_CSTICK_UP)
+            this->_input.Cursor.Y -= 3;
+
+        if (this->_input.Keys & KEY_CSTICK_DOWN)
+            this->_input.Cursor.Y += 3;
+
+        this->_input.CursorEnabled = true;
     }
 
-    //C-Stick
-    else if (kHeld & KEY_CSTICK)
-    {
-        if (hidKeysHeld() & KEY_CSTICK_RIGHT)
-            _input.Cursor.X += 3;
+    if (this->_input.Cursor.Y < 5)
+        this->_input.Cursor.Y = 235;
 
-        if (hidKeysHeld() & KEY_CSTICK_LEFT)
-            _input.Cursor.X -= 3;
+    if (this->_input.Cursor.Y > 235)
+        this->_input.Cursor.Y = 5;
 
-        if (hidKeysHeld() & KEY_CSTICK_UP)
-            _input.Cursor.Y -= 3;
+    if (this->_input.Cursor.X < 5)
+        this->_input.Cursor.X = 315;
 
-        if (hidKeysHeld() & KEY_CSTICK_DOWN)
-            _input.Cursor.Y += 3;
-
-        _input.CursorEnabled = true;
-    }
-
-    if (_input.Cursor.Y < 5)
-        _input.Cursor.Y = 235;
-
-    if (_input.Cursor.Y > 235)
-        _input.Cursor.Y = 5;
-
-    if (_input.Cursor.X < 5)
-        _input.Cursor.X = 315;
-
-    if (_input.Cursor.X > 315)
-        _input.Cursor.X = 5;
+    if (this->_input.Cursor.X > 315)
+        this->_input.Cursor.X = 5;
 }
 
 void InputManager::DrawCursor(void) {
@@ -104,4 +113,18 @@ bool InputManager::IsActive(Rect_t rect, u32 x, u32 y) {
 bool InputManager::IsActive(Rect_t rect) {
     return _input.CursorEnabled && _input.CursorHeld ? this->IsActive(rect, this->_input.Cursor.X, this->_input.Cursor.Y) :
         this->IsActive(rect, this->_input.Touch.X, this->_input.Touch.Y);
+}
+
+bool InputManager::IsActive(Rect_t rect, std::initializer_list<u32> keys) {
+    if (this->IsActive(rect)) {
+        for (auto button : keys) {
+            if (!this->IsButtonActive(button)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    return false;
 }

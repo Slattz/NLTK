@@ -14,8 +14,6 @@
 #include "menus.h"
 #include "gui/AcreMenu.hpp"
 
-extern InputManager *input;
-
 AcreSettings AcreConfig;
 C2D_ImageTint* AcreTint = new C2D_ImageTint[sizeof(C2D_ImageTint)];
 std::vector<Control*> acreEditorControls = {};
@@ -106,7 +104,7 @@ static void Draw_AcresMenu(Save *saveFile)
         c->Draw();
     }
 
-    input->DrawCursor();
+    InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -152,7 +150,7 @@ void Editor::Spawn_AcresMenu(Save *saveFile)
         checkIfCardInserted();
 
         Draw_AcresMenu(saveFile);
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
 
         if (hidKeysDown() & KEY_B) {
             break;
@@ -180,7 +178,7 @@ void Editor::Spawn_AcresMenu(Save *saveFile)
 
         for (Control *c : acreEditorControls) {
             auto imageButton = reinterpret_cast<ImageButton *>(c);
-            if (imageButton && input->IsActive(imageButton->GetActiveArea())) { // cast was successful?
+            if (imageButton && InputManager::Instance()->IsActive(imageButton->GetActiveArea())) { // cast was successful?
                 imageButton->Activate();
                 break;
             }

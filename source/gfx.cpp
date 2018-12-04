@@ -10,7 +10,6 @@
 #include "utils.h"
 
 extern Config *config;
-extern InputManager *input;
 extern NLTK_Titles_Info MediaInfo;
 
 C3D_RenderTarget* top;
@@ -266,7 +265,7 @@ void draw_main_menu(void)
     
     C2D_SceneBegin(top);
     //draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Actual Main Menu!");
-    input->DrawCursor();
+    InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -302,7 +301,7 @@ void draw_config_menu(void)
         DrawSprite(Common_ss, CHECKBOX_FILLED, 20, 20+(28*(configamount-1)));
         ConfigText[configamount-1].Draw(52, 23+(28*(configamount-1)));
     }
-    input->DrawCursor();
+    InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -343,7 +342,7 @@ void draw_about_menu(bool discord, bool twitter)
     else if (twitter)
         MsgDisp(bottom, twittertext, MsgTypeNone, COLOR_BROWN, COLOR_GREY, 0.6f, 60.f, 100.f, 200.f, 70.f);
 
-    input->DrawCursor();
+    InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -463,6 +462,6 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
 
     C2D_SceneBegin(top);
     draw_centered_text(0, 400, 90, 0, 0.8, 0.8, COLOR_BLACK, "Select your installed ACNL game:");
-    input->DrawCursor();
+    InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }

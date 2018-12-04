@@ -11,8 +11,6 @@
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
-extern InputManager *input;
-
 static void Draw_PlayerMenu_Patterns(Save *saveFile, int selectedPlayer)
 {
     Editor::Player::Draw_PlayerMenuTop(saveFile, selectedPlayer);
@@ -34,7 +32,7 @@ static void Draw_PlayerMenu_Patterns(Save *saveFile, int selectedPlayer)
         C2D_DrawImageAt(saveFile->players[selectedPlayer].Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
     }
 
-    input->DrawCursor();
+    InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -49,7 +47,7 @@ void Editor::Player::Spawn_PlayerMenu_Patterns(Save *saveFile) {
         checkIfCardInserted();
 
         Draw_PlayerMenu_Patterns(saveFile, EditorConfig.SelectedPlayer);
-        input->RefreshInput();
+        InputManager::Instance()->RefreshInput();
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
 
