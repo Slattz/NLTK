@@ -81,8 +81,6 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
 
     EditorConfig.DrawingSubmenu = true;
 
-    u32 m_keysDown, m_keysHeld = 0;
-
     // Set initial textbox values
     refreshInfoMenu(saveFile);
 
@@ -92,21 +90,18 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
         Draw_PlayerMenu_Info(saveFile, EditorConfig.SelectedPlayer);
         InputManager::Instance()->RefreshInput();
 
-        m_keysDown = hidKeysDown();
-        m_keysHeld = hidKeysHeld();
-
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
 
-        if (m_keysDown & KEY_B || m_keysHeld & KEY_B)
+        if (InputManager::Instance()->IsButtonActive(KEY_B))
             break;
 
-        if (m_keysHeld & KEY_R)
+        if (InputManager::Instance()->IsButtonHeld(KEY_R))
             EditorConfig.RColor = COLOR_WHITE;
 
-        if (m_keysHeld & KEY_L)
+        if (InputManager::Instance()->IsButtonHeld(KEY_L))
             EditorConfig.LColor = COLOR_WHITE;
 
-        if (m_keysDown & KEY_R)
+        if (InputManager::Instance()->IsButtonDown(KEY_R))
         {
             while (true) {
                 EditorConfig.SelectedPlayer++;
@@ -121,7 +116,7 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
             refreshInfoMenu(saveFile);
         }
 
-        if (m_keysDown & KEY_L)
+        if (InputManager::Instance()->IsButtonDown(KEY_L))
         {
             while (true) {
                 EditorConfig.SelectedPlayer--;
@@ -137,7 +132,7 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
         }
 
         // Check for input in the info menu
-        if (InputManager::Instance()->IsActive(playerNameBox.GetActiveArea())) { // Player Name Box
+        if (playerNameBox.IsActive()) { // Player Name Box
             // Find all references to the Player's id/name
             std::vector<u32> m_PlayerIdReferences = findPlayerReferences(saveFile, &saveFile->players[EditorConfig.SelectedPlayer]);
             saveFile->players[EditorConfig.SelectedPlayer].Name = u8tou16(playerNameBox.Activate().c_str());
@@ -151,22 +146,22 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
             saveFile->SetChangesMade(true);
         }
 
-        else if (InputManager::Instance()->IsActive(playerWalletBox.GetActiveArea())) {
+        else if (playerWalletBox.IsActive()) {
             saveFile->players[EditorConfig.SelectedPlayer].Wallet.value = static_cast<u32>(std::stoi(playerWalletBox.Activate()));
             saveFile->SetChangesMade(true);
         }
 
-        else if (InputManager::Instance()->IsActive(playerSavingsBox.GetActiveArea())) {
+        else if (playerSavingsBox.IsActive()) {
             saveFile->players[EditorConfig.SelectedPlayer].Savings.value = static_cast<u32>(std::stoi(playerSavingsBox.Activate()));
             saveFile->SetChangesMade(true);
         }
 
-        else if (InputManager::Instance()->IsActive(playerMedalsBox.GetActiveArea())) {
+        else if (playerMedalsBox.IsActive()) {
             saveFile->players[EditorConfig.SelectedPlayer].IslandMedals.value = static_cast<u32>(std::stoi(playerMedalsBox.Activate()));
             saveFile->SetChangesMade(true);
         }
                 
-        else if (InputManager::Instance()->IsActive(playerCouponsBox.GetActiveArea())) {
+        else if (playerCouponsBox.IsActive()) {
             saveFile->players[EditorConfig.SelectedPlayer].MeowCoupons.value = static_cast<u32>(std::stoi(playerCouponsBox.Activate()));
             saveFile->SetChangesMade(true);
         }

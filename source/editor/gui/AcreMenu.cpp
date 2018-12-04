@@ -152,18 +152,18 @@ void Editor::Spawn_AcresMenu(Save *saveFile)
         Draw_AcresMenu(saveFile);
         InputManager::Instance()->RefreshInput();
 
-        if (hidKeysDown() & KEY_B) {
+        if (InputManager::Instance()->IsButtonActive(KEY_B)) {
             break;
         }
 
-        if (AcreConfig.SelectedAcre > 0 && hidKeysDown() & KEY_DLEFT) {
+        if (AcreConfig.SelectedAcre > 0 && InputManager::Instance()->IsButtonDown(KEY_DLEFT)) {
             AcreConfig.SelectedAcre--;
         }
-        else if (AcreConfig.SelectedAcre > -1 && AcreConfig.SelectedAcre < ACRE_ID_MAX && hidKeysDown() & KEY_DRIGHT) {
+        else if (AcreConfig.SelectedAcre > -1 && AcreConfig.SelectedAcre < ACRE_ID_MAX && InputManager::Instance()->IsButtonDown(KEY_DRIGHT)) {
             AcreConfig.SelectedAcre++;
         }
 
-        if (AcreConfig.SelectedAcre > -1 && AcreConfig.SelectedAcre <= ACRE_ID_MAX && hidKeysDown() & KEY_A) {
+        if (AcreConfig.SelectedAcre > -1 && AcreConfig.SelectedAcre <= ACRE_ID_MAX && InputManager::Instance()->IsButtonDown(KEY_A)) {
             currentAcreButton->SetImageId(ACRE_PNG + AcreConfig.SelectedAcre);
             u32 writeOffset = MAP_ACRES
                 + std::distance(acreEditorControls.begin(), std::find(acreEditorControls.begin(), acreEditorControls.end(), currentAcreButton)) * 2;
@@ -178,7 +178,7 @@ void Editor::Spawn_AcresMenu(Save *saveFile)
 
         for (Control *c : acreEditorControls) {
             auto imageButton = reinterpret_cast<ImageButton *>(c);
-            if (imageButton && InputManager::Instance()->IsActive(imageButton->GetActiveArea())) { // cast was successful?
+            if (imageButton && imageButton->IsActive()) { // cast was successful?
                 imageButton->Activate();
                 break;
             }

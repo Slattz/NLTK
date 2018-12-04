@@ -291,10 +291,9 @@ void Keyboard::Draw() {
     C3D_FrameEnd(0);
 }
 void Keyboard::UpdateHID() {
-    u32 kDown = hidKeysDown();
     InputManager::Instance()->RefreshInput(); //Update cursor info
 
-    if (kDown & KEY_DUP && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
+    if (InputManager::Instance()->IsButtonDown(KEY_DUP) && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
 
         if (m_NinSymbolsPage == 0)
             m_NinSymbolsPage = 2;
@@ -302,7 +301,7 @@ void Keyboard::UpdateHID() {
         else m_NinSymbolsPage--;        
     }
 
-    if (kDown & KEY_DDOWN && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
+    if (InputManager::Instance()->IsButtonDown(KEY_DDOWN) && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
 
         if (m_NinSymbolsPage == 2)
             m_NinSymbolsPage = 0;
@@ -310,12 +309,12 @@ void Keyboard::UpdateHID() {
         else m_NinSymbolsPage++;
     }
 
-    if (kDown & KEY_Y) { //Toggle Shift
+    if (InputManager::Instance()->IsButtonDown(KEY_Y)) { //Toggle Shift
         m_ShiftOn = !m_ShiftOn; //Toggle m_ShiftOn
         SetupLetters(); //UPPER <-> lower
     }
 
-    if (kDown & KEY_DLEFT) { //Remove Character
+    if (InputManager::Instance()->IsButtonDown(KEY_DLEFT)) { //Remove Character
         std::string str = m_Text.GetText();
         if (!str.empty())
         {
@@ -324,13 +323,13 @@ void Keyboard::UpdateHID() {
         }
     }
 
-    if (kDown & KEY_DRIGHT) { //Add Space
+    if (InputManager::Instance()->IsButtonDown(KEY_DRIGHT)) { //Add Space
         std::string str = m_Text.GetText();
             str.push_back(' '); //Add space
             m_Text = str;
     }
 
-    if (kDown & KEY_L) {
+    if (InputManager::Instance()->IsButtonDown(KEY_L)) {
         if (m_KeyboardTab == static_cast<KeyboardTab>(0))
             m_KeyboardTab = static_cast<KeyboardTab>(2);
 
@@ -342,7 +341,7 @@ void Keyboard::UpdateHID() {
             --m_KeyboardTab;
     }
 
-    if (kDown & KEY_R) {
+    if (InputManager::Instance()->IsButtonDown(KEY_R)) {
         if (m_KeyboardTab == static_cast<KeyboardTab>(2))
             m_KeyboardTab = static_cast<KeyboardTab>(0);
 
@@ -354,11 +353,11 @@ void Keyboard::UpdateHID() {
             m_KeyboardTab = static_cast<KeyboardTab>(0);
     }
 
-    if (kDown & KEY_B && m_CanAbort) { //Abort
+    if (InputManager::Instance()->IsButtonDown(KEY_B) && m_CanAbort) { //Abort
         m_KeyboardStatus = KeyboardStatus::Abort;
     }
 
-    else if (kDown & KEY_A) {
+    else if (InputManager::Instance()->IsButtonDown(KEY_A)) {
         std::string str = m_Text.GetText();
         static const Rect_t keyboardactivator = {{99, 161}, {225, 183}};
         if (InputManager::Instance()->IsActive(keyboardactivator)) {

@@ -32,11 +32,10 @@ void Editor::Spawn_ShopsMenu(Save *saveFile)
     {
         checkIfCardInserted();
 
-        hidScanInput();
-        Editor::Draw_ShopsMenu(saveFile);
         InputManager::Instance()->RefreshInput();
+        Editor::Draw_ShopsMenu(saveFile);
 
-        if (hidKeysDown() & KEY_B)
+        if (InputManager::Instance()->IsButtonDown(KEY_B))
             break;
     }
 

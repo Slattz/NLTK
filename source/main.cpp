@@ -8,6 +8,7 @@
 #include "core/updater.hpp"
 #include "editor/editor.h"
 #include "libs/httpc-curl/httpc.h"
+#include "InputManager.h"
 
 static FontHandle g_acnlFont;
 u64 g_tid = 0;
@@ -71,9 +72,8 @@ int main() {
 
     Text::SetDefaultFont(g_acnlFont);
 
-    hidScanInput();
-    u32 keys = (hidKeysDown() | hidKeysHeld());
-    if (keys & KEY_SELECT) {
+    InputManager::Instance()->RefreshInput();
+    if (InputManager::Instance()->IsButtonActive(KEY_SELECT)) {
         config->Reset();
     }
 

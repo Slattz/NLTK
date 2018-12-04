@@ -118,17 +118,13 @@ void Editor::Spawn_PlayerMenu(Save *saveFile)
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
 
-        if (hidKeysDown() & KEY_B)
+        if (InputManager::Instance()->IsButtonDown(KEY_B))
             break;
 
-        if (hidKeysHeld() & KEY_R)
+        if (InputManager::Instance()->IsButtonDown(KEY_R))
+        {
             EditorConfig.RColor = COLOR_WHITE;
 
-        if (hidKeysHeld() & KEY_L)
-            EditorConfig.LColor = COLOR_WHITE;
-
-        if (hidKeysDown() & KEY_R)
-        {
             while (true) {
                 EditorConfig.SelectedPlayer++;
                 if (EditorConfig.SelectedPlayer > 3)
@@ -141,8 +137,10 @@ void Editor::Spawn_PlayerMenu(Save *saveFile)
             }
         }
 
-        if (hidKeysDown() & KEY_L)
+        if (InputManager::Instance()->IsButtonDown(KEY_L))
         {
+            EditorConfig.LColor = COLOR_WHITE;
+
             while (true) {
                 EditorConfig.SelectedPlayer--;
                 if (EditorConfig.SelectedPlayer < 0)

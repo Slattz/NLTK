@@ -35,12 +35,12 @@ int spawn_main_menu(void) {
         draw_main_menu();
         InputManager::Instance()->RefreshInput();
 
-        if (hidKeysDown() & KEY_START) {
+        if (InputManager::Instance()->IsButtonDown(KEY_START)) {
             return MODE_EXIT;
         }
 
         /* For Debugging Keyboard atm, will eventually be removed */
-        if (hidKeysDown() & KEY_DLEFT && config->IsDebug)
+        if (InputManager::Instance()->IsButtonDown(KEY_DLEFT) && config->IsDebug)
         {
             std::string lol;
             u8 intype = KeyboardInType::Letters | KeyboardInType::Numbers | KeyboardInType::Symbols | KeyboardInType::ACNLSymbols;
@@ -103,7 +103,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
         draw_game_select_menu(selectedgame, selectedregion, selectedmedia);
         InputManager::Instance()->RefreshInput();
 
-        if (hidKeysDown() & KEY_START)
+        if (InputManager::Instance()->IsButtonDown(KEY_START))
             break;
 
         NLTK_Media_Installed mediaInstalled = selectedmedia == 0
@@ -226,7 +226,7 @@ void spawn_about_menu(void)
         draw_about_menu(discord, twitter);
         InputManager::Instance()->RefreshInput();
         
-        if (hidKeysDown() & KEY_B)
+        if (InputManager::Instance()->IsButtonDown(KEY_B))
             break;
 
         static const Rect_t discordrect = {{55, 180}, {105, 230}};
@@ -270,7 +270,7 @@ void spawn_config_menu(void)
             config->IsDebug = true;
         }
         
-        if (hidKeysDown() & KEY_B)
+        if (InputManager::Instance()->IsButtonDown(KEY_B))
             break;
 
         static const Rect_t aupdate = {{20, 20}, {44, 44}};
