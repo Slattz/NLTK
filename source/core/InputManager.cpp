@@ -121,7 +121,7 @@ bool InputManager::IsActive(Rect_t rect, u32 x, u32 y) {
 
 bool InputManager::IsActive(Rect_t rect) {
     return _input.CursorEnabled && _input.CursorHeld ? this->IsActive(rect, this->_input.Cursor.X, this->_input.Cursor.Y) :
-        this->IsActive(rect, this->_input.Touch.X, this->_input.Touch.Y);
+        this->IsButtonActive(KEY_TOUCH) && this->IsActive(rect, this->_input.Touch.X, this->_input.Touch.Y);
 }
 
 bool InputManager::IsActive(Rect_t rect, std::initializer_list<u32> keys) {
