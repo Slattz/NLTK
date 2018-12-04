@@ -15,6 +15,7 @@ public:
     void SetImageTint(u32 TintColor);
     void SetImageTint(C2D_ImageTint* Tint);
     void SetScale(float scale);
+    void SetScale(float scaleX, float scaleY);
     C2D_SpriteSheet GetSpriteSheet(void);
     C2D_ImageTint*  GetImageTint(void);
 
@@ -22,6 +23,7 @@ protected:
     u32 m_imageId = 0;
     C2D_SpriteSheet m_sheet;
     C2D_ImageTint* ImageTint;
-    float Scale = 1.0f;
+    float ScaleX = 1.0f;
+    float ScaleY = 1.0f;
     u32 ActiveColor;
 };

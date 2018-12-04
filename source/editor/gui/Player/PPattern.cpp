@@ -7,15 +7,11 @@
 #include "pattern.h"
 #include "e_utils.h"
 #include "utils.h"
-#include "cursor.h"
+#include "InputManager.h"
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
-extern Cursor g_cursor;
-extern s16 g_CheckX[2];
-extern s16 g_CheckY[2];
-extern bool g_disabled[2];
-extern u32 g_key[2];
+extern InputManager *input;
 
 static void Draw_PlayerMenu_Patterns(Save *saveFile, int selectedPlayer)
 {
@@ -38,7 +34,7 @@ static void Draw_PlayerMenu_Patterns(Save *saveFile, int selectedPlayer)
         C2D_DrawImageAt(saveFile->players[selectedPlayer].Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
     }
 
-    g_cursor.Draw();
+    input->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -52,9 +48,8 @@ void Editor::Player::Spawn_PlayerMenu_Patterns(Save *saveFile) {
     {
         checkIfCardInserted();
 
-        hidScanInput();
         Draw_PlayerMenu_Patterns(saveFile, EditorConfig.SelectedPlayer);
-        updateCursorInfo();
+        input->RefreshInput();
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
 

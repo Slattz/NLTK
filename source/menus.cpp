@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include "CTRFont.hpp"
+#include "InputManager.h"
 #include "gfx.h"
 #include "utils.h"
 #include "config.hpp"
@@ -16,11 +17,8 @@
 extern FS_MediaType currentMediaType;
 extern NLTK_Titles_Info MediaInfo;
 extern Config *config;
+extern InputManager *input;
 
-s16  g_CheckX[2];
-s16  g_CheckY[2];
-bool g_disabled[2];
-u32  g_key[2] = {KEY_TOUCH, KEY_A};
 static bool drawingMenu = false;
 
 void checkIfCardInserted() {
@@ -35,9 +33,8 @@ int spawn_main_menu(void) {
     while (aptMainLoop()) {
         checkIfCardInserted();
 
-        hidScanInput();
         draw_main_menu();
-        updateCursorInfo();
+        input->RefreshInput();
 
         if (hidKeysDown() & KEY_START) {
             return MODE_EXIT;
@@ -52,23 +49,22 @@ int spawn_main_menu(void) {
             keyboard.Open(lol);
         }
 
-        for (int i = 0; i < 2; i++)
-        {
-            if (hidKeysDown() & g_key[i] && g_disabled[i])
-            { 
-                if (g_CheckX[i] >= 60 && g_CheckX[i] <= 124 && g_CheckY[i] >= 50 && g_CheckY[i] <= 114) //Editor Icon
-                    ret = Editor::Main();
-    
-                else if (g_CheckX[i] >= 180 && g_CheckX[i] <= 244 && g_CheckY[i] >= 50 && g_CheckY[i] <= 114) //Manager Icon
-                    ret = manager_main();
+        //TODO: Needs to be reworked into using ImageButtons
+        static const Rect_t editoract = {{60, 50}, {124, 114}};
+        static const Rect_t manageract = {{180, 50}, {244, 114}};
+        static const Rect_t aboutact = {{20, 30}, {100, 66}};
+        static const Rect_t configact = {{220, 30}, {300, 66}};
+        if (input->IsActive(editoract)) //Editor Icon
+            ret = Editor::Main();
 
-                else if (g_CheckX[i] >= 20 && g_CheckX[i] <= 100 && g_CheckY[i] >= 30 && g_CheckY[i] <= 66) //About Menu
-                    spawn_about_menu();
+        else if (input->IsActive(manageract)) //Manager Icon
+            ret = manager_main();
 
-                else if (g_CheckX[i] >= 220 && g_CheckX[i] <= 300 && g_CheckY[i] >= 30 && g_CheckY[i] <= 66) //Config Menu
-                    spawn_config_menu();
-            }
-        }
+        else if (input->IsActive(aboutact)) //About Menu
+            spawn_about_menu();
+
+        else if (input->IsActive(configact)) //Config Menu
+            spawn_config_menu();
 
         if (ret == MODE_EXIT) {
             break;
@@ -105,9 +101,8 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
             DisplayCardError();
         }
 
-        hidScanInput();
         draw_game_select_menu(selectedgame, selectedregion, selectedmedia);
-        updateCursorInfo();
+        input->RefreshInput();
 
         if (hidKeysDown() & KEY_START)
             break;
@@ -115,93 +110,100 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
         NLTK_Media_Installed mediaInstalled = selectedmedia == 0
             ? MediaInfo.SDCardInfo : MediaInfo.GameCartInfo;
 
-        for (int i = 0; i < 2; i++)
+        static const Rect_t gamecart = {{101, 6}, {145, 54}};
+        static const Rect_t sdcard = {{169, 6}, {213, 54}};
+        static const Rect_t orig = {{101, 60}, {145, 104}};
+        static const Rect_t WA = {{169, 60}, {213, 104}};
+        static const Rect_t JPN = {{170, 130}, {214, 160}};
+        static const Rect_t USA = {{106, 130}, {150, 160}};
+        static const Rect_t EUR = {{42, 130}, {86, 160}};
+        static const Rect_t KOR = {{234, 130}, {278, 160}};
+        static const Rect_t confirm = {{75, 190}, {245, 220}};
+
+        if (input->IsActive(gamecart) && MediaInfo.GameCartInfo.HasACNLData)
         {
-            if (hidKeysDown() & g_key[i] && g_disabled[i])
-            { 
-                if (g_CheckX[i] >= 101 && g_CheckX[i] <= 145 && g_CheckY[i] >= 6 && g_CheckY[i] <= 54 && MediaInfo.GameCartInfo.HasACNLData) {
-                    selectedmedia = 1;
-                    selectedgame = -1;
-                    selectedregion = -1;
-                }
-                else if (g_CheckX[i] >= 169 && g_CheckX[i] <= 213 && g_CheckY[i] >= 6 && g_CheckY[i] <= 54 && MediaInfo.SDCardInfo.HasACNLData) {
-                    selectedmedia = 0;
-                    selectedgame = -1;
-                    selectedregion = -1;
-                }
-                else if (selectedmedia != -1 && g_CheckX[i] >= 101 && g_CheckX[i] <= 145 && g_CheckY[i] >= 60 && g_CheckY[i] <= 104
-                    && mediaInstalled.InstalledTitles.ORIG_installed)
-                {
-                    selectedgame = 1; //Orig ACNL
-                    selectedregion = -1; //Reset region, user mightn't have same regions installed for WA ACNL
-                }
-                else if (selectedmedia != -1 && g_CheckX[i] >= 169 && g_CheckX[i] <= 213 && g_CheckY[i] >= 60 && g_CheckY[i] <= 104
-                    && mediaInstalled.InstalledTitles.WA_installed)
-                {
-                    selectedgame = 2; //WA ACNL
-                    selectedregion = -1; //Reset region, user may not have same regions installed for orig ACNL
-                }
-                else if (g_CheckX[i] >= 170 && g_CheckX[i] <= 214 && g_CheckY[i] >= 130 && g_CheckY[i] <= 160)
-                {
-                    if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_JPN_installed) //orig ACNL
-                        selectedregion = 0; //JPN
-    
-                    else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_JPN_installed) //WA ACNL
-                        selectedregion = 0; //JPN
-                }
-                else if (g_CheckX[i] >= 106 && g_CheckX[i] <= 150 && g_CheckY[i] >= 130 && g_CheckY[i] <= 160)
-                {
-                    if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_USA_installed) //orig ACNL
-                        selectedregion = 1; //USA
-    
-                    else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_USA_installed) //WA ACNL
-                        selectedregion = 1; //USA
-                }
-                else if (g_CheckX[i] >= 42 && g_CheckX[i] <= 86 && g_CheckY[i] >= 130 && g_CheckY[i] <= 160)
-                {
-                    if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_EUR_installed) //orig ACNL
-                        selectedregion = 2; //EUR
-    
-                    else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_EUR_installed) //WA ACNL
-                        selectedregion = 2; //EUR
-                }
-                else if (g_CheckX[i] >= 234 && g_CheckX[i] <= 278 && g_CheckY[i] >= 130 && g_CheckY[i] <= 160)
-                {
-                    if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_KOR_installed) //orig ACNL
-                        selectedregion = 3; //KOR
-    
-                    else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_KOR_installed) //WA ACNL
-                        selectedregion = 3; //KOR
-                }
-                else if (g_CheckX[i] >= 75 && g_CheckX[i] <= 245 && g_CheckY[i] >= 190 && g_CheckY[i] <= 220) //Confirm Button
-                {
-                    if (selectedmedia == -1)
-                        MsgDisp(top, "Please select a media type!");
+            selectedmedia = 1;
+            selectedgame = -1;
+            selectedregion = -1;
+        }
+        else if (input->IsActive(sdcard) && MediaInfo.SDCardInfo.HasACNLData)
+        {
+            selectedmedia = 0;
+            selectedgame = -1;
+            selectedregion = -1;
+        }
+        else if (selectedmedia != -1 && input->IsActive(orig) && mediaInstalled.InstalledTitles.ORIG_installed)
+        {
+            selectedgame = 1;    //Orig ACNL
+            selectedregion = -1; //Reset region, user mightn't have same regions installed for WA ACNL
+        }
+        else if (selectedmedia != -1 && input->IsActive(WA) && mediaInstalled.InstalledTitles.WA_installed)
+        {
+            selectedgame = 2;    //WA ACNL
+            selectedregion = -1; //Reset region, user may not have same regions installed for orig ACNL
+        }
 
-                    else if (selectedgame == -1)
-                        MsgDisp(top, "Please select a game!");
-    
-                    else if (selectedregion == -1)
-                        MsgDisp(top, "Please select a region!");
-    
-                    else
-                    {
-                        // Set Media Type
-                        *mediaType = static_cast<FS_MediaType>(selectedmedia + 1);
+        else if (input->IsActive(JPN))
+        {
+            if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_JPN_installed) //if orig ACNL
+                selectedregion = 0;                                                     //JPN
 
-                        if (selectedgame == 1)
-                            return JPN_TID + (selectedregion * 0x100); //Form orig TID
-    
-                        else if (selectedgame == 2)
-                            return JPN_WA_TID + (selectedregion * 0x100); //Form WA TID
-    
-                        else
-                        {
-                            MsgDisp(top, Format("Error:\nSelected Media Type is: %d\nSelected Game is: %d\nSelected Region is: %d",
-                                selectedmedia, selectedgame, selectedregion));
-                            return 0;
-                        }
-                    }
+            else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_JPN_installed) //if WA ACNL
+                selectedregion = 0;                                                        //JPN
+        }
+
+        else if (input->IsActive(USA))
+        {
+            if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_USA_installed) //if orig ACNL
+                selectedregion = 1;                                                     //USA
+
+            else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_USA_installed) //if WA ACNL
+                selectedregion = 1;                                                        //USA
+        }
+        else if (input->IsActive(EUR))
+        {
+            if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_EUR_installed) //if orig ACNL
+                selectedregion = 2;                                                     //EUR
+
+            else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_EUR_installed) //if WA ACNL
+                selectedregion = 2;                                                        //EUR
+        }
+        else if (input->IsActive(KOR))
+        {
+            if (selectedgame == 1 && mediaInstalled.InstalledTitles.ORIG_KOR_installed) //if orig ACNL
+                selectedregion = 3;                                                     //KOR
+
+            else if (selectedgame == 2 && mediaInstalled.InstalledTitles.WA_KOR_installed) //if WA ACNL
+                selectedregion = 3;                                                        //KOR
+        }
+
+        else if (input->IsActive(confirm)) //Confirm Button
+        {
+            if (selectedmedia == -1)
+                MsgDisp(top, "Please select a media type!");
+
+            else if (selectedgame == -1)
+                MsgDisp(top, "Please select a game!");
+
+            else if (selectedregion == -1)
+                MsgDisp(top, "Please select a region!");
+
+            else
+            {
+                // Set Media Type
+                *mediaType = static_cast<FS_MediaType>(selectedmedia + 1);
+
+                if (selectedgame == 1)
+                    return JPN_TID + (selectedregion * 0x100); //Form orig TID
+
+                else if (selectedgame == 2)
+                    return JPN_WA_TID + (selectedregion * 0x100); //Form WA TID
+
+                else
+                {
+                    MsgDisp(top, Format("Error:\nSelected Media Type is: %d\nSelected Game is: %d\nSelected Region is: %d",
+                                        selectedmedia, selectedgame, selectedregion));
+                    return 0;
                 }
             }
         }
@@ -222,33 +224,26 @@ void spawn_about_menu(void)
     {
         checkIfCardInserted();
 
-        hidScanInput();
         draw_about_menu(discord, twitter);
-        updateCursorInfo();
+        input->RefreshInput();
         
         if (hidKeysDown() & KEY_B)
             break;
-        int i;
-        for (i = 0; i < 2; i++)
-        {
-            if (g_disabled[i])
-            { 
-                if (g_CheckX[i] >= 55 && g_CheckX[i] <= 105 && g_CheckY[i] >= 180 && g_CheckY[i] <= 230) //Left Icon - Discord
-                    discord = true;
 
-                else discord = false;
-                /*
-                if (g_CheckX[i] >= 135 && g_CheckX[i] <= 185 && g_CheckY[i] >= 180 && g_CheckY[i] <= 230) //Middle Icon - N/A
-                    idk = true;
+        static const Rect_t discordrect = {{55, 180}, {105, 230}};
+        static const Rect_t twiterrect = {{215, 180}, {265, 230}};
 
-                else idk = false;
-                */
-                if (g_CheckX[i] >= 215 && g_CheckX[i] <= 265 && g_CheckY[i] >= 180 && g_CheckY[i] <= 230) //Right Icon - Twitter
-                    twitter = true;
+        if (input->IsActive(discordrect)) //Left Icon - Discord
+            discord = true;
 
-                else twitter = false;
-            }
-        }
+        else
+            discord = false;
+
+        if (input->IsActive(twiterrect)) //Right Icon - Twitter
+            twitter = true;
+
+        else
+            twitter = false;
     }
 
     drawingMenu = false;
@@ -267,9 +262,8 @@ void spawn_config_menu(void)
     {
         checkIfCardInserted();
 
-        hidScanInput();
         draw_config_menu();
-        updateCursorInfo();
+        input->RefreshInput();
 
         if (DebugCode(debugcomplete))
         {
@@ -280,25 +274,25 @@ void spawn_config_menu(void)
         if (hidKeysDown() & KEY_B)
             break;
 
-        for (int i = 0; i < 2; i++)
-        {
-            if (hidKeysDown() & g_key[i] && g_disabled[i])
-            {
-                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 20 && g_CheckY[i] <= 44) //config->Auto_Update
-                    config->Auto_Update = !config->Auto_Update;
+        static const Rect_t aupdate = {{20, 20}, {44, 44}};
+        static const Rect_t svebakup = {{20, 48}, {44, 72}};
+        static const Rect_t prefgame = {{20, 76}, {44, 100}};
+        static const Rect_t debugg = {{20, 104}, {44, 128}};
 
-                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 48  && g_CheckY[i] <= 72) //config->Auto_SaveBackup
-                    config->Auto_SaveBackup = !config->Auto_SaveBackup;
-    
-                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 76 && g_CheckY[i] <= 100) //config->Auto_loadprefGame
-                    config->Auto_loadprefGame = !config->Auto_loadprefGame;
-    
-                if (g_CheckX[i] >= 20 && g_CheckX[i] <= 44 && g_CheckY[i] >= 104 && g_CheckY[i] <= 128) //config->IsDebug
-                    if (config->IsDebug)
-                    {
-                        config->IsDebug = false;
-                        debugcomplete = false;
-                    }
+        if (input->IsActive(aupdate)) //config->Auto_Update
+            config->Auto_Update = !config->Auto_Update;
+
+        if (input->IsActive(svebakup)) //config->Auto_SaveBackup
+            config->Auto_SaveBackup = !config->Auto_SaveBackup;
+
+        if (input->IsActive(prefgame)) //config->Auto_loadprefGame
+            config->Auto_loadprefGame = !config->Auto_loadprefGame;
+
+        if (input->IsActive(debugg)) { //config->IsDebug
+            if (config->IsDebug)
+            {
+                config->IsDebug = false;
+                debugcomplete = false;
             }
         }
     }

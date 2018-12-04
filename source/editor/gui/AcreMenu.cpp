@@ -10,15 +10,11 @@
 #include "save.h"
 #include "e_utils.h"
 #include "utils.h"
-#include "cursor.h"
+#include "InputManager.h"
 #include "menus.h"
 #include "gui/AcreMenu.hpp"
 
-extern Cursor g_cursor;
-extern s16  g_CheckX[2];
-extern s16  g_CheckY[2];
-extern bool g_disabled[2];
-extern u32  g_key[2];
+extern InputManager *input;
 
 AcreSettings AcreConfig;
 C2D_ImageTint* AcreTint = new C2D_ImageTint[sizeof(C2D_ImageTint)];
@@ -110,7 +106,7 @@ static void Draw_AcresMenu(Save *saveFile)
         c->Draw();
     }
 
-    g_cursor.Draw();
+    input->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -155,13 +151,8 @@ void Editor::Spawn_AcresMenu(Save *saveFile)
     {
         checkIfCardInserted();
 
-        hidScanInput();
-        
-        if (true) {
-            Draw_AcresMenu(saveFile);
-        }
-
-        updateCursorInfo();
+        Draw_AcresMenu(saveFile);
+        input->RefreshInput();
 
         if (hidKeysDown() & KEY_B) {
             break;
@@ -187,17 +178,11 @@ void Editor::Spawn_AcresMenu(Save *saveFile)
             currentAcreId = -1;
         }
 
-        for (int i = 0; i < 2; i++)
-        {
-            if (hidKeysDown() & g_key[i] && g_disabled[i])
-            {
-                for (Control *c : acreEditorControls) {
-                    auto imageButton = reinterpret_cast<ImageButton*>(c);
-                    if (imageButton && imageButton->CheckActivate(g_CheckX[i], g_CheckY[i])) { // cast was successful?
-                        imageButton->Activate();
-                        break;
-                    }
-                }
+        for (Control *c : acreEditorControls) {
+            auto imageButton = reinterpret_cast<ImageButton *>(c);
+            if (imageButton && input->IsActive(imageButton->GetActiveArea())) { // cast was successful?
+                imageButton->Activate();
+                break;
             }
         }
     }

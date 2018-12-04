@@ -21,10 +21,10 @@ ImageButton::ImageButton(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 a
 void ImageButton::Draw(void) {
     if (Visible) {
         if (m_active) {
-            DrawSprite(m_sheet, m_imageId, Location.X, Location.Y, ImageTint, Scale, Scale, ZPos);
+            DrawSprite(m_sheet, m_imageId, Location.X, Location.Y, ImageTint, ScaleX, ScaleY, ZPos);
         }
         else {
-            DrawSprite(m_sheet, m_imageId, Location.X, Location.Y, nullptr, Scale, Scale, ZPos);
+            DrawSprite(m_sheet, m_imageId, Location.X, Location.Y, nullptr, ScaleY, ScaleY, ZPos);
         }
     }
 }
@@ -51,7 +51,13 @@ void ImageButton::SetImageTint(C2D_ImageTint* Tint) {
 }
 
 void ImageButton::SetScale(float scale) {
-    Scale = scale;
+    ScaleX = scale;
+    ScaleY = scale;
+}
+
+void ImageButton::SetScale(float scaleX, float scaleY) {
+    ScaleX = scaleX;
+    ScaleY = scaleY;
 }
 
 C2D_SpriteSheet ImageButton::GetSpriteSheet(void) {

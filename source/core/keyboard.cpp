@@ -4,12 +4,12 @@
 #include "gfx.h"
 #include "utils.h"
 #include "keyboard.h"
-#include "cursor.h"
+#include "InputManager.h"
 
 #define KEYS_PER_ROW 10
 #define KEYBOARD_ROWS 4
 
-extern Cursor g_cursor;
+extern InputManager *input;
 
 static const u32 SWKBD_BG = C2D_Color32(0x21, 0x8B, 0x2B, 0xFF);
 static const u32 SWKBD_BAR = C2D_Color32(0x14, 0x56, 0x1A, 0xFF);
@@ -288,13 +288,13 @@ void Keyboard::Draw() {
     SymTab->Draw();
     NinSymTab->Draw();
 
-    g_cursor.Draw();
+    input->DrawCursor();
 
     C3D_FrameEnd(0);
 }
 void Keyboard::UpdateHID() {
     u32 kDown = hidKeysDown();
-    updateCursorInfo(); //Update cursor info
+    input->RefreshInput(); //Update cursor info
 
     if (kDown & KEY_DUP && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
 
@@ -362,7 +362,8 @@ void Keyboard::UpdateHID() {
 
     else if (kDown & KEY_A) {
         std::string str = m_Text.GetText();
-        if (g_cursor.m_LocX >= 99 && g_cursor.m_LocX <= 225 && g_cursor.m_LocY >= 161 && g_cursor.m_LocY <= 183) {
+        static const Rect_t keyboardactivator = {{99, 161}, {225, 183}};
+        if (input->IsActive(keyboardactivator)) {
             str.push_back(' ');
         }
 

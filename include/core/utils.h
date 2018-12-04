@@ -14,7 +14,6 @@ void            Sleep(u64 nanoseconds);
 s64             Seconds(float amount);
 void            draw_centered_text(float StartX, float WidthX, float StartY, float HeightY,
                                    float scaleX, float scaleY, u32 color, const char* text);
-void            updateCursorInfo(void);
 std::string     u16tou8(std::u16string src);
 std::u16string  u8tou16(const char* src);
 bool            checkGameCartIsACNL();

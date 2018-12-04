@@ -1,15 +1,16 @@
 #include <3ds.h>
 #include "CTRFont.hpp"
+#include "InputManager.h"
 #include "unicode.h"
 #include "common.h"
 #include "structs.h"
 #include "about.h"
-#include "cursor.h"
 #include "config.hpp"
 #include "gfx.h"
 #include "utils.h"
 
 extern Config *config;
+extern InputManager *input;
 extern NLTK_Titles_Info MediaInfo;
 
 C3D_RenderTarget* top;
@@ -42,9 +43,7 @@ const u32 COLOR_YELLOW          =    C2D_Color32(255,255,0,255);
 const u32 COLOR_ORANGE          =    C2D_Color32(255,106,0,255);
 const u32 COLOR_TRANSPARENT     =    C2D_Color32(0,0,0,0);
 
-Cursor g_cursor;
-
-    struct C2D_SpriteSheet_s
+struct C2D_SpriteSheet_s
 {
     Tex3DS_Texture t3x;
     C3D_Tex        tex;
@@ -267,7 +266,7 @@ void draw_main_menu(void)
     
     C2D_SceneBegin(top);
     //draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Actual Main Menu!");
-    g_cursor.Draw();
+    input->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -303,7 +302,7 @@ void draw_config_menu(void)
         DrawSprite(Common_ss, CHECKBOX_FILLED, 20, 20+(28*(configamount-1)));
         ConfigText[configamount-1].Draw(52, 23+(28*(configamount-1)));
     }
-    g_cursor.Draw();
+    input->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -344,7 +343,7 @@ void draw_about_menu(bool discord, bool twitter)
     else if (twitter)
         MsgDisp(bottom, twittertext, MsgTypeNone, COLOR_BROWN, COLOR_GREY, 0.6f, 60.f, 100.f, 200.f, 70.f);
 
-    g_cursor.Draw();
+    input->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -464,6 +463,6 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
 
     C2D_SceneBegin(top);
     draw_centered_text(0, 400, 90, 0, 0.8, 0.8, COLOR_BLACK, "Select your installed ACNL game:");
-    g_cursor.Draw();
+    input->DrawCursor();
     C3D_FrameEnd(0);
 }

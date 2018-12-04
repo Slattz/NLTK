@@ -8,15 +8,11 @@
 #include "save.h"
 #include "e_utils.h"
 #include "utils.h"
-#include "cursor.h"
+#include "InputManager.h"
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
-extern Cursor g_cursor;
-extern s16  g_CheckX[2];
-extern s16  g_CheckY[2];
-extern bool g_disabled[2];
-extern u32  g_key[2];
+extern InputManager *input;
 
 PlayerSettings EditorConfig;
 
@@ -102,7 +98,7 @@ void Editor::Draw_PlayerMenu(Save *saveFile, int selectedplayer, int selectedmod
             draw_centered_text(1, 53, 35+(39*i), 8, 0.4, 0.4, COLOR_GREY, ButtonText[i]); //Text
     }
 
-    g_cursor.Draw();
+    input->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -119,9 +115,8 @@ void Editor::Spawn_PlayerMenu(Save *saveFile)
     {
         checkIfCardInserted();
 
-        hidScanInput();
         Editor::Draw_PlayerMenu(saveFile, EditorConfig.SelectedPlayer, selectedmode);
-        updateCursorInfo();
+        input->RefreshInput();
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
 
@@ -162,39 +157,40 @@ void Editor::Spawn_PlayerMenu(Save *saveFile)
             }
         }
 
-        for (int i = 0; i < 2; i++)
+        static const Rect_t plyr_info = {{0, 0}, {58, 40}};
+        static const Rect_t plyr_inv = {{0, 40}, {58, 80}};
+        static const Rect_t plyr_looks = {{0, 80}, {58, 120}};
+        static const Rect_t plyr_house = {{0, 120}, {58, 160}};
+        static const Rect_t plyr_pat = {{0, 160}, {58, 200}};
+        static const Rect_t plyr_mail = {{0, 200}, {58, 240}};
+
+        /* Menu Buttons */
+        if (input->IsActive(plyr_info)) //Info
         {
-            if (hidKeysDown() & g_key[i] && g_disabled[i])
-            { 
-                /* Menu Buttons */
-                if (g_CheckX[i] >= 0 && g_CheckX[i] <= 58 && g_CheckY[i] >= 0 && g_CheckY[i] < 40) //Info
-                {
-                    selectedmode = 0;
-                    Editor::Player::Spawn_PlayerMenu_Info(saveFile);
-                }
-                else if (g_CheckX[i] >= 0 && g_CheckX[i] <= 58 && g_CheckY[i] >= 40 && g_CheckY[i] < 80) //Inv
-                {
-                    selectedmode = 1;
-                    Editor::Player::Spawn_PlayerMenu_Inventory(saveFile);
-                }
-                else if (g_CheckX[i] >= 0 && g_CheckX[i] <= 58 && g_CheckY[i] >= 80 && g_CheckY[i] < 120) //Appearance
-                {
-                    selectedmode = 2;
-                }
-                else if (g_CheckX[i] >= 0 && g_CheckX[i] <= 58 && g_CheckY[i] >= 120 && g_CheckY[i] < 160) //House
-                {
-                    selectedmode = 3;
-                }
-                else if (g_CheckX[i] >= 0 && g_CheckX[i] <= 58 && g_CheckY[i] >= 160 && g_CheckY[i] < 200) //Patterns
-                {
-                    selectedmode = 4;
-                    Editor::Player::Spawn_PlayerMenu_Patterns(saveFile);
-                }
-                else if (g_CheckX[i] >= 0 && g_CheckX[i] <= 58 && g_CheckY[i] >= 200 && g_CheckY[i] <= 240) //Mail
-                {
-                    selectedmode = 5;
-                }
-            }
+            selectedmode = 0;
+            Editor::Player::Spawn_PlayerMenu_Info(saveFile);
+        }
+        else if (input->IsActive(plyr_inv)) //Inv
+        {
+            selectedmode = 1;
+            Editor::Player::Spawn_PlayerMenu_Inventory(saveFile);
+        }
+        else if (input->IsActive(plyr_looks)) //Appearance
+        {
+            selectedmode = 2;
+        }
+        else if (input->IsActive(plyr_house)) //House
+        {
+            selectedmode = 3;
+        }
+        else if (input->IsActive(plyr_pat)) //Patterns
+        {
+            selectedmode = 4;
+            Editor::Player::Spawn_PlayerMenu_Patterns(saveFile);
+        }
+        else if (input->IsActive(plyr_mail)) //Mail
+        {
+            selectedmode = 5;
         }
     }
 

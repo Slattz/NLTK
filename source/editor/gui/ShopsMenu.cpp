@@ -8,22 +8,18 @@
 #include "save.h"
 #include "e_utils.h"
 #include "utils.h"
-#include "cursor.h"
+#include "InputManager.h"
 #include "menus.h"
 #include "gui/ShopsMenu.hpp"
 
-extern Cursor g_cursor;
-extern s16  g_CheckX[2];
-extern s16  g_CheckY[2];
-extern bool g_disabled[2];
-extern u32  g_key[2];
+extern InputManager *input;
 
 ShopsSettings ShopsConfig;
 
 void Editor::Draw_ShopsMenu(Save *saveFile)
 {
     draw_base_interface();
-    g_cursor.Draw();
+    input->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -40,7 +36,7 @@ void Editor::Spawn_ShopsMenu(Save *saveFile)
 
         hidScanInput();
         Editor::Draw_ShopsMenu(saveFile);
-        updateCursorInfo();
+        input->RefreshInput();
 
         if (hidKeysDown() & KEY_B)
             break;

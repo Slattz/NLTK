@@ -8,15 +8,11 @@
 #include "save.h"
 #include "e_utils.h"
 #include "utils.h"
-#include "cursor.h"
+#include "InputManager.h"
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
-extern Cursor g_cursor;
-extern s16 g_CheckX[2];
-extern s16 g_CheckY[2];
-extern bool g_disabled[2];
-extern u32 g_key[2];
+extern InputManager *input;
 
 std::vector<Control*> editorPlayerInfoControls = {};
 
@@ -68,7 +64,7 @@ static void Draw_PlayerMenu_Info(Save *saveFile, int selectedPlayer) {
         c->Draw();
     }
 
-    g_cursor.Draw();
+    input->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -95,9 +91,8 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
     while (aptMainLoop()) {
         checkIfCardInserted();
 
-        hidScanInput();
         Draw_PlayerMenu_Info(saveFile, EditorConfig.SelectedPlayer);
-        updateCursorInfo();
+        input->RefreshInput();
 
         m_keysDown = hidKeysDown();
         m_keysHeld = hidKeysHeld();
@@ -143,41 +138,39 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
             refreshInfoMenu(saveFile);
         }
 
-        for (u32 i = 0; i < 2; i++)
-        {
-            if ((m_keysDown & g_key[i]) && g_disabled[i])
-            {
-                // Check for input in the info menu
-                if (playerNameBox.CheckActivate(g_CheckX[i], g_CheckY[i])) { // Player Name Box
-                    // Find all references to the Player's id/name
-                    std::vector<u32> m_PlayerIdReferences = findPlayerReferences(saveFile, &saveFile->players[EditorConfig.SelectedPlayer]);
-                    saveFile->players[EditorConfig.SelectedPlayer].Name = u8tou16(playerNameBox.Activate().c_str());
+        // Check for input in the info menu
+        if (input->IsActive(playerNameBox.GetActiveArea())) { // Player Name Box
+            // Find all references to the Player's id/name
+            std::vector<u32> m_PlayerIdReferences = findPlayerReferences(saveFile, &saveFile->players[EditorConfig.SelectedPlayer]);
+            saveFile->players[EditorConfig.SelectedPlayer].Name = u8tou16(playerNameBox.Activate().c_str());
 
-                    // Replace all references to Player's id/name
-                    for (u32 offset : m_PlayerIdReferences) {
-                        saveFile->Write(offset, saveFile->players[EditorConfig.SelectedPlayer].PlayerId);
-                        saveFile->Write(offset + 2, saveFile->players[EditorConfig.SelectedPlayer].Name, 8);
-                    }
-
-                    saveFile->SetChangesMade(true);
-                }
-                else if (playerWalletBox.CheckActivate(g_CheckX[i], g_CheckY[i])) {
-                    saveFile->players[EditorConfig.SelectedPlayer].Wallet.value = static_cast<u32>(std::stoi(playerWalletBox.Activate()));
-                    saveFile->SetChangesMade(true);
-                }
-                else if (playerSavingsBox.CheckActivate(g_CheckX[i], g_CheckY[i])) {
-                    saveFile->players[EditorConfig.SelectedPlayer].Savings.value = static_cast<u32>(std::stoi(playerSavingsBox.Activate()));
-                    saveFile->SetChangesMade(true);
-                }
-                else if (playerMedalsBox.CheckActivate(g_CheckX[i], g_CheckY[i])) {
-                    saveFile->players[EditorConfig.SelectedPlayer].IslandMedals.value = static_cast<u32>(std::stoi(playerMedalsBox.Activate()));
-                    saveFile->SetChangesMade(true);
-                }
-                else if (playerCouponsBox.CheckActivate(g_CheckX[i], g_CheckY[i])) {
-                    saveFile->players[EditorConfig.SelectedPlayer].MeowCoupons.value = static_cast<u32>(std::stoi(playerCouponsBox.Activate()));
-                    saveFile->SetChangesMade(true);
-                }
+            // Replace all references to Player's id/name
+            for (u32 offset : m_PlayerIdReferences) {
+                saveFile->Write(offset, saveFile->players[EditorConfig.SelectedPlayer].PlayerId);
+                saveFile->Write(offset + 2, saveFile->players[EditorConfig.SelectedPlayer].Name, 8);
             }
+
+            saveFile->SetChangesMade(true);
+        }
+
+        else if (input->IsActive(playerWalletBox.GetActiveArea())) {
+            saveFile->players[EditorConfig.SelectedPlayer].Wallet.value = static_cast<u32>(std::stoi(playerWalletBox.Activate()));
+            saveFile->SetChangesMade(true);
+        }
+
+        else if (input->IsActive(playerSavingsBox.GetActiveArea())) {
+            saveFile->players[EditorConfig.SelectedPlayer].Savings.value = static_cast<u32>(std::stoi(playerSavingsBox.Activate()));
+            saveFile->SetChangesMade(true);
+        }
+
+        else if (input->IsActive(playerMedalsBox.GetActiveArea())) {
+            saveFile->players[EditorConfig.SelectedPlayer].IslandMedals.value = static_cast<u32>(std::stoi(playerMedalsBox.Activate()));
+            saveFile->SetChangesMade(true);
+        }
+                
+        else if (input->IsActive(playerCouponsBox.GetActiveArea())) {
+            saveFile->players[EditorConfig.SelectedPlayer].MeowCoupons.value = static_cast<u32>(std::stoi(playerCouponsBox.Activate()));
+            saveFile->SetChangesMade(true);
         }
     }
 

@@ -11,17 +11,11 @@
 #include <map>
 #include "CtrFont.hpp"
 #include "gfx.h"
-#include "cursor.h"
 #include "nfs.h"
 #include "structs.h"
 #include "common.h"
 #include "utils.h"
 
-extern Cursor g_cursor;
-extern s16 g_CheckX[2];
-extern s16 g_CheckY[2];
-extern bool g_disabled[2];
-extern u32 g_key[2];
 extern u64 currentTitleId;
 
 std::map<u16, std::string> g_itemDatabase;
@@ -116,19 +110,6 @@ void draw_centered_text(float StartX, float WidthX, float StartY, float HeightY,
     Text Msg(Color(color), text, scaleX, scaleY);
     Msg.CenterInBounds(StartX, StartY, WidthX, HeightY);
     Msg.Draw();
-}
-
-void updateCursorInfo(void)
-{
-    touchPosition touch;
-    hidTouchRead(&touch);
-
-    g_CheckX[0] = touch.px;
-    g_CheckY[0] = touch.py;
-    g_CheckX[1] = g_cursor.m_LocX;
-    g_CheckY[1] = g_cursor.m_LocY;
-    g_disabled[0] = !g_cursor.m_Visible;
-    g_disabled[1] = g_cursor.m_Visible;
 }
 
 std::string u16tou8(std::u16string src)

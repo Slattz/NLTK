@@ -8,10 +8,12 @@
 #include "core/updater.hpp"
 #include "editor/editor.h"
 #include "libs/httpc-curl/httpc.h"
+#include "InputManager.h"
 
 static FontHandle g_acnlFont;
 u64 g_tid = 0;
 Config *config;
+InputManager *input;
 Save saveFile;
 FS_MediaType currentMediaType;
 
@@ -63,6 +65,7 @@ void PrepareToCloseApp(void) {
 int main() {
     InitApp();
     config = new Config();
+    input = new InputManager();
     g_acnlFont = Font::Open("romfs:/ACNL_font.bcfnt");
 
     if (g_acnlFont->IsLoaded()) {

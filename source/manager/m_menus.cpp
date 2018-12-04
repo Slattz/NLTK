@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include "save.h"
+#include "InputManager.h"
 #include "utils.h"
 #include "core/textbox.h"
 #include "core/imagebutton.h"
@@ -12,15 +13,16 @@
 //static bool drawingMenu = false;
 //static bool drawingSubmenu = false;
 
+extern InputManager *input;
+
 int spawn_manager_main_menu(Save *saveFile)
 {
     while (aptMainLoop())
     {
         checkIfCardInserted();
 
-        hidScanInput();
         draw_manager_main_menu();
-        updateCursorInfo();
+        input->RefreshInput();
 
         if (hidKeysDown() & KEY_START)
         {

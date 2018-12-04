@@ -7,15 +7,11 @@
 #include "item.h"
 #include "e_utils.h"
 #include "utils.h"
-#include "cursor.h"
+#include "InputManager.h"
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
-extern Cursor g_cursor;
-extern s16 g_CheckX[2];
-extern s16 g_CheckY[2];
-extern bool g_disabled[2];
-extern u32 g_key[2];
+extern InputManager *input;
 
 static void Draw_PlayerMenu_Inventory(Save *saveFile, int selectedplayer)
 {
@@ -49,7 +45,7 @@ static void Draw_PlayerMenu_Inventory(Save *saveFile, int selectedplayer)
         x += 38;
     }
 
-    g_cursor.Draw();
+    input->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -65,9 +61,8 @@ void Editor::Player::Spawn_PlayerMenu_Inventory(Save *saveFile) {
     {
         checkIfCardInserted();
 
-        hidScanInput();
         Draw_PlayerMenu_Inventory(saveFile, EditorConfig.SelectedPlayer);
-        updateCursorInfo();
+        input->RefreshInput();
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
 

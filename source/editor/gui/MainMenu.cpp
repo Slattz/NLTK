@@ -7,18 +7,29 @@
 #include "save.h"
 #include "e_utils.h"
 #include "utils.h"
-#include "cursor.h"
+#include "InputManager.h"
+#include "imagebutton.h"
 #include "menus.h"
 #include "gui/MainMenu.hpp"
 #include "gui/PlayerMenu.hpp"
 #include "gui/AcreMenu.hpp"
 #include "gui/ShopsMenu.hpp"
 
-extern Cursor g_cursor;
-extern s16  g_CheckX[2];
-extern s16  g_CheckY[2];
-extern bool g_disabled[2];
-extern u32  g_key[2];
+extern InputManager *input;
+
+ImageButton *TownButton = new ImageButton(15.f, 110.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *AcreButton = new ImageButton(89.f, 110.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *PlayerButton = new ImageButton(163.f, 110.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *VillagerButton = new ImageButton(237.f, 110.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *PWPButton = new ImageButton(15.f, 180.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *IslandButton = new ImageButton(89.f, 180.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *MainStreetButton = new ImageButton(163.f, 180.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *AboutButton = new ImageButton(237.f, 180.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+
+ImageButton *SaveButton = new ImageButton(220.f, 10.f, 80.f, 33.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *OptionsButton = new ImageButton(220.f, 60.f, 80.f, 33.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *GameSelectButton = new ImageButton(20.f, 10.f, 80.f, 33.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *TownManagerButton = new ImageButton(20.f, 60.f, 80.f, 33.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
 
 bool Editor::SaveCheck(void) {
     return MsgDisp(top, "Would you like to save changes\nmade to your save?", MsgTypeConfirm);
@@ -62,10 +73,17 @@ void Editor::Draw_MainMenu(void)
         ColumnText[2+i].Draw(); //Column 2 Text
     }
 
+    TownButton->Draw();
+    AcreButton->Draw();
+    PlayerButton->Draw();
+    VillagerButton->Draw();
+    PWPButton->Draw();
+    IslandButton->Draw();
+    MainStreetButton->Draw();
+    AboutButton->Draw();
+
     for (int i = 0; i < 4; i++)
     {
-        DrawSprite(Editor_ss, BUTTON_MAIN, 15+(74*i), 110); //Row 1 Buttons
-        DrawSprite(Editor_ss, BUTTON_MAIN, 15+(74*i), 180); //Row 2 Buttons
         DrawSprite(Editor_ss, ButtonIcon[i], 39+(74*i), 114, GreenFilter); //Row 1 Icons
         DrawSprite(Editor_ss, ButtonIcon[4+i], 39+(74*i), 184, GreenFilter); //Row 2 Icons
         ButtonText[i].Draw(); //Row 1 Text
@@ -74,7 +92,7 @@ void Editor::Draw_MainMenu(void)
 
     C2D_SceneBegin(top);
     draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Editor Main Menu!");
-    g_cursor.Draw();
+    input->DrawCursor();
     C3D_FrameEnd(0);
 }
 
@@ -84,9 +102,8 @@ int Editor::Spawn_MainMenu(Save *saveFile)
     {
         checkIfCardInserted();
 
-        hidScanInput();
         Editor::Draw_MainMenu();
-        updateCursorInfo();
+        input->RefreshInput();
 
         if (hidKeysDown() & KEY_START)
         {
@@ -98,60 +115,49 @@ int Editor::Spawn_MainMenu(Save *saveFile)
             return MODE_MAINMENU;
         }
 
-        for (int i = 0; i < 2; i++)
+        if (input->IsActive(TownButton->GetActiveArea())) //Town Menu
+            MsgDisp(top, "Town Menu Coming Soon!");
+
+        else if (input->IsActive(AcreButton->GetActiveArea())) //Acres Menu
+            Editor::Spawn_AcresMenu(saveFile);
+
+        else if (input->IsActive(PlayerButton->GetActiveArea())) //Player Menu
+            Editor::Spawn_PlayerMenu(saveFile);
+
+        else if (input->IsActive(VillagerButton->GetActiveArea())) //Villagers Menu
+            MsgDisp(top, "Villagers Menu Coming Soon!");
+
+        else if (input->IsActive(PWPButton->GetActiveArea())) //Pwp Menu
+            MsgDisp(top, "PWP Menu Coming Soon!");
+
+        else if (input->IsActive(IslandButton->GetActiveArea())) //Island Menu
+            MsgDisp(top, "Island Menu Coming Soon!");
+
+        else if (input->IsActive(MainStreetButton->GetActiveArea())) //Main Street Menu
+            Editor::Spawn_ShopsMenu(saveFile);
+
+        else if (input->IsActive(AboutButton->GetActiveArea())) //About Menu
+            spawn_about_menu();
+
+        /* Menu Columns */
+        else if (input->IsActive(OptionsButton->GetActiveArea())) //Options Column
+            spawn_config_menu();
+
+        else if (input->IsActive(GameSelectButton->GetActiveArea())) //Game Select Column
+            return MODE_GAMESELECT;
+
+        else if (input->IsActive(TownManagerButton->GetActiveArea())) //Town Manager Column
+            return MODE_MANAGER;
+
+        else if (input->IsActive(SaveButton->GetActiveArea())) //Save Column
         {
-            if (hidKeysDown() & g_key[i] && g_disabled[i])
+            if (SaveCheck())
             {
-                /* Menu Buttons */
-                if (g_CheckX[i] >= 15 && g_CheckX[i] <= 85 && g_CheckY[i] >= 110 && g_CheckY[i] <= 165) //Town Menu
-                    MsgDisp(top, "Town Menu Coming Soon!");
+                if (saveFile->Commit(false))
+                    MsgDisp(top, "Save Succeeded!");
 
-                else if (g_CheckX[i] >= 89 && g_CheckX[i] <= 159 && g_CheckY[i] >= 110 && g_CheckY[i] <= 165) //Acres Menu
-                    Editor::Spawn_AcresMenu(saveFile);
-
-                else if (g_CheckX[i] >= 163 && g_CheckX[i] <= 233 && g_CheckY[i] >= 110 && g_CheckY[i] <= 165) //Player Menu
-                    Editor::Spawn_PlayerMenu(saveFile);
-
-                else if (g_CheckX[i] >= 237 && g_CheckX[i] <= 307 && g_CheckY[i] >= 110 && g_CheckY[i] <= 165) //Villagers Menu
-                    MsgDisp(top, "Villagers Menu Coming Soon!");
-
-                else if (g_CheckX[i] >= 15 && g_CheckX[i] <= 85 && g_CheckY[i] >= 180 && g_CheckY[i] <= 235) //Pwps Menu
-                    MsgDisp(top, "PWP Menu Coming Soon!");
-
-                else if (g_CheckX[i] >= 89 && g_CheckX[i] <= 159 && g_CheckY[i] >= 180 && g_CheckY[i] <= 235) //Island Menu
-                    MsgDisp(top, "Island Menu Coming Soon!");
-
-                else if (g_CheckX[i] >= 163 && g_CheckX[i] <= 233 && g_CheckY[i] >= 180 && g_CheckY[i] <= 235) //Main Street Menu
-                    Editor::Spawn_ShopsMenu(saveFile);
-
-                else if (g_CheckX[i] >= 237 && g_CheckX[i] <= 307 && g_CheckY[i] >= 180 && g_CheckY[i] <= 235) //About Menu
-                    spawn_about_menu();
-
-                /* Menu Columns */
-                else if (g_CheckX[i] >= 220 && g_CheckX[i] <= 300 && g_CheckY[i] >= 10 && g_CheckY[i] <= 44)
-                { //Save Column
-                    if (SaveCheck())
-                    {
-                        if (saveFile->Commit(false))
-                        {
-                            MsgDisp(top, "Save Succeeded!");
-                        }
-                        else
-                        {
-                            MsgDisp(top, "Save Failed!");
-                        }
-                    }
-                }
-                else if (g_CheckX[i] >= 220 && g_CheckX[i] <= 300 && g_CheckY[i] >= 60 && g_CheckY[i] <= 99) //Options Column
-                    spawn_config_menu();
-
-                else if (g_CheckX[i] >= 20 && g_CheckX[i] <= 100 && g_CheckY[i] >= 10 && g_CheckY[i] <= 44)
-                { //Game Select Column
-                    return MODE_GAMESELECT;
-                }
-
-                else if (g_CheckX[i] >= 20 && g_CheckX[i] <= 100 && g_CheckY[i] >= 60 && g_CheckY[i] <= 99) //Town Manager Column
-                    return MODE_MANAGER;
+                else
+                    MsgDisp(top, "Save Failed!");
             }
         }
     }
