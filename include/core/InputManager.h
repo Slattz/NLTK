@@ -34,7 +34,7 @@ private:
 
     InputManager(void);
     InputManager(InputManager const&) {};
-    InputManager& operator=(InputManager const&) {};
+    InputManager& operator=(InputManager const&) { return *InputManager::Instance(); }; // Is this right?
     static InputManager* m_pInputManager;
 
     Input _input;
