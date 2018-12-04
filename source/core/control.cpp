@@ -4,6 +4,12 @@
 #include "gfx.h"
 #include "control.h"
 
+// TODO: These should definitely be a struct that is handled by a class somewhere.
+extern s16 g_CheckX[2];
+extern s16 g_CheckY[2];
+extern u32 g_key[2];
+extern bool g_disabled[2];
+
 Control::Control() {
     Location = { 0, 0 };
     Size = { 0, 0 };
@@ -31,4 +37,18 @@ void Control::Draw() {
 
 void Control::SetZPos(float Zpos) {
     ZPos = Zpos;
+}
+
+// Returns whether the control is being interacted with currently.
+bool Control::IsActive() {
+    // TODO: The same class that handles the g_X input stuff should also have a method
+    // to pass a rect and check if the input was inside it.
+    for (int i = 0; i < 2; i++) {
+        if (hidKeysDown() & g_key[i] && g_disabled[i]) {
+            return g_CheckX[i] >= Location.X && g_CheckX[i] <= Location.X + Size.Width &&
+                   g_CheckY[i] >= Location.Y && g_CheckY[i] <= Location.Y + Size.Height;
+        }
+    }
+
+    return false;
 }

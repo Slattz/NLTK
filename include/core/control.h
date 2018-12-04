@@ -14,6 +14,7 @@ public:
 
     virtual void Draw();
     void SetZPos(float Zpos);
+    bool IsActive();
 
     Point_t Location;
     Size_t Size;
