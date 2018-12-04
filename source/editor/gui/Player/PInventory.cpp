@@ -64,7 +64,7 @@ void Editor::Player::Spawn_PlayerMenu_Inventory(Save *saveFile) {
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
 
-        if (InputManager::Instance()->IsButtonDown(KEY_B))
+        if (InputManager::Instance()->IsButtonActive(KEY_B))
             break;
 
         if (InputManager::Instance()->IsButtonDown(KEY_R))

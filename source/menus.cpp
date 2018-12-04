@@ -35,7 +35,7 @@ int spawn_main_menu(void) {
         draw_main_menu();
         InputManager::Instance()->RefreshInput();
 
-        if (InputManager::Instance()->IsButtonDown(KEY_START)) {
+        if (InputManager::Instance()->IsButtonActive(KEY_START)) {
             return MODE_EXIT;
         }
 
@@ -270,7 +270,7 @@ void spawn_config_menu(void)
             config->IsDebug = true;
         }
         
-        if (InputManager::Instance()->IsButtonDown(KEY_B))
+        if (InputManager::Instance()->IsButtonActive(KEY_B))
             break;
 
         static const Rect_t aupdate = {{20, 20}, {44, 44}};

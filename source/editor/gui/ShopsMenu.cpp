@@ -35,7 +35,7 @@ void Editor::Spawn_ShopsMenu(Save *saveFile)
         InputManager::Instance()->RefreshInput();
         Editor::Draw_ShopsMenu(saveFile);
 
-        if (InputManager::Instance()->IsButtonDown(KEY_B))
+        if (InputManager::Instance()->IsButtonActive(KEY_B))
             break;
     }
 
