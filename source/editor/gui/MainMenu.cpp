@@ -17,19 +17,19 @@
 
 extern InputManager *input;
 
-ImageButton *TownButton = new ImageButton(15.f, 110.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-ImageButton *AcreButton = new ImageButton(89.f, 110.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-ImageButton *PlayerButton = new ImageButton(163.f, 110.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-ImageButton *VillagerButton = new ImageButton(237.f, 110.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-ImageButton *PWPButton = new ImageButton(15.f, 180.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-ImageButton *IslandButton = new ImageButton(89.f, 180.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-ImageButton *MainStreetButton = new ImageButton(163.f, 180.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-ImageButton *AboutButton = new ImageButton(237.f, 180.f, 70.f, 55.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *TownButton = nullptr;
+ImageButton *AcreButton = nullptr;
+ImageButton *PlayerButton = nullptr;
+ImageButton *VillagerButton = nullptr;
+ImageButton *PWPButton = nullptr;
+ImageButton *IslandButton = nullptr;
+ImageButton *MainStreetButton = nullptr;
+ImageButton *AboutButton = nullptr;
 
-ImageButton *SaveButton = new ImageButton(220.f, 10.f, 80.f, 33.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-ImageButton *OptionsButton = new ImageButton(220.f, 60.f, 80.f, 33.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-ImageButton *GameSelectButton = new ImageButton(20.f, 10.f, 80.f, 33.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-ImageButton *TownManagerButton = new ImageButton(20.f, 60.f, 80.f, 33.f, 0, KEY_A|KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+ImageButton *SaveButton = nullptr;
+ImageButton *OptionsButton = nullptr;
+ImageButton *GameSelectButton = nullptr;
+ImageButton *TownManagerButton = nullptr;
 
 bool Editor::SaveCheck(void) {
     return MsgDisp(top, "Would you like to save changes\nmade to your save?", MsgTypeConfirm);
@@ -45,6 +45,20 @@ void Editor::Draw_MainMenu(void)
                                PWP_ICON, ISLAND_ICON, SHOPS_ICON, ABOUT_ICON};
 
     if (!FuncInit) {
+        TownButton = new ImageButton(15.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+        AcreButton = new ImageButton(89.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+        PlayerButton = new ImageButton(163.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+        VillagerButton = new ImageButton(237.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+        PWPButton = new ImageButton(15.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+        IslandButton = new ImageButton(89.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+        MainStreetButton = new ImageButton(163.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+        AboutButton = new ImageButton(237.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+
+        SaveButton = new ImageButton(220.f, 10.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+        OptionsButton = new ImageButton(220.f, 60.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+        GameSelectButton = new ImageButton(20.f, 10.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+        TownManagerButton = new ImageButton(20.f, 60.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+
         SaveButton->SetScale(1.15, 0.6);
         OptionsButton->SetScale(1.15, 0.6);
         GameSelectButton->SetScale(1.15, 0.6);
