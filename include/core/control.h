@@ -22,4 +22,7 @@ public:
     u32 BackgroundColor;
     bool Visible;
     float ZPos = 0.f;
+
+private:
+    Rect_t ActiveArea;
 };

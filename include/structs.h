@@ -68,4 +68,9 @@ struct Size_t {
     u32 Width, Height;
 };
 
+struct Rect_t {
+    Point_t TopLeft;
+    Point_t BottomRight;
+};
+
 #endif

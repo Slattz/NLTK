@@ -21,6 +21,7 @@ Control::Control() {
 Control::Control(Point_t location, Size_t size, u32 bgColor) {
     Location = location;
     Size = size;
+    ActiveArea = Rect_t{ location, Point_t { location.X + size.Width, location.Y + size.Height } };
 
     BackgroundColor = bgColor;
     Visible = true;
