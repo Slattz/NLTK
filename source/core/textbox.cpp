@@ -25,6 +25,7 @@ TextBox::TextBox(Point_t location, Size_t size, std::string text, std::string hi
 
     Location = location;
     Size = size;
+    ActiveArea = Rect_t{ location, Point_t { location.X + size.Width, location.Y + size.Height } };
 
     BackgroundColor = bgColor;
     SetTextColor(textColor);

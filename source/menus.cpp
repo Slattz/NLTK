@@ -103,7 +103,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
         draw_game_select_menu(selectedgame, selectedregion, selectedmedia);
         InputManager::Instance()->RefreshInput();
 
-        if (InputManager::Instance()->IsButtonDown(KEY_START))
+        if (InputManager::Instance()->IsButtonActive(KEY_START))
             break;
 
         NLTK_Media_Installed mediaInstalled = selectedmedia == 0
@@ -226,7 +226,7 @@ void spawn_about_menu(void)
         draw_about_menu(discord, twitter);
         InputManager::Instance()->RefreshInput();
         
-        if (InputManager::Instance()->IsButtonDown(KEY_B))
+        if (InputManager::Instance()->IsButtonActive(KEY_B))
             break;
 
         static const Rect_t discordrect = {{55, 180}, {105, 230}};

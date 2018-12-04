@@ -7,6 +7,7 @@
 #include "config.hpp"
 #include "menus.h"
 #include "editor/editor.h"
+#include "InputManager.h"
 
 extern u64 g_tid;
 extern Config *config;
@@ -46,7 +47,8 @@ GameSelect:
     FS_Archive saveArch;
 
     {
-        if (config->Auto_loadprefGame && !(hidKeysDown() & KEY_DOWN) && is_ACNL(config->prefGame|0x4000000000000)) {
+        InputManager::Instance()->RefreshInput();
+        if (config->Auto_loadprefGame && !InputManager::Instance()->IsButtonDown(KEY_DOWN) && is_ACNL(config->prefGame|0x4000000000000)) {
             g_tid = config->prefGame|0x4000000000000; // TODO: Support media type in config
         }
         else {
