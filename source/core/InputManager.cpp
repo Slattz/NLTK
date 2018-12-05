@@ -100,7 +100,6 @@ void InputManager::RefreshInput() {
 
 void InputManager::DrawCursor(void) {
     C2D_SceneBegin(bottom);
-    RefreshInput();
 
     if (_input.CursorEnabled)
     {
