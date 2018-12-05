@@ -126,12 +126,12 @@ int Editor::Spawn_MainMenu(Save *saveFile)
         Editor::Draw_MainMenu();
         InputManager::Instance()->RefreshInput();
 
-        if (InputManager::Instance()->IsButtonActive(KEY_START))
+        if (InputManager::Instance()->IsButtonDown(KEY_START))
         {
             return MODE_EXIT;
         }
 
-        else if (InputManager::Instance()->IsButtonActive(KEY_B))
+        else if (InputManager::Instance()->IsButtonDown(KEY_B))
         {
             return MODE_MAINMENU;
         }

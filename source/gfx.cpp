@@ -177,9 +177,8 @@ bool MsgDisp(C3D_RenderTarget *target, std::string message, MsgType Type, u32 bg
 
     while (aptMainLoop())
     {
-        hidScanInput();
-        if (hidKeysDown() & KEY_A && Type != MsgTypeNone) return true;
-        if (hidKeysDown() & KEY_B && Type == MsgTypeConfirm) return false;
+        if (InputManager::Instance()->IsButtonDown(KEY_A) && Type != MsgTypeNone) return true;
+        if (InputManager::Instance()->IsButtonDown(KEY_B) && Type == MsgTypeConfirm) return false;
         
         if (Type != MsgTypeNone)
             draw_base_interface();
@@ -211,9 +210,7 @@ void DisplayCardError() {
 
     while (aptMainLoop())
     {
-        hidScanInput();
-
-        if (IsGameCartInserted() && checkGameCartIsACNL() && hidKeysDown() & KEY_A) break;
+        if (IsGameCartInserted() && checkGameCartIsACNL() && InputManager::Instance()->IsButtonDown(KEY_A)) break;
 
         draw_base_interface();
         C2D_SceneBegin(top);

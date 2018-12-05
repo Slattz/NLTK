@@ -35,7 +35,7 @@ void Button::SetCallback(void(*callback)(Button *sender)) {
 }
 
 bool Button::CheckActivate(u32 x, u32 y) {
-    return Visible && (x >= Location.X && x <= Location.X + Size.Width && y >= Location.Y && y < Location.Y + Size.Height) && (hidKeysDown() & m_activatorKeys);
+    return Visible && (x >= Location.X && x <= Location.X + Size.Width && y >= Location.Y && y < Location.Y + Size.Height) && (InputManager::Instance()->IsButtonDown(m_activatorKeys));
 }
 
 bool Button::SetActive(bool active) {
