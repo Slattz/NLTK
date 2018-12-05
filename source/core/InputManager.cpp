@@ -55,32 +55,32 @@ void InputManager::RefreshInput() {
     if (this->IsButtonActive(KEY_CPAD)) // C-Pad
     {
         if (this->IsButtonActive(KEY_CPAD_RIGHT))
-            this->_input.Cursor.X += 2;
+            this->_input.Cursor.X += 3;
 
         if (this->IsButtonActive(KEY_CPAD_LEFT))
-            this->_input.Cursor.X -= 2;
+            this->_input.Cursor.X -= 3;
 
         if (this->IsButtonActive(KEY_CPAD_UP))
-            this->_input.Cursor.Y -= 2;
+            this->_input.Cursor.Y -= 3;
 
         if (this->IsButtonActive(KEY_CPAD_DOWN))
-            this->_input.Cursor.Y += 2;
+            this->_input.Cursor.Y += 3;
 
         this->_input.CursorEnabled = true;
     }
     else if (this->IsButtonActive(KEY_CSTICK)) // C-Stick
     {
         if (this->IsButtonActive(KEY_CSTICK_RIGHT))
-            this->_input.Cursor.X += 3;
+            this->_input.Cursor.X += 4;
 
         if (this->IsButtonActive(KEY_CSTICK_LEFT))
-            this->_input.Cursor.X -= 3;
+            this->_input.Cursor.X -= 4;
 
         if (this->IsButtonActive(KEY_CSTICK_UP))
-            this->_input.Cursor.Y -= 3;
+            this->_input.Cursor.Y -= 4;
 
         if (this->IsButtonActive(KEY_CSTICK_DOWN))
-            this->_input.Cursor.Y += 3;
+            this->_input.Cursor.Y += 4;
 
         this->_input.CursorEnabled = true;
     }
