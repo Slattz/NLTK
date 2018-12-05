@@ -56,7 +56,7 @@ int spawn_main_menu(void) {
         if (InputManager::Instance()->IsActive(editoract)) //Editor Icon
             ret = Editor::Main();
 
-        else if (InputManager::Instance()->IsActive(manageract)) //Manager Icon
+        else if (InputManager::Instance()->IsActive(manageract) && config->IsDebug) //Manager Icon
             ret = manager_main();
 
         else if (InputManager::Instance()->IsActive(aboutact)) //About Menu

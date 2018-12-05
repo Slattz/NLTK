@@ -259,9 +259,9 @@ void draw_main_menu(void)
     ColumnText[1].Draw(); //Options
 
     DrawSprite(Common_ss, EDITOR_ICON, 90, 90); //Editor Icon
-    DrawSprite(Common_ss, MANAGER_ICON, 180, 90); //Manager Icon
+    if (config->IsDebug) DrawSprite(Common_ss, MANAGER_ICON, 180, 90); //Manager Icon
     ModeText[0].Draw(); //Editor
-    ModeText[1].Draw(); //Manager
+    if (config->IsDebug) ModeText[1].Draw(); //Manager
     
     C2D_SceneBegin(top);
     InputManager::Instance()->DrawCursor();
