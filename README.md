@@ -1,10 +1,10 @@
-# NLTK - New Leaf ToolKit
+# NLTK - New Leaf ToolKit [![Build status](https://ci.appveyor.com/api/projects/status/dvqruc40q9fyes5r/branch/master?svg=true)](https://ci.appveyor.com/project/Slattz/nltk/branch/master)
 
 A WIP ACNL Toolkit without the hassle of taking out your SD card. 
 
 The main developers of this project are [Slattz](https://github.com/Slattz) and [Cuyler](https://github.com/Cuyler36). 
 
-  [![Discord](https://discordapp.com/api/guilds/437592048057450508/widget.png?style=banner2)](https://discord.gg/j2VUBBv)
+[![Discord](https://discordapp.com/api/guilds/437592048057450508/widget.png?style=banner2)](https://discord.gg/j2VUBBv)
 
 
 ## Features
