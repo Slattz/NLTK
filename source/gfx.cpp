@@ -206,6 +206,9 @@ void DisplayCardError() {
     const char *cardRemovedErrorMessage = "To continue editing, please\nreinsert your Animal Crossing: New Leaf\nGame Card.\n" \
         "Press " FONT_A " when done.";
 
+    Text cardRemovedErrorText(Color(COLOR_GREY), cardRemovedErrorMessage, 0.5, 0.5);
+    cardRemovedErrorText.CenterInBounds(0, 100, 400, 0);
+
     while (aptMainLoop())
     {
         hidScanInput();
@@ -215,7 +218,7 @@ void DisplayCardError() {
         draw_base_interface();
         C2D_SceneBegin(top);
         C2D_DrawRectSolid(50, 33.5, 0, 300, 180, COLOR_BROWN);
-        draw_centered_text(0, 400, 100, 0, 0.5, 0.5, COLOR_GREY, cardRemovedErrorMessage);
+        cardRemovedErrorText.Draw();
 
         if (show || IsGameCartInserted()) {
             DrawSprite(GameSelect_ss, GAME_CART, 176, 40); // NOTE: Top Screen resolution 400x240, Bottom Screen Resolution: 320x240
@@ -264,7 +267,6 @@ void draw_main_menu(void)
     ModeText[1].Draw(); //Manager
     
     C2D_SceneBegin(top);
-    //draw_centered_text(0, 400, 80, 0, 1.1, 1.1, COLOR_GREY, "Actual Main Menu!");
     InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
@@ -349,6 +351,8 @@ void draw_about_menu(bool discord, bool twitter)
 void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmedia)
 {
     static const Text ConfirmTxt(COLOR_GREY, "Confirm", 0.7f, 0.7f, 128, 195);
+    static Text SelectTxt(COLOR_GREY, "Select your installed ACNL game:", 0.8f, 0.8f);
+    SelectTxt.CenterInBounds(0.f, 90.f, 400.f, 0.f);
     draw_base_interface();
     C2D_SceneBegin(bottom);
 
@@ -461,7 +465,7 @@ void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmed
     }
 
     C2D_SceneBegin(top);
-    draw_centered_text(0, 400, 90, 0, 0.8, 0.8, COLOR_BLACK, "Select your installed ACNL game:");
+    SelectTxt.Draw();
     InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }

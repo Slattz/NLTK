@@ -9,7 +9,6 @@
 #include <sstream>
 #include <iostream>
 #include <map>
-#include "CtrFont.hpp"
 #include "gfx.h"
 #include "nfs.h"
 #include "structs.h"
@@ -38,12 +37,6 @@ bool IsGameCartInserted() {
     bool inserted = false;
     FSUSER_CardSlotIsInserted(&inserted);
     return inserted;
-}
-
-char Sstrncpy(char *dest, const char *src, size_t n) //'Safe' strncpy, always null terminates
-{
-    strncpy(dest, src, n);
-    return dest[n] = '\0';
 }
 
 bool is_ACNL(u64 tid)
@@ -102,14 +95,6 @@ void Sleep(u64 nanoseconds)
 s64 Seconds(float amount)
 {
     return (s64)(amount*1000000000);
-}
-
-void draw_centered_text(float StartX, float WidthX, float StartY, float HeightY,
-                        float scaleX, float scaleY, u32 color, const char* text)
-{
-    Text Msg(Color(color), text, scaleX, scaleY);
-    Msg.CenterInBounds(StartX, StartY, WidthX, HeightY);
-    Msg.Draw();
 }
 
 std::string u16tou8(std::u16string src)

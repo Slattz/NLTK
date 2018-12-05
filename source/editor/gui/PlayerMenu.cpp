@@ -60,10 +60,32 @@ void Editor::Player::Draw_PlayerMenuTop(Save *saveFile, int selectedplayer) {
 
 void Editor::Draw_PlayerMenu(Save *saveFile, int selectedplayer, int selectedmode)
 {
-    u32 ButtonIcon[] = {PLYR_ABOUT, PLYR_INVENTORY, PLYR_APPEARANCE, PLYR_HOUSE,
-                        PLYR_PATTERN, PLYR_MAILBOX, PLYR_MAILBOX_UNREAD};
-    const char* ButtonText[] = {"Info", "Inventory", "Appearance",
-                            "House", "Patterns", "Mail"};
+    static bool Init = false;
+    static Text PInfo;
+    static Text PInv;
+    static Text PAppearance;
+    static Text PHouse;
+    static Text PPatterns;
+    static Text PMail;
+    const u32 ButtonIcon[] = {PLYR_ABOUT, PLYR_INVENTORY, PLYR_APPEARANCE, PLYR_HOUSE,
+                                PLYR_PATTERN, PLYR_MAILBOX, PLYR_MAILBOX_UNREAD};
+
+    if (!Init)
+    {
+        PInfo = Text(COLOR_GREY, "Info", 0.4f, 0.4f);
+        PInv = Text(COLOR_GREY, "Inventory", 0.38f, 0.38f);
+        PAppearance = Text(COLOR_GREY, "Appearance", 0.35f, 0.38f);
+        PHouse = Text(COLOR_GREY, "House", 0.4f, 0.4f);
+        PPatterns = Text(COLOR_GREY, "Patterns", 0.4f, 0.4f);
+        PMail = Text(COLOR_GREY, "Mail", 0.4f, 0.4f);
+        PInfo.CenterInBounds(1.f, 35.f, 53.f, 8.f);
+        PInv.CenterInBounds(1.f, 74.f, 53.f, 8.f);
+        PAppearance.CenterInBounds(1.f, 113.f, 53.f, 8.f);
+        PHouse.CenterInBounds(1.f, 152.f, 53.f, 8.f);
+        PPatterns.CenterInBounds(1.f, 191.f, 53.f, 8.f);
+        PMail.CenterInBounds(1.f, 230.f, 53.f, 8.f);
+        Init = true;
+    }
 
     Editor::Player::Draw_PlayerMenuTop(saveFile, selectedplayer);
     C2D_SceneBegin(bottom);
@@ -76,6 +98,13 @@ void Editor::Draw_PlayerMenu(Save *saveFile, int selectedplayer, int selectedmod
     C2D_DrawRectSolid(55, 0, 0, 3, 240, COLOR_MENU_BARS); //Vertical Right Bar
     C2D_DrawRectSolid(0, 0, 0, 55, 3, COLOR_MENU_BARS); //Horizontal Top Bar
 
+    PInfo.Draw();
+    PInv.Draw();
+    PAppearance.Draw();
+    PHouse.Draw();
+    PPatterns.Draw();
+    PMail.Draw();
+
     for (int i = 0; i < 6; i++)
     {
         /* Icons */
@@ -84,16 +113,6 @@ void Editor::Draw_PlayerMenu(Save *saveFile, int selectedplayer, int selectedmod
 
         else
             DrawSprite(Players_ss, ButtonIcon[i], 15, 4+(40*i));
-
-        /* Text */
-        if (i == 1)
-            draw_centered_text(1, 53, 35+(39*i), 8, 0.38, 0.38, COLOR_GREY, ButtonText[i]); //Appearance Text
-
-        else if (i == 2)
-            draw_centered_text(1, 53, 35+(39*i), 8, 0.35, 0.38, COLOR_GREY, ButtonText[i]); //Inventory Text
-
-        else
-            draw_centered_text(1, 53, 35+(39*i), 8, 0.4, 0.4, COLOR_GREY, ButtonText[i]); //Text
     }
 
     InputManager::Instance()->DrawCursor();
