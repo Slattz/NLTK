@@ -49,8 +49,8 @@ int spawn_main_menu(void) {
         }
 
         //TODO: Needs to be reworked into using ImageButtons
-        static const Rect_t editoract = {{60, 50}, {124, 114}};
-        static const Rect_t manageract = {{180, 50}, {244, 114}};
+        static const Rect_t editoract = {{90, 90}, {140, 140}};
+        static const Rect_t manageract = {{180, 90}, {230, 140}};
         static const Rect_t aboutact = {{20, 30}, {100, 66}};
         static const Rect_t configact = {{220, 30}, {300, 66}};
         if (InputManager::Instance()->IsActive(editoract)) //Editor Icon
