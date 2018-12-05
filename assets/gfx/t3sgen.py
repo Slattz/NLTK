@@ -15,12 +15,12 @@ for path, subdirs, files in os.walk("."):
 	ofiles = []
 	for filename in files:
 		if filename.endswith(".png"):
-			f = os.path.join(path, filename.replace('\\','/'))
+			f = (os.path.join(path, filename)).replace("\\","/")
 			ofiles.append(f)
 	try:
 		ofiles.sort(comparator)
 	except:
-		print "couldn't sort the files"
+		print ("couldn't sort the files")
 
 	if len(ofiles) > 0:
 		a = open(path[path.rfind('\\') + 1 :] + "_ss.t3s", "w+")

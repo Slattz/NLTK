@@ -1,10 +1,10 @@
 --atlas -f rgba8888 -z auto
-.\Editor\About.png
-.\Editor\Acres.png
-.\Editor\Button.png
-.\Editor\Island.png
-.\Editor\Profile.png
-.\Editor\Pwp.png
-.\Editor\Shops.png
-.\Editor\Town.png
-.\Editor\Villagers.png
+./Editor/About.png
+./Editor/Acres.png
+./Editor/Button.png
+./Editor/Island.png
+./Editor/Profile.png
+./Editor/Pwp.png
+./Editor/Shops.png
+./Editor/Town.png
+./Editor/Villagers.png

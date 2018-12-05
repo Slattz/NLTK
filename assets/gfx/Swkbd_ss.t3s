@@ -1,7 +1,7 @@
 --atlas -f rgba8888 -z auto
-.\Swkbd\back.png
-.\Swkbd\cancel.png
-.\Swkbd\confirm.png
-.\Swkbd\enter.png
-.\Swkbd\shift_off.png
-.\Swkbd\shift_on.png
+./Swkbd/back.png
+./Swkbd/cancel.png
+./Swkbd/confirm.png
+./Swkbd/enter.png
+./Swkbd/shift_off.png
+./Swkbd/shift_on.png
