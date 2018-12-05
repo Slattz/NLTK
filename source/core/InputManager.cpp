@@ -7,6 +7,7 @@ InputManager::InputManager(void) {
     _input.Cursor.Y = 120;
     _input.CursorEnabled = false;
     _input.CursorHeld = false;
+    _input.CursorDown = false;
 }
 
 InputManager* InputManager::Instance() {
@@ -48,9 +49,15 @@ void InputManager::RefreshInput() {
 
     if (this->IsButtonActive(KEY_A) && _input.CursorEnabled) {
         this->_input.CursorHeld = true;
+        this->IsButtonDown(KEY_A) ? this->_input.CursorDown = true : this->_input.CursorDown = false;
+
         return;
     }
-    else _input.CursorHeld = false;
+    else {
+    _input.CursorHeld = false;
+    _input.CursorDown = false;
+    }
+        
 
     if (this->IsButtonActive(KEY_CPAD)) // C-Pad
     {
@@ -103,7 +110,7 @@ void InputManager::DrawCursor(void) {
 
     if (_input.CursorEnabled)
     {
-        if (_input.CursorHeld)
+        if (_input.CursorHeld || _input.CursorDown)
             DrawSprite(Common_ss, CURSOR_SELECT, _input.Cursor.X, _input.Cursor.Y, nullptr, 1.0f, 1.0f, 1.0f);
 
         else
@@ -119,7 +126,7 @@ bool InputManager::IsActive(Rect_t rect, u32 x, u32 y) {
 }
 
 bool InputManager::IsActive(Rect_t rect) {
-    return _input.CursorEnabled && _input.CursorHeld ? this->IsActive(rect, this->_input.Cursor.X, this->_input.Cursor.Y) :
+    return _input.CursorEnabled && _input.CursorDown ? this->IsActive(rect, this->_input.Cursor.X, this->_input.Cursor.Y) :
         this->IsButtonActive(KEY_TOUCH) && this->IsActive(rect, this->_input.Touch.X, this->_input.Touch.Y);
 }
 
