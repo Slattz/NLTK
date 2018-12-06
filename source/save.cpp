@@ -45,16 +45,32 @@ Save::Save(FS_Archive archive, Handle *handle, bool init) {
     RegionLock.RegionID = static_cast<CFG_Region>(RegionLock.RawByte >> 4);
 }
 
+s8 Save::ReadS8(u32 offset) {
+    return (s8) m_saveBuffer[offset];
+}
+
 u8 Save::ReadU8(u32 offset) {
     return m_saveBuffer[offset];
+}
+
+s16 Save::ReadS16(u32 offset) {
+    return *(s16 *)(m_saveBuffer + offset);
 }
 
 u16 Save::ReadU16(u32 offset) {
     return *(u16 *)(m_saveBuffer + offset);
 }
 
+s32 Save::ReadS32(u32 offset) {
+    return *(s32 *)(m_saveBuffer + offset);
+}
+
 u32 Save::ReadU32(u32 offset) {
     return *(u32 *)(m_saveBuffer + offset);
+}
+
+s64 Save::ReadS64(u32 offset) {
+    return *(s64 *)(m_saveBuffer + offset);
 }
 
 u64 Save::ReadU64(u32 offset) {
@@ -179,16 +195,32 @@ bool Save::Write(u32 offset, u8 *data, u32 count) {
     return true;
 }
 
+bool Save::Write(u32 offset, s8 data) {
+    return Write(offset, (u8 *)&data, 1);
+}
+
 bool Save::Write(u32 offset, u8 data) {
     return Write(offset, &data, 1);
+}
+
+bool Save::Write(u32 offset, s16 data) {
+    return Write(offset, (u8 *)&data, 2);
 }
 
 bool Save::Write(u32 offset, u16 data) {
     return Write(offset, (u8 *)&data, 2);
 }
 
+bool Save::Write(u32 offset, s32 data) {
+    return Write(offset, (u8 *)&data, 4);
+}
+
 bool Save::Write(u32 offset, u32 data) {
     return Write(offset, (u8 *)&data, 4);
+}
+
+bool Save::Write(u32 offset, s64 data) {
+    return Write(offset, (u8 *)&data, 8);
 }
 
 bool Save::Write(u32 offset, u64 data) {

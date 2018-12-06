@@ -20,9 +20,13 @@ public:
     ~Save();
     Save(FS_Archive archive, Handle *handle, bool init);
 
+    s8 ReadS8(u32 offset);
     u8 ReadU8(u32 offset);
+    s16 ReadS16(u32 offset);
     u16 ReadU16(u32 offset);
+    s32 ReadS32(u32 offset);
     u32 ReadU32(u32 offset);
+    s64 ReadS64(u32 offset);
     u64 ReadU64(u32 offset);
     void ReadArray(u8 *dst, u32 offset, u32 count);
     void ReadArrayU16(u16 *dst, u32 offset, u32 count);
@@ -37,9 +41,13 @@ public:
     void FixInvalidBuildings(void);
 
     bool Write(u32 offset, u8 *buffer, u32 count);
+    bool Write(u32 offset, s8 data);
     bool Write(u32 offset, u8 data);
+    bool Write(u32 offset, s16 data);
     bool Write(u32 offset, u16 data);
+    bool Write(u32 offset, s32 data);
     bool Write(u32 offset, u32 data);
+    bool Write(u32 offset, s64 data);
     bool Write(u32 offset, u64 data);
     bool Write(u32 offset, std::u16string data, u32 maxSize);
 
