@@ -8,9 +8,9 @@
 
 class Item;
 
-void  load_player_invitems(Save *saveFile, int selectedplayer);
+void  load_player_invitems(int selectedplayer);
 bool  CheckUnreadMail(int selectedplayer);
-Item  GetItemFromSave(Save *saveFile, u32 offset);
+Item  GetItemFromSave(u32 offset);
 int   CheckItemValidity(Item *item);
 u32   CheckIfValidItem(Item *item);
 u16   GetAxeDamageValue(Item *item);
@@ -19,6 +19,6 @@ u8    GetItemCategory(Item *item);
 u16   GetIconID(Item *item);
 s32 GetItemIcon(Item *item);
 std::string GetItemName(Item *item);
-std::vector<u32> findPlayerReferences(Save *saveFile, Player *player);
+std::vector<u32> findPlayerReferences(Player *player);
 
 #endif

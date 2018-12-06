@@ -27,11 +27,11 @@ enum class DesignType : u8 {
 
 class Pattern {
 public:
-    Pattern(Save *saveFile, Player *player, u32 id);
+    Pattern(Player *player, u32 id);
     ~Pattern();
 
     void TakeOwnership(Player *player);
-    void Write(Save *saveFile);
+    void Write();
     
     std::u16string              Name;
     u16							CreatorId;

@@ -13,7 +13,7 @@
 //static bool drawingMenu = false;
 //static bool drawingSubmenu = false;
 
-int spawn_manager_main_menu(Save *saveFile)
+int spawn_manager_main_menu()
 {
     while (aptMainLoop())
     {

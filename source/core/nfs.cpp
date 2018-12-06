@@ -199,7 +199,7 @@ bool file_read(void* destbuf, const char *path, int size)
     return false;
 }
 
-void saveBackup(Save *saveFile, u64 tid)
+void saveBackup(u64 tid)
 {
     char       path[250] = {0};
     char       timestamp[80] = {0};
@@ -222,7 +222,7 @@ void saveBackup(Save *saveFile, u64 tid)
     strncat(path, ".dat", 5);
     if (!fileExists(path))
     {
-        if (!file_write(saveFile->GetRawSaveData() , path, SIZE_SAVE))
+        if (!file_write(Save::Instance()->GetRawSaveData() , path, SIZE_SAVE))
             MsgDisp(top, "Error:\nCouldn't write save backup!");
     }
     else

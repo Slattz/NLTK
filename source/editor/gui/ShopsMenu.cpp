@@ -14,14 +14,14 @@
 
 ShopsSettings ShopsConfig;
 
-void Editor::Draw_ShopsMenu(Save *saveFile)
+void Editor::Draw_ShopsMenu()
 {
     draw_base_interface();
     InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
-void Editor::Spawn_ShopsMenu(Save *saveFile)
+void Editor::Spawn_ShopsMenu()
 {
     if (ShopsConfig.DrawingMenu)
         return;
@@ -33,7 +33,7 @@ void Editor::Spawn_ShopsMenu(Save *saveFile)
         checkIfCardInserted();
 
         InputManager::Instance()->RefreshInput();
-        Editor::Draw_ShopsMenu(saveFile);
+        Editor::Draw_ShopsMenu();
 
         if (InputManager::Instance()->IsButtonDown(KEY_B))
             break;

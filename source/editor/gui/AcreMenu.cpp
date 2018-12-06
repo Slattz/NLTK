@@ -20,7 +20,7 @@ std::vector<Control*> acreEditorControls = {};
 
 void onAcreClick(Button *sender);
 
-void Editor::Acre::InitAcreGFX(Save *saveFile, const u8 LoopMax, const u8 GridXMax,
+void Editor::Acre::InitAcreGFX(const u8 LoopMax, const u8 GridXMax,
     const u8 GridXStartPos, const u8 GridYStartPos, const u8 ByteSkip, u32 Offset) {
     /*
     LoopMax: How many times to loop
@@ -49,7 +49,7 @@ void Editor::Acre::InitAcreGFX(Save *saveFile, const u8 LoopMax, const u8 GridXM
             Offset += ByteSkip;
         }
 
-        acre = saveFile->ReadU8(Offset + i * 2);
+        acre = Save::Instance()->ReadU8(Offset + i * 2);
         ImageButton *acreButton = new ImageButton(GridXStartPos + (40 * scale * GridX), GridYStartPos + GridY, 40 * scale, 40 * scale,
             COLOR_TRANSPARENT, KEY_A | KEY_TOUCH, ACRE_PNG + acre, Acres_ss);
         acreButton->SetScale(scale);
@@ -83,7 +83,7 @@ static void Draw_SelectionPanel(void) {
     }
 }
 
-static void Draw_AcresMenu(Save *saveFile)
+static void Draw_AcresMenu()
 {
 
     draw_base_interface();
@@ -111,28 +111,28 @@ static void Draw_AcresMenu(Save *saveFile)
 s32 currentAcreId = -1;
 ImageButton *currentAcreButton;
 
-void view_acres_town_full(Save *saveFile)
+void view_acres_town_full()
 {
-    Editor::Acre::InitAcreGFX(saveFile, 42, 7, 20, 0, 0, MAP_ACRES); // Ends at x = 230px (resized to 30x30 images)
+    Editor::Acre::InitAcreGFX(42, 7, 20, 0, 0, MAP_ACRES); // Ends at x = 230px (resized to 30x30 images)
 }
 
-void view_acres_island_full(Save *saveFile)
+void view_acres_island_full()
 {
-    Editor::Acre::InitAcreGFX(saveFile, 16, 4, 80, 40, 0, ISLAND_ACRES);
+    Editor::Acre::InitAcreGFX(16, 4, 80, 40, 0, ISLAND_ACRES);
 }
 
-void view_acres_town_map(Save *saveFile)
+void view_acres_town_map()
 {
-    Editor::Acre::InitAcreGFX(saveFile, 20, 5, 60, 40, 4, MAP_ACRES + 0x10);
+    Editor::Acre::InitAcreGFX(20, 5, 60, 40, 4, MAP_ACRES + 0x10);
 }
 
-void view_acres_island_map(Save *saveFile)
+void view_acres_island_map()
 {
-    Editor::Acre::InitAcreGFX(saveFile, 4, 2, 120, 80, 4, ISLAND_ACRES + 0xA);
+    Editor::Acre::InitAcreGFX(4, 2, 120, 80, 4, ISLAND_ACRES + 0xA);
 }
 
 // Acre Menu
-void Editor::Spawn_AcresMenu(Save *saveFile)
+void Editor::Spawn_AcresMenu()
 {
     if (AcreConfig.DrawingMenu)
         return;
@@ -143,13 +143,13 @@ void Editor::Spawn_AcresMenu(Save *saveFile)
     currentAcreButton = nullptr;
 
     // Init Acre Graphics
-    view_acres_town_full(saveFile);
+    view_acres_town_full();
 
     while (aptMainLoop())
     {
         checkIfCardInserted();
 
-        Draw_AcresMenu(saveFile);
+        Draw_AcresMenu();
         InputManager::Instance()->RefreshInput();
 
         if (InputManager::Instance()->IsButtonActive(KEY_B)) {
@@ -167,7 +167,7 @@ void Editor::Spawn_AcresMenu(Save *saveFile)
             currentAcreButton->SetImageId(ACRE_PNG + AcreConfig.SelectedAcre);
             u32 writeOffset = MAP_ACRES
                 + std::distance(acreEditorControls.begin(), std::find(acreEditorControls.begin(), acreEditorControls.end(), currentAcreButton)) * 2;
-            saveFile->Write(writeOffset, static_cast<u8>(AcreConfig.SelectedAcre));
+            Save::Instance()->Write(writeOffset, static_cast<u8>(AcreConfig.SelectedAcre));
 
             // Clear selected acre
             AcreConfig.SelectedAcre = -1;

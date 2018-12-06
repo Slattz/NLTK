@@ -14,7 +14,7 @@
 
 PlayerSettings EditorConfig;
 
-void Editor::Player::Draw_PlayerMenuTop(Save *saveFile, int selectedplayer) {
+void Editor::Player::Draw_PlayerMenuTop(int selectedplayer) {
     static bool Init = false;
     static Text LButton;
     static Text RButton;
@@ -27,8 +27,8 @@ void Editor::Player::Draw_PlayerMenuTop(Save *saveFile, int selectedplayer) {
         LButton = Text(COLOR_GREY, FONT_NDS_L, 1.3f, 1.3f, 5.f, 210.f);
         RButton = Text(COLOR_GREY, FONT_NDS_R, 1.3f, 1.3f, 375.f, 210.f);
         for (int i = 0; i < 4; i++) {
-            if (saveFile->players[i].Exists(saveFile)) {
-                PlayerNameText.push_back(Text(COLOR_GREY, u16tou8(saveFile->players[i].Name).c_str(), 0.5f, 0.5f));
+            if (Save::Instance()->players[i].Exists()) {
+                PlayerNameText.push_back(Text(COLOR_GREY, u16tou8(Save::Instance()->players[i].Name).c_str(), 0.5f, 0.5f));
                 PlayerNameText[i].CenterInBounds(18.f + (i * 100.f), 150.f, 64.f, 15.f);
 
                 PlayerNumText.push_back(Text(COLOR_GREY, Format("Player %d", i + 1).c_str(), 0.5f, 0.5f));
@@ -41,8 +41,8 @@ void Editor::Player::Draw_PlayerMenuTop(Save *saveFile, int selectedplayer) {
     draw_base_interface();
 
     for (int i = 0; i < 4; i++) {
-        if (saveFile->players[i].Exists(saveFile)) {
-            C2D_DrawImageAt(saveFile->players[i].m_TPCPic, (float)(100 * i) + 18.f, 45.f, 0.5f, nullptr, 1.f, 1.f);  //WxH: 64x104
+        if (Save::Instance()->players[i].Exists()) {
+            C2D_DrawImageAt(Save::Instance()->players[i].m_TPCPic, (float)(100 * i) + 18.f, 45.f, 0.5f, nullptr, 1.f, 1.f);  //WxH: 64x104
 
             if (i == selectedplayer)
                 Ptext_colour = COLOR_WHITE;
@@ -58,7 +58,7 @@ void Editor::Player::Draw_PlayerMenuTop(Save *saveFile, int selectedplayer) {
     RButton.SetColor(EditorConfig.RColor).Draw();
 }
 
-void Editor::Draw_PlayerMenu(Save *saveFile, int selectedplayer, int selectedmode)
+void Editor::Draw_PlayerMenu(int selectedplayer, int selectedmode)
 {
     static bool Init = false;
     static Text PInfo;
@@ -87,7 +87,7 @@ void Editor::Draw_PlayerMenu(Save *saveFile, int selectedplayer, int selectedmod
         Init = true;
     }
 
-    Editor::Player::Draw_PlayerMenuTop(saveFile, selectedplayer);
+    Editor::Player::Draw_PlayerMenuTop(selectedplayer);
     C2D_SceneBegin(bottom);
 
     /* Sidebar Stuff */
@@ -119,7 +119,7 @@ void Editor::Draw_PlayerMenu(Save *saveFile, int selectedplayer, int selectedmod
     C3D_FrameEnd(0);
 }
 
-void Editor::Spawn_PlayerMenu(Save *saveFile)
+void Editor::Spawn_PlayerMenu()
 {
     if (EditorConfig.DrawingMenu)
         return;
@@ -132,7 +132,7 @@ void Editor::Spawn_PlayerMenu(Save *saveFile)
     {
         checkIfCardInserted();
 
-        Editor::Draw_PlayerMenu(saveFile, EditorConfig.SelectedPlayer, selectedmode);
+        Editor::Draw_PlayerMenu(EditorConfig.SelectedPlayer, selectedmode);
         InputManager::Instance()->RefreshInput();
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
@@ -149,7 +149,7 @@ void Editor::Spawn_PlayerMenu(Save *saveFile)
                 if (EditorConfig.SelectedPlayer > 3)
                     EditorConfig.SelectedPlayer = 0;
 
-                if (saveFile->players[EditorConfig.SelectedPlayer].Exists(saveFile))
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists())
                 {
                     break;
                 }
@@ -165,7 +165,7 @@ void Editor::Spawn_PlayerMenu(Save *saveFile)
                 if (EditorConfig.SelectedPlayer < 0)
                     EditorConfig.SelectedPlayer = 3;
 
-                if (saveFile->players[EditorConfig.SelectedPlayer].Exists(saveFile))
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists())
                 {
                     break;
                 }
@@ -183,12 +183,12 @@ void Editor::Spawn_PlayerMenu(Save *saveFile)
         if (InputManager::Instance()->IsActive(plyr_info)) //Info
         {
             selectedmode = 0;
-            Editor::Player::Spawn_PlayerMenu_Info(saveFile);
+            Editor::Player::Spawn_PlayerMenu_Info();
         }
         else if (InputManager::Instance()->IsActive(plyr_inv)) //Inv
         {
             selectedmode = 1;
-            Editor::Player::Spawn_PlayerMenu_Inventory(saveFile);
+            Editor::Player::Spawn_PlayerMenu_Inventory();
         }
         else if (InputManager::Instance()->IsActive(plyr_looks)) //Appearance
         {
@@ -201,7 +201,7 @@ void Editor::Spawn_PlayerMenu(Save *saveFile)
         else if (InputManager::Instance()->IsActive(plyr_pat)) //Patterns
         {
             selectedmode = 4;
-            Editor::Player::Spawn_PlayerMenu_Patterns(saveFile);
+            Editor::Player::Spawn_PlayerMenu_Patterns();
         }
         else if (InputManager::Instance()->IsActive(plyr_mail)) //Mail
         {

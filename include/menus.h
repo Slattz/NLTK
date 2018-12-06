@@ -4,10 +4,10 @@
 #define MENUS_H
 
 #include "common.h"
+#include "save.h"
 
 class ImageButton;
 class Button;
-class Save;
 
 typedef enum
 {

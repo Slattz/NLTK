@@ -53,8 +53,8 @@ void Editor::Player::InitInfoGFX(void)
     editorPlayerInfoControls.push_back(&playerCouponsLabel);
 }
 
-static void Draw_PlayerMenu_Info(Save *saveFile, int selectedPlayer) {
-    Editor::Player::Draw_PlayerMenuTop(saveFile, selectedPlayer);
+static void Draw_PlayerMenu_Info(int selectedPlayer) {
+    Editor::Player::Draw_PlayerMenuTop(selectedPlayer);
     C2D_SceneBegin(bottom);
 
     // Draw Controls
@@ -67,27 +67,27 @@ static void Draw_PlayerMenu_Info(Save *saveFile, int selectedPlayer) {
 }
 
 
-static void refreshInfoMenu(Save *saveFile) {
-    playerNameBox.myText = u16tou8(saveFile->players[EditorConfig.SelectedPlayer].Name); // TODO: Change player name to utf8? Or at least create a utf8 equivalent
-    playerWalletBox.myText = std::to_string(saveFile->players[EditorConfig.SelectedPlayer].Wallet.value);
-    playerSavingsBox.myText = std::to_string(saveFile->players[EditorConfig.SelectedPlayer].Savings.value);
-    playerMedalsBox.myText = std::to_string(saveFile->players[EditorConfig.SelectedPlayer].IslandMedals.value);
-    playerCouponsBox.myText = std::to_string(saveFile->players[EditorConfig.SelectedPlayer].MeowCoupons.value);
+static void refreshInfoMenu() {
+    playerNameBox.myText = u16tou8(Save::Instance()->players[EditorConfig.SelectedPlayer].Name); // TODO: Change player name to utf8? Or at least create a utf8 equivalent
+    playerWalletBox.myText = std::to_string(Save::Instance()->players[EditorConfig.SelectedPlayer].Wallet.value);
+    playerSavingsBox.myText = std::to_string(Save::Instance()->players[EditorConfig.SelectedPlayer].Savings.value);
+    playerMedalsBox.myText = std::to_string(Save::Instance()->players[EditorConfig.SelectedPlayer].IslandMedals.value);
+    playerCouponsBox.myText = std::to_string(Save::Instance()->players[EditorConfig.SelectedPlayer].MeowCoupons.value);
 }
 
-void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
+void Editor::Player::Spawn_PlayerMenu_Info() {
     if (EditorConfig.DrawingSubmenu)
         return;
 
     EditorConfig.DrawingSubmenu = true;
 
     // Set initial textbox values
-    refreshInfoMenu(saveFile);
+    refreshInfoMenu();
 
     while (aptMainLoop()) {
         checkIfCardInserted();
 
-        Draw_PlayerMenu_Info(saveFile, EditorConfig.SelectedPlayer);
+        Draw_PlayerMenu_Info(EditorConfig.SelectedPlayer);
         InputManager::Instance()->RefreshInput();
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
@@ -108,12 +108,12 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
                 if (EditorConfig.SelectedPlayer > 3)
                     EditorConfig.SelectedPlayer = 0;
 
-                if (saveFile->players[EditorConfig.SelectedPlayer].Exists(saveFile)) {
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists()) {
                     break;
                 }
             }
 
-            refreshInfoMenu(saveFile);
+            refreshInfoMenu();
         }
 
         if (InputManager::Instance()->IsButtonDown(KEY_L))
@@ -123,47 +123,47 @@ void Editor::Player::Spawn_PlayerMenu_Info(Save *saveFile) {
                 if (EditorConfig.SelectedPlayer < 0)
                     EditorConfig.SelectedPlayer = 3;
 
-                if (saveFile->players[EditorConfig.SelectedPlayer].Exists(saveFile)) {
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists()) {
                     break;
                 }
             }
 
-            refreshInfoMenu(saveFile);
+            refreshInfoMenu();
         }
 
         // Check for input in the info menu
         if (playerNameBox.IsActive()) { // Player Name Box
             // Find all references to the Player's id/name
-            std::vector<u32> m_PlayerIdReferences = findPlayerReferences(saveFile, &saveFile->players[EditorConfig.SelectedPlayer]);
-            saveFile->players[EditorConfig.SelectedPlayer].Name = u8tou16(playerNameBox.Activate().c_str());
+            std::vector<u32> m_PlayerIdReferences = findPlayerReferences(&Save::Instance()->players[EditorConfig.SelectedPlayer]);
+            Save::Instance()->players[EditorConfig.SelectedPlayer].Name = u8tou16(playerNameBox.Activate().c_str());
 
             // Replace all references to Player's id/name
             for (u32 offset : m_PlayerIdReferences) {
-                saveFile->Write(offset, saveFile->players[EditorConfig.SelectedPlayer].PlayerId);
-                saveFile->Write(offset + 2, saveFile->players[EditorConfig.SelectedPlayer].Name, 8);
+                Save::Instance()->Write(offset, Save::Instance()->players[EditorConfig.SelectedPlayer].PlayerId);
+                Save::Instance()->Write(offset + 2, Save::Instance()->players[EditorConfig.SelectedPlayer].Name, 8);
             }
 
-            saveFile->SetChangesMade(true);
+            Save::Instance()->SetChangesMade(true);
         }
 
         else if (playerWalletBox.IsActive()) {
-            saveFile->players[EditorConfig.SelectedPlayer].Wallet.value = static_cast<u32>(std::stoi(playerWalletBox.Activate()));
-            saveFile->SetChangesMade(true);
+            Save::Instance()->players[EditorConfig.SelectedPlayer].Wallet.value = static_cast<u32>(std::stoi(playerWalletBox.Activate()));
+            Save::Instance()->SetChangesMade(true);
         }
 
         else if (playerSavingsBox.IsActive()) {
-            saveFile->players[EditorConfig.SelectedPlayer].Savings.value = static_cast<u32>(std::stoi(playerSavingsBox.Activate()));
-            saveFile->SetChangesMade(true);
+            Save::Instance()->players[EditorConfig.SelectedPlayer].Savings.value = static_cast<u32>(std::stoi(playerSavingsBox.Activate()));
+            Save::Instance()->SetChangesMade(true);
         }
 
         else if (playerMedalsBox.IsActive()) {
-            saveFile->players[EditorConfig.SelectedPlayer].IslandMedals.value = static_cast<u32>(std::stoi(playerMedalsBox.Activate()));
-            saveFile->SetChangesMade(true);
+            Save::Instance()->players[EditorConfig.SelectedPlayer].IslandMedals.value = static_cast<u32>(std::stoi(playerMedalsBox.Activate()));
+            Save::Instance()->SetChangesMade(true);
         }
                 
         else if (playerCouponsBox.IsActive()) {
-            saveFile->players[EditorConfig.SelectedPlayer].MeowCoupons.value = static_cast<u32>(std::stoi(playerCouponsBox.Activate()));
-            saveFile->SetChangesMade(true);
+            Save::Instance()->players[EditorConfig.SelectedPlayer].MeowCoupons.value = static_cast<u32>(std::stoi(playerCouponsBox.Activate()));
+            Save::Instance()->SetChangesMade(true);
         }
     }
 

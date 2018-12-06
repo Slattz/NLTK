@@ -6,6 +6,8 @@
 #include "checksum.h"
 #include "save.h"
 
+Save* Save::m_pSave = nullptr;
+
 Save::Save() { }
 
 Save::~Save() {
@@ -15,34 +17,50 @@ Save::~Save() {
         delete[] m_saveBuffer;*/
 }
 
-Save::Save(FS_Archive archive, Handle *handle, bool init) {
-    m_archive = archive;
-    m_handle = handle;
-    m_saveSize = 0;
+Save* Save::Initialize(FS_Archive archive, Handle *handle, bool init) {
+    if (m_pSave != nullptr) {
+        return m_pSave;
+    }
+
+    m_pSave = new Save;
+
+    m_pSave->m_archive = archive;
+    m_pSave->m_handle = handle;
+    m_pSave->m_saveSize = 0;
     FS_Path path = fsMakePath(PATH_ASCII, "/garden_plus.dat");
 
     FSUSER_OpenFile(handle, archive, path, FS_OPEN_READ | FS_OPEN_WRITE, 0);
-    FSFILE_GetSize(*handle, &m_saveSize);
-    m_saveBuffer = new u8[m_saveSize];
+    FSFILE_GetSize(*handle, &m_pSave->m_saveSize);
+    m_pSave->m_saveBuffer = new u8[m_pSave->m_saveSize];
 
-    FSFILE_Read(*handle, NULL, 0, m_saveBuffer, m_saveSize);
+    FSFILE_Read(*handle, NULL, 0, m_pSave->m_saveBuffer, m_pSave->m_saveSize);
 
-    m_changesMade = false;
+    m_pSave->m_changesMade = false;
 
     if (!init) {
-        return;
+        return m_pSave;
     }
 
     // Load Players
-    players = new Player[4];
+    m_pSave->players = new Player[4];
     for (int i = 0; i < 4; i++) {
         u32 PlayerOffset = 0xA0 + (i * 0xA480);
-        players[i] = Player(this, PlayerOffset, i);
+        m_pSave->players[i] = Player(PlayerOffset, i);
     }
 
-    RegionLock.RawByte = ReadU8(0x621CE);
-    RegionLock.DerivedID = RegionLock.RawByte & 0xF;
-    RegionLock.RegionID = static_cast<CFG_Region>(RegionLock.RawByte >> 4);
+    m_pSave->RegionLock.RawByte = m_pSave->ReadU8(0x621CE);
+    m_pSave->RegionLock.DerivedID = m_pSave->RegionLock.RawByte & 0xF;
+    m_pSave->RegionLock.RegionID = static_cast<CFG_Region>(m_pSave->RegionLock.RawByte >> 4);
+
+    return m_pSave;
+}
+
+Save* Save::Instance() {
+    if (!m_pSave) {
+        m_pSave = new Save; // TODO: Should this be changed? We don't want an uninitialized save...
+    }
+
+    return m_pSave;
 }
 
 s8 Save::ReadS8(u32 offset) {
@@ -249,11 +267,11 @@ void Save::SetChangesMade(bool changesMade) {
 bool Save::Commit(bool close) {
     // Save Players
     for (int i = 0; i < 4; i++) {
-        players[i].Write(this);
+        players[i].Write();
     }
 
     // Update Checksums
-    FixCRC32s(this);
+    FixCRC32s();
 
     bool res = R_SUCCEEDED(FSFILE_Write(*m_handle, NULL, 0, m_saveBuffer, m_saveSize, FS_WRITE_FLUSH));
 
@@ -280,4 +298,5 @@ void Save::Close(void) {
     }
 
     FSUSER_CloseArchive(m_archive);
+    m_pSave = nullptr;
 }

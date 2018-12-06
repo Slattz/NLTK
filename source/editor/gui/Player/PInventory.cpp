@@ -11,12 +11,12 @@
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
-static void Draw_PlayerMenu_Inventory(Save *saveFile, int selectedplayer)
+static void Draw_PlayerMenu_Inventory(int selectedplayer)
 {
     int x = 42;
     int y = 63;
 
-    Editor::Player::Draw_PlayerMenuTop(saveFile, selectedplayer);
+    Editor::Player::Draw_PlayerMenuTop(selectedplayer);
     C2D_SceneBegin(bottom);
 
     for (int i = 0; i < 16; ++i)
@@ -32,7 +32,7 @@ static void Draw_PlayerMenu_Inventory(Save *saveFile, int selectedplayer)
             x = 42;
         }
 
-        Item item = saveFile->players[selectedplayer].Pockets[i];
+        Item item = Save::Instance()->players[selectedplayer].Pockets[i];
         DrawSprite(Common_ss, ITEM_HOLE, x - 16, y - 16);
 
         if (item.Icon > -1)
@@ -47,19 +47,19 @@ static void Draw_PlayerMenu_Inventory(Save *saveFile, int selectedplayer)
     C3D_FrameEnd(0);
 }
 
-void Editor::Player::Spawn_PlayerMenu_Inventory(Save *saveFile) {
+void Editor::Player::Spawn_PlayerMenu_Inventory() {
     if (EditorConfig.DrawingSubmenu)
         return;
 
     EditorConfig.DrawingSubmenu = true;
 
-    load_player_invitems(saveFile, EditorConfig.SelectedPlayer);
+    load_player_invitems(EditorConfig.SelectedPlayer);
 
     while (aptMainLoop())
     {
         checkIfCardInserted();
 
-        Draw_PlayerMenu_Inventory(saveFile, EditorConfig.SelectedPlayer);
+        Draw_PlayerMenu_Inventory(EditorConfig.SelectedPlayer);
         InputManager::Instance()->RefreshInput();
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
@@ -76,12 +76,12 @@ void Editor::Player::Spawn_PlayerMenu_Inventory(Save *saveFile) {
                 if (EditorConfig.SelectedPlayer > 3)
                     EditorConfig.SelectedPlayer = 0;
 
-                if (saveFile->players[EditorConfig.SelectedPlayer].Exists(saveFile)) {
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists()) {
                     break;
                 }
             }
 
-            load_player_invitems(saveFile, EditorConfig.SelectedPlayer);
+            load_player_invitems(EditorConfig.SelectedPlayer);
         }
 
         if (InputManager::Instance()->IsButtonDown(KEY_L))
@@ -93,12 +93,12 @@ void Editor::Player::Spawn_PlayerMenu_Inventory(Save *saveFile) {
                 if (EditorConfig.SelectedPlayer < 0)
                     EditorConfig.SelectedPlayer = 3;
 
-                if (saveFile->players[EditorConfig.SelectedPlayer].Exists(saveFile)) {
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists()) {
                     break;
                 }
             }
 
-            load_player_invitems(saveFile, EditorConfig.SelectedPlayer);
+            load_player_invitems(EditorConfig.SelectedPlayer);
         }
     }
 

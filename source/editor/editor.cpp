@@ -12,7 +12,6 @@
 extern u64 g_tid;
 extern Config *config;
 extern FS_MediaType currentMediaType;
-extern Save saveFile;
 
 u8* g_ItemBin;
 u64 currentTitleId;
@@ -72,25 +71,25 @@ GameSelect:
     currentTitleId = g_tid;
 
     // Initialize a new Save class
-    saveFile = Save(saveArch, &saveHandle, true);
+    Save* saveFile = Save::Initialize(saveArch, &saveHandle, true);
 
-    if (saveFile.GetSaveSize() != SIZE_SAVE) {
+    if (saveFile->GetSaveSize() != SIZE_SAVE) {
         MsgDisp(top, "Save file is the incorrect size!");
         Editor::Cleanup();
-        saveFile.Close();
+        saveFile->Close();
         return 0;
     }
 
     if (config->Auto_SaveBackup) {
-        saveBackup(&saveFile, g_tid);
+        saveBackup(g_tid);
     }
 
-    saveFile.FixSaveRegion();		//Update Region of the Save
-    saveFile.FixInvalidBuildings(); //Fix any invalid buildings in save
+    saveFile->FixSaveRegion();		//Update Region of the Save
+    saveFile->FixInvalidBuildings(); //Fix any invalid buildings in save
 
-    int mode = Editor::Spawn_MainMenu(&saveFile);
+    int mode = Editor::Spawn_MainMenu();
 
-    saveFile.Close();
+    saveFile->Close();
 
     if (mode == MODE_GAMESELECT) //Game Select
         goto GameSelect;

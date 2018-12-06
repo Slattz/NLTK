@@ -14,15 +14,15 @@ extern ShopsSettings ShopsConfig;
 
 namespace Editor
 {
-    void Spawn_ShopsMenu(Save *saveFile);
-    void Draw_ShopsMenu(Save *saveFile);
+    void Spawn_ShopsMenu();
+    void Draw_ShopsMenu();
 
     namespace Shops
     {
         void InitInfoGFX(void);
-        void Spawn_PlayerMenu_Info(Save *saveFile);
-        void Spawn_PlayerMenu_Inventory(Save *saveFile);
-        void Spawn_PlayerMenu_Patterns(Save *saveFile);
+        void Spawn_PlayerMenu_Info();
+        void Spawn_PlayerMenu_Inventory();
+        void Spawn_PlayerMenu_Patterns();
     }
 
 } // namespace Editor

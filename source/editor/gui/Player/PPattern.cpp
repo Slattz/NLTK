@@ -11,9 +11,9 @@
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
-static void Draw_PlayerMenu_Patterns(Save *saveFile, int selectedPlayer)
+static void Draw_PlayerMenu_Patterns(int selectedPlayer)
 {
-    Editor::Player::Draw_PlayerMenuTop(saveFile, selectedPlayer);
+    Editor::Player::Draw_PlayerMenuTop(selectedPlayer);
     C2D_SceneBegin(bottom);
 
     float x = 20;
@@ -29,14 +29,14 @@ static void Draw_PlayerMenu_Patterns(Save *saveFile, int selectedPlayer)
             x += 40;
         }
 
-        C2D_DrawImageAt(saveFile->players[selectedPlayer].Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
+        C2D_DrawImageAt(Save::Instance()->players[selectedPlayer].Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
     }
 
     InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }
 
-void Editor::Player::Spawn_PlayerMenu_Patterns(Save *saveFile) {
+void Editor::Player::Spawn_PlayerMenu_Patterns() {
     if (EditorConfig.DrawingSubmenu)
         return;
 
@@ -46,7 +46,7 @@ void Editor::Player::Spawn_PlayerMenu_Patterns(Save *saveFile) {
     {
         checkIfCardInserted();
 
-        Draw_PlayerMenu_Patterns(saveFile, EditorConfig.SelectedPlayer);
+        Draw_PlayerMenu_Patterns(EditorConfig.SelectedPlayer);
         InputManager::Instance()->RefreshInput();
 
         EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
@@ -63,7 +63,7 @@ void Editor::Player::Spawn_PlayerMenu_Patterns(Save *saveFile) {
                 if (EditorConfig.SelectedPlayer > 3)
                     EditorConfig.SelectedPlayer = 0;
 
-                if (saveFile->players[EditorConfig.SelectedPlayer].Exists(saveFile)) {
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists()) {
                     break;
                 }
             }
@@ -78,7 +78,7 @@ void Editor::Player::Spawn_PlayerMenu_Patterns(Save *saveFile) {
                 if (EditorConfig.SelectedPlayer < 0)
                     EditorConfig.SelectedPlayer = 3;
 
-                if (saveFile->players[EditorConfig.SelectedPlayer].Exists(saveFile)) {
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists()) {
                     break;
                 }
             }

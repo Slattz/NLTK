@@ -12,7 +12,6 @@
 extern Config *config;
 extern u64 g_tid;
 extern FS_MediaType currentMediaType;
-extern Save saveFile;
 
 bool m_ManagerInitiated = false;
 
@@ -51,24 +50,24 @@ GameSelect:
     }
 
     // Initialize a new Save class
-    saveFile = Save(saveArch, &saveHandle, false);
+    Save* saveFile = Save::Initialize(saveArch, &saveHandle, false);
 
-    if (saveFile.GetSaveSize() != SIZE_SAVE) {
+    if (saveFile->GetSaveSize() != SIZE_SAVE) {
         MsgDisp(top, "Save file is the incorrect size!");
-        saveFile.Close();
+        saveFile->Close();
         return 0;
     }
 
     if (config->Auto_SaveBackup) {
-        saveBackup(&saveFile, g_tid);
+        saveBackup(g_tid);
     }
 
     // Update Region of the Save
-    saveFile.FixSaveRegion();
+    saveFile->FixSaveRegion();
 
-    int mode = spawn_manager_main_menu(&saveFile);
+    int mode = spawn_manager_main_menu();
 
-    saveFile.Close();
+    saveFile->Close();
 
     if (mode == 1) //Game Select
         goto GameSelect;

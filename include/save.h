@@ -16,9 +16,8 @@ class Player;
 
 class Save {
 public:
-    Save();
-    ~Save();
-    Save(FS_Archive archive, Handle *handle, bool init);
+    static Save* Initialize(FS_Archive archive, Handle *handle, bool init);
+    static Save* Instance();
 
     s8 ReadS8(u32 offset);
     u8 ReadU8(u32 offset);
@@ -66,6 +65,12 @@ private:
     FS_Archive m_archive;
     Handle *m_handle = nullptr;
     bool m_changesMade;
+
+    Save(void);
+    ~Save(void);
+    Save(Save const&) {};
+    Save& operator=(Save const&) { return *Save::Instance(); }; // Is this right?
+    static Save* m_pSave;
 };
 
 #endif

@@ -7,7 +7,7 @@ namespace Editor
 {
     bool SaveCheck(void);
     void Draw_MainMenu(void);
-    int Spawn_MainMenu(Save *saveFile);
+    int Spawn_MainMenu(void);
 
 } // namespace Editor
 

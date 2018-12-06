@@ -17,16 +17,16 @@ extern PlayerSettings EditorConfig;
 
 namespace Editor
 {
-    void Spawn_PlayerMenu(Save *saveFile);
-    void Draw_PlayerMenu(Save *saveFile, int selectedplayer, int selectedmode);
+    void Spawn_PlayerMenu();
+    void Draw_PlayerMenu(int selectedplayer, int selectedmode);
 
     namespace Player
     {
         void InitInfoGFX(void);
-        void Draw_PlayerMenuTop(Save *saveFile, int selectedplayer);
-        void Spawn_PlayerMenu_Info(Save *saveFile);
-        void Spawn_PlayerMenu_Inventory(Save *saveFile);
-        void Spawn_PlayerMenu_Patterns(Save *saveFile);
+        void Draw_PlayerMenuTop(int selectedplayer);
+        void Spawn_PlayerMenu_Info(void);
+        void Spawn_PlayerMenu_Inventory(void);
+        void Spawn_PlayerMenu_Patterns(void);
     }
 
 } // namespace Editor

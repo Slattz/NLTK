@@ -6,6 +6,6 @@
 #include "common.h"
 
 bool check_if_saving(void);
-int spawn_manager_main_menu(Save *saveFile);
+int spawn_manager_main_menu();
 
 #endif

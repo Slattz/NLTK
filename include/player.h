@@ -5,8 +5,8 @@
 
 #include <citro2d.h>
 #include "encryptedInt32.h"
+#include "save.h"
 
-class Save;
 class Item;
 class Pattern;
 
@@ -14,7 +14,7 @@ class Player {
 public:
     Player(void);
     ~Player(void);
-    Player(Save *save, u32 offset, u32 index);
+    Player(u32 offset, u32 index);
 
     Pattern *Patterns[10];
     u16 PlayerId;
@@ -29,9 +29,9 @@ public:
     EncryptedInt32 MeowCoupons;
     EncryptedInt32 IslandMedals;
 
-    void Write(Save *save);
-    u8* RefreshTPC(Save *save);
-    bool Exists(Save *save);
+    void Write();
+    u8* RefreshTPC();
+    bool Exists();
 
     u32 m_offset;
     u32 m_index;

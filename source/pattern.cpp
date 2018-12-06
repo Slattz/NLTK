@@ -24,18 +24,18 @@ static const u32 PaletteColors[] = {
     0xADFFADFF, 0x73FF73FF, 0x63DF42FF, 0x00FF00FF, 0x21DF21FF, 0x52BA52FF, 0x00BA00FF, 0x008A00FF, 0x214521FF, 0x0000F9FF, 0x0000FAFF, 0x0000FBFF, 0x0000FCFF, 0x0000FDFF, 0x0000FEFF, 0x0000FFFF,
 };
 
-Pattern::Pattern(Save *saveFile, Player *player, u32 id) :
+Pattern::Pattern(Player *player, u32 id) :
     Index(id), Offset(player->m_offset + 0x2C + id * 0x870)
 {
-    Name = saveFile->ReadString(Offset, 20);
-    CreatorId = saveFile->ReadU16(Offset + 0x2A);
-    CreatorName = saveFile->ReadString(Offset + 0x2C, 8);
-    CreatorGender = saveFile->ReadU16(Offset + 0x3E);
-    OriginatingTownId = saveFile->ReadU16(Offset + 0x40);
-    OriginatingTownName = saveFile->ReadString(Offset + 0x42, 8);
-    saveFile->ReadArray(Palette.data(), Offset + 0x58, 16);
-    Type = (DesignType)(saveFile->ReadU8(Offset + 0x69) & 9); // TODO: Check the real max disgn type value and limit it to that.
-    saveFile->ReadArray(PatternData.data(), Offset + 0x6C, 0x800);
+    Name = Save::Instance()->ReadString(Offset, 20);
+    CreatorId = Save::Instance()->ReadU16(Offset + 0x2A);
+    CreatorName = Save::Instance()->ReadString(Offset + 0x2C, 8);
+    CreatorGender = Save::Instance()->ReadU16(Offset + 0x3E);
+    OriginatingTownId = Save::Instance()->ReadU16(Offset + 0x40);
+    OriginatingTownName = Save::Instance()->ReadString(Offset + 0x42, 8);
+    Save::Instance()->ReadArray(Palette.data(), Offset + 0x58, 16);
+    Type = (DesignType)(Save::Instance()->ReadU8(Offset + 0x69) & 9); // TODO: Check the real max disgn type value and limit it to that.
+    Save::Instance()->ReadArray(PatternData.data(), Offset + 0x6C, 0x800);
 
     Decompress();
 }
@@ -59,17 +59,17 @@ void Pattern::TakeOwnership(Player *player) {
     OriginatingTownName = player->TownName;
 }
 
-void Pattern::Write(Save *saveFile) {
+void Pattern::Write() {
     Compress();
-    saveFile->Write(Offset, Name, 20);
-    saveFile->Write(Offset + 0x2A, CreatorId);
-    saveFile->Write(Offset + 0x2C, CreatorName, 8);
-    saveFile->Write(Offset + 0x3E, CreatorGender);
-    saveFile->Write(Offset + 0x40, OriginatingTownId);
-    saveFile->Write(Offset + 0x42, OriginatingTownName, 8);
-    saveFile->Write(Offset + 0x58, Palette.data(), 16);
-    saveFile->Write(Offset + 0x69, (u8)Type);
-    saveFile->Write(Offset + 0x6C, PatternData.data(), 0x800);
+    Save::Instance()->Write(Offset, Name, 20);
+    Save::Instance()->Write(Offset + 0x2A, CreatorId);
+    Save::Instance()->Write(Offset + 0x2C, CreatorName, 8);
+    Save::Instance()->Write(Offset + 0x3E, CreatorGender);
+    Save::Instance()->Write(Offset + 0x40, OriginatingTownId);
+    Save::Instance()->Write(Offset + 0x42, OriginatingTownName, 8);
+    Save::Instance()->Write(Offset + 0x58, Palette.data(), 16);
+    Save::Instance()->Write(Offset + 0x69, (u8)Type);
+    Save::Instance()->Write(Offset + 0x6C, PatternData.data(), 0x800);
 }
 
 void Pattern::Decompress(void) {

@@ -117,7 +117,7 @@ void Editor::Draw_MainMenu(void)
     C3D_FrameEnd(0);
 }
 
-int Editor::Spawn_MainMenu(Save *saveFile)
+int Editor::Spawn_MainMenu()
 {
     while (aptMainLoop())
     {
@@ -140,10 +140,10 @@ int Editor::Spawn_MainMenu(Save *saveFile)
             MsgDisp(top, "Town Menu Coming Soon!");
 
         else if (AcreButton->IsActive()) //Acres Menu
-            Editor::Spawn_AcresMenu(saveFile);
+            Editor::Spawn_AcresMenu();
 
         else if (PlayerButton->IsActive()) //Player Menu
-            Editor::Spawn_PlayerMenu(saveFile);
+            Editor::Spawn_PlayerMenu();
 
         else if (VillagerButton->IsActive()) //Villagers Menu
             MsgDisp(top, "Villagers Menu Coming Soon!");
@@ -155,7 +155,7 @@ int Editor::Spawn_MainMenu(Save *saveFile)
             MsgDisp(top, "Island Menu Coming Soon!");
 
         else if (MainStreetButton->IsActive()) //Main Street Menu
-            Editor::Spawn_ShopsMenu(saveFile);
+            Editor::Spawn_ShopsMenu();
 
         else if (AboutButton->IsActive()) //About Menu
             spawn_about_menu();
@@ -174,9 +174,8 @@ int Editor::Spawn_MainMenu(Save *saveFile)
         {
             if (SaveCheck())
             {
-                if (saveFile->Commit(false))
+                if (Save::Instance()->Commit(false))
                     MsgDisp(top, "Save Succeeded!");
-
                 else
                     MsgDisp(top, "Save Failed!");
             }
