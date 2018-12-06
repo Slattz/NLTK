@@ -101,6 +101,5 @@ u8* Player::RefreshTPC() {
 }
 
 bool Player::Exists() {
-    s16 id = Save::Instance()->ReadS16(m_offset + 0x55A6);
-    return (id != 0 && id != -1);
+    return Save::Instance()->ReadU16(m_offset + 0x55A6) != 0;
 }
