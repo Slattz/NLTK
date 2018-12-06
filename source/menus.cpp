@@ -49,14 +49,14 @@ int spawn_main_menu(void) {
         }
 
         //TODO: Needs to be reworked into using ImageButtons
-        static const Rect_t editoract = {{60, 50}, {124, 114}};
-        static const Rect_t manageract = {{180, 50}, {244, 114}};
+        static const Rect_t editoract = {{90, 90}, {140, 140}};
+        static const Rect_t manageract = {{180, 90}, {230, 140}};
         static const Rect_t aboutact = {{20, 30}, {100, 66}};
         static const Rect_t configact = {{220, 30}, {300, 66}};
         if (InputManager::Instance()->IsActive(editoract)) //Editor Icon
             ret = Editor::Main();
 
-        else if (InputManager::Instance()->IsActive(manageract)) //Manager Icon
+        else if (InputManager::Instance()->IsActive(manageract) && config->IsDebug) //Manager Icon
             ret = manager_main();
 
         else if (InputManager::Instance()->IsActive(aboutact)) //About Menu
@@ -103,7 +103,7 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
         draw_game_select_menu(selectedgame, selectedregion, selectedmedia);
         InputManager::Instance()->RefreshInput();
 
-        if (InputManager::Instance()->IsButtonActive(KEY_START))
+        if (InputManager::Instance()->IsButtonDown(KEY_START))
             break;
 
         NLTK_Media_Installed mediaInstalled = selectedmedia == 0
@@ -225,8 +225,8 @@ void spawn_about_menu(void)
 
         draw_about_menu(discord, twitter);
         InputManager::Instance()->RefreshInput();
-        
-        if (InputManager::Instance()->IsButtonActive(KEY_B))
+
+        if (InputManager::Instance()->IsButtonDown(KEY_B))
             break;
 
         static const Rect_t discordrect = {{55, 180}, {105, 230}};
@@ -269,8 +269,8 @@ void spawn_config_menu(void)
             debugcomplete = true;
             config->IsDebug = true;
         }
-        
-        if (InputManager::Instance()->IsButtonActive(KEY_B))
+
+        if (InputManager::Instance()->IsButtonDown(KEY_B))
             break;
 
         static const Rect_t aupdate = {{20, 20}, {44, 44}};

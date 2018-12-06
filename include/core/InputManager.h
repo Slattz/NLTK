@@ -15,6 +15,7 @@ typedef struct {
     u32 KeysHeld;
     bool CursorEnabled;
     bool CursorHeld;
+    bool CursorDown;
 } Input;
 
 class InputManager {

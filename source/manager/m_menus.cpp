@@ -22,12 +22,12 @@ int spawn_manager_main_menu(Save *saveFile)
         draw_manager_main_menu();
         InputManager::Instance()->RefreshInput();
 
-        if (hidKeysDown() & KEY_START)
+        if (InputManager::Instance()->IsButtonDown(KEY_START))
         {
             return MODE_EXIT;
         }
 
-        else if (hidKeysDown() & KEY_B)
+        else if (InputManager::Instance()->IsButtonDown(KEY_B))
         {
             return MODE_MAINMENU;
         }

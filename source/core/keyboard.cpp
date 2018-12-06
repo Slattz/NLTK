@@ -364,6 +364,49 @@ void Keyboard::UpdateHID() {
             str.push_back(' ');
         }
 
+        u8 CurIndex = 0;
+        for (u32 i = 0; i < KEYBOARD_ROWS; i++)
+        {
+            u32 indent = 0;
+            if (kbd_lyt[i] == 1) indent = 15; //'asdfghjkl' indent
+            else if (kbd_lyt[i] == 3) indent = 39; //'zxcvbnm' indent
+            u8 KeysPerRow = KEYS_PER_ROW - kbd_lyt[i];
+
+            for (u32 j = 0; j < KeysPerRow; j++)
+            {
+                Rect_t key = {{38+(25*j)+indent, 37+(30*i)}, {38+(50*j)+indent, 37+(60*i)}}; //38.f, 37.f, 245.f, 153.f
+                if (InputManager::Instance()->IsActive(key)) {
+                    switch (m_KeyboardTab)
+                    {
+                        case KeyboardTab::Letters :
+                        {
+                            char letter = (m_ShiftOn && i > 0) ? (Letters[j+CurIndex]-0x20) : (Letters[j+CurIndex]);
+                            str.push_back(letter);
+                            break;
+                        }
+
+                        case KeyboardTab::Symbols :
+                        {
+                            std::u16string symbl(reinterpret_cast<const char16_t *>(Symbols+ (j + CurIndex)), 1);
+                            str.append(u16tou8(symbl));
+                            break;
+                        }
+
+                        case KeyboardTab::ACNLSymbols :
+                        {
+                            std::u16string symbl(reinterpret_cast<const char16_t *>(NinSymbols + (j + CurIndex)), 1);
+                            str.append(u16tou8(symbl));
+                            break;
+                        }
+                    
+                        default:
+                            break;
+                    }
+                }
+            }
+            CurIndex += KeysPerRow;
+        }
+
         m_Text = str;
     }
 
