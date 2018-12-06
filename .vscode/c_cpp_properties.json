@@ -17,6 +17,7 @@
                 "C:/devkitPro/libctru/include",
                 "C:/devkitPro/portlibs/3ds/include",
                 "${workspaceFolder}/build",
+                "${workspaceFolder}/include",
                 "${workspaceFolder}/include/core",
                 "${workspaceFolder}/include/editor",
                 "${workspaceFolder}/source/libs/CTRFont/include",
