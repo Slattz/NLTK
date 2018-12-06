@@ -101,11 +101,6 @@ u8* Player::RefreshTPC(Save *save) {
 }
 
 bool Player::Exists(Save *save) {
-    u16 id = save->ReadU16(m_offset + 0x55A6);
-
-    if (id == 0 || id == 0xFFFF) {
-        return false;
-    }
-
-    return true;
+    s16 id = save->ReadS16(m_offset + 0x55A6);
+    return (id != 0 && id != -1);
 }
