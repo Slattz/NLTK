@@ -19,6 +19,9 @@ extern u64 currentTitleId;
 
 std::map<u16, std::string> g_itemDatabase;
 
+// TODO: We should probably just use one item database.
+std::map<std::string, std::map<u16, std::string>> g_sortedItemDatabase;
+
 /*
     bool IsSDCardInserted(void)
         => returns whether or not the SD Card is inserted
@@ -142,9 +145,13 @@ void loadItemDatabase() {
     std::ifstream itemDatabase("romfs:/Items_en.txt", std::ifstream::in);
     std::string itemIdStr;
     std::string itemName;
+    std::string sectionName = "None";
 
     while (std::getline(itemDatabase, currentLine)) {
-        if (currentLine.size() > 8 && currentLine.find("//") == std::string::npos) { // confirm we don't have any comments
+        if (currentLine.find("//") == 0) {
+            sectionName = currentLine.substr(2);
+        }
+        else if (currentLine.size() > 8 && currentLine.find("//") == std::string::npos) { // confirm we don't have any comments
             itemIdStr = currentLine.substr(2, 4); // skip the 0x hex specifier
             itemName = currentLine.substr(8, currentLine.size() - 9);
             u16 itemId = 0;
@@ -156,6 +163,7 @@ void loadItemDatabase() {
 
             // Add item to the database
             g_itemDatabase.insert(std::make_pair(itemId, itemName));
+            g_sortedItemDatabase[sectionName][itemId] = itemName;
         }
     }
 
