@@ -11,39 +11,39 @@ Player::Player() { }
 
 Player::~Player()
 {
-    if (m_TPCData != nullptr)
-        delete[] m_TPCData;
+    if (this->m_TPCData != nullptr)
+        delete[] this->m_TPCData;
 }
 
 Player::Player(u32 offset, u32 index) {
-    m_offset = offset;
-    m_index = index;
+    this->m_offset = offset;
+    this->m_index = index;
 
-    PlayerId = Save::Instance()->ReadU16(offset + 0x55A6);
-    Name = Save::Instance()->ReadString(offset + 0x55A8, 8);
-    Gender = Save::Instance()->ReadU16(offset + 0x55BA);
-    TownId = Save::Instance()->ReadU16(offset + 0x55BC);
-    TownName = Save::Instance()->ReadString(offset + 0x55BE, 8);
+    this->PlayerId = Save::Instance()->ReadU16(offset + 0x55A6);
+    this->Name = Save::Instance()->ReadString(offset + 0x55A8, 8);
+    this->Gender = Save::Instance()->ReadU16(offset + 0x55BA);
+    this->TownId = Save::Instance()->ReadU16(offset + 0x55BC);
+    this->TownName = Save::Instance()->ReadString(offset + 0x55BE, 8);
 
-    Pockets = new Item[16];
+    this->Pockets = new Item[16];
 
     for (int i = 0; i < 16; i++) {
         u32 itemOffset = offset + 0x6BD0 + i * 4;
-        Pockets[i] = Item(Save::Instance()->ReadU16(itemOffset), Save::Instance()->ReadU8(itemOffset + 2), Save::Instance()->ReadU8(itemOffset + 3));
+        this->Pockets[i] = Item(Save::Instance()->ReadU16(itemOffset), Save::Instance()->ReadU8(itemOffset + 2), Save::Instance()->ReadU8(itemOffset + 3));
     }
 
-    Savings = EncryptedInt32(Save::Instance()->ReadU64(offset + 0x6B8C));
-    Debt = EncryptedInt32(Save::Instance()->ReadU64(offset + 0x6B94));
-    IslandMedals = EncryptedInt32(Save::Instance()->ReadU64(offset + 0x6B9C));
-    Wallet = EncryptedInt32(Save::Instance()->ReadU64(offset + 0x6F08));
-    MeowCoupons = EncryptedInt32(Save::Instance()->ReadU64(offset + 0x8D1C));
+    this->Savings = EncryptedInt32(Save::Instance()->ReadU64(offset + 0x6B8C));
+    this->Debt = EncryptedInt32(Save::Instance()->ReadU64(offset + 0x6B94));
+    this->IslandMedals = EncryptedInt32(Save::Instance()->ReadU64(offset + 0x6B9C));
+    this->Wallet = EncryptedInt32(Save::Instance()->ReadU64(offset + 0x6F08));
+    this->MeowCoupons = EncryptedInt32(Save::Instance()->ReadU64(offset + 0x8D1C));
 
-    if (Exists()) {
-        RefreshTPC();
+    if (this->Exists()) {
+        this->RefreshTPC();
     }
 
     for (u32 i = 0; i < 10; i++) {
-        Patterns[i] = new Pattern(this, i);
+        this->Patterns[i] = new Pattern(this, i);
     }
 }
 
@@ -56,67 +56,67 @@ void Player::Write() {
 
     // TODO: Write Patterns
 
-    Save::Instance()->Write(m_offset + 0x55A6, PlayerId);
-    Save::Instance()->Write(m_offset + 0x55A8, Name, 8);
-    Save::Instance()->Write(m_offset + 0x55BA, Gender);
-    Save::Instance()->Write(m_offset + 0x55BC, TownId);
-    Save::Instance()->Write(m_offset + 0x55BE, TownName, 8);
+    Save::Instance()->Write(this->m_offset + 0x55A6, this->PlayerId);
+    Save::Instance()->Write(this->m_offset + 0x55A8, this->Name, 8);
+    Save::Instance()->Write(this->m_offset + 0x55BA, this->Gender);
+    Save::Instance()->Write(this->m_offset + 0x55BC, this->TownId);
+    Save::Instance()->Write(this->m_offset + 0x55BE, this->TownName, 8);
 
-    Savings.encrypt(encryptedInt, encryptionData);
-    Save::Instance()->Write(m_offset + 0x6B8C, encryptedInt);
-    Save::Instance()->Write(m_offset + 0x6B90, encryptionData);
+    this->Savings.encrypt(encryptedInt, encryptionData);
+    Save::Instance()->Write(this->m_offset + 0x6B8C, encryptedInt);
+    Save::Instance()->Write(this->m_offset + 0x6B90, encryptionData);
 
-    Debt.encrypt(encryptedInt, encryptionData);
-    Save::Instance()->Write(m_offset + 0x6B94, encryptedInt);
-    Save::Instance()->Write(m_offset + 0x6B98, encryptionData);
+    this->Debt.encrypt(encryptedInt, encryptionData);
+    Save::Instance()->Write(this->m_offset + 0x6B94, encryptedInt);
+    Save::Instance()->Write(this->m_offset + 0x6B98, encryptionData);
 
-    IslandMedals.encrypt(encryptedInt, encryptionData);
-    Save::Instance()->Write(m_offset + 0x6B9C, encryptedInt);
-    Save::Instance()->Write(m_offset + 0x6BA0, encryptionData);
+    this->IslandMedals.encrypt(encryptedInt, encryptionData);
+    Save::Instance()->Write(this->m_offset + 0x6B9C, encryptedInt);
+    Save::Instance()->Write(this->m_offset + 0x6BA0, encryptionData);
 
-    Wallet.encrypt(encryptedInt, encryptionData);
-    Save::Instance()->Write(m_offset + 0x6F08, encryptedInt);
-    Save::Instance()->Write(m_offset + 0x6F0C, encryptionData);
+    this->Wallet.encrypt(encryptedInt, encryptionData);
+    Save::Instance()->Write(this->m_offset + 0x6F08, encryptedInt);
+    Save::Instance()->Write(this->m_offset + 0x6F0C, encryptionData);
 
-    MeowCoupons.encrypt(encryptedInt, encryptionData);
-    Save::Instance()->Write(m_offset + 0x8D1C, encryptedInt);
-    Save::Instance()->Write(m_offset + 0x8D20, encryptionData);
+    this->MeowCoupons.encrypt(encryptedInt, encryptionData);
+    Save::Instance()->Write(this->m_offset + 0x8D1C, encryptedInt);
+    Save::Instance()->Write(this->m_offset + 0x8D20, encryptionData);
 }
 
 u8* Player::RefreshTPC() {
 
-    if (Save::Instance()->ReadU16(m_offset + 0x5738) == 0xD8FF) { // 0xFFD8 = JPEG File Marker
-        if (m_TPCData == nullptr)
-            m_TPCData = new u8[0x1400];
-        Save::Instance()->ReadArray(m_TPCData, m_offset + 0x5738, 0x1400);
-        m_TPCPic = LoadPlayerPicture(m_TPCData);
+    if (Save::Instance()->ReadU16(this->m_offset + 0x5738) == 0xD8FF) { // 0xFFD8 = JPEG File Marker
+        if (this->m_TPCData == nullptr)
+            this->m_TPCData = new u8[0x1400];
+        Save::Instance()->ReadArray(this->m_TPCData, this->m_offset + 0x5738, 0x1400);
+        this->m_TPCPic = LoadPlayerPicture(this->m_TPCData);
     }
     else { //No TPC
-        if (m_TPCData != nullptr)
+        if (this->m_TPCData != nullptr)
         {
-            delete[] m_TPCData;
-            m_TPCData = nullptr;
+            delete[] this->m_TPCData;
+            this->m_TPCData = nullptr;
         }
-        m_TPCPic = C2D_SpriteSheetGetImage(Players_ss, NO_TPC_PIC);
+        this->m_TPCPic = C2D_SpriteSheetGetImage(Players_ss, NO_TPC_PIC);
     }
 
-    return m_TPCData;
+    return this->m_TPCData;
 }
 
 bool Player::Exists() {
-    return Save::Instance()->ReadU16(m_offset + 0x55A6) != 0;
+    return Save::Instance()->ReadU16(this->m_offset + 0x55A6) != 0;
 }
 
 bool Player::HasReset() {
-    return Save::Instance()->ReadU8(m_offset + 0x570A) & 2;
+    return Save::Instance()->ReadU8(this->m_offset + 0x570A) & 2;
 }
 
 void Player::SetHasReset(bool reset) {
-    u8 currentFlags = Save::Instance()->ReadU8(m_offset + 0x570A);
+    u8 currentFlags = Save::Instance()->ReadU8(this->m_offset + 0x570A);
     if (reset) {
-        Save::Instance()->Write(m_offset + 0x570A, static_cast<u8>(currentFlags | 2));
+        Save::Instance()->Write(this->m_offset + 0x570A, static_cast<u8>(currentFlags | 2));
     }
     else {
-        Save::Instance()->Write(m_offset + 0x570A, static_cast<u8>(currentFlags & ~2));
+        Save::Instance()->Write(this->m_offset + 0x570A, static_cast<u8>(currentFlags & ~2));
     }
 }
