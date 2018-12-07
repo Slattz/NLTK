@@ -51,6 +51,9 @@ void Player::Write() {
     u32 encryptedInt = 0;
     u32 encryptionData = 0;
 
+    // Always disable reset flag. TODO: Do we want this? Or should we make it a checkbox?
+    this->SetHasReset(false);
+
     // TODO: Write Patterns
 
     Save::Instance()->Write(m_offset + 0x55A6, PlayerId);
@@ -102,4 +105,18 @@ u8* Player::RefreshTPC() {
 
 bool Player::Exists() {
     return Save::Instance()->ReadU16(m_offset + 0x55A6) != 0;
+}
+
+bool Player::HasReset() {
+    return Save::Instance()->ReadU8(m_offset + 0x570A) & 2;
+}
+
+void Player::SetHasReset(bool reset) {
+    u8 currentFlags = Save::Instance()->ReadU8(m_offset + 0x570A);
+    if (reset) {
+        Save::Instance()->Write(m_offset + 0x570A, static_cast<u8>(currentFlags | 2));
+    }
+    else {
+        Save::Instance()->Write(m_offset + 0x570A, static_cast<u8>(currentFlags & ~2));
+    }
 }

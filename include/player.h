@@ -32,6 +32,8 @@ public:
     void Write();
     u8* RefreshTPC();
     bool Exists();
+    bool HasReset();
+    void SetHasReset(bool reset);
 
     u32 m_offset;
     u32 m_index;
