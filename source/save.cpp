@@ -175,12 +175,10 @@ bool Save::UpdateSaveRegion(void) {
 }
 
 void Save::FixSaveRegion(void) {
-    bool diff = UpdateSaveRegion();
-    if (diff)
+    if (this->UpdateSaveRegion())
     {
         if (MsgDisp(top, "The region of the save you\nhave selected does not\nmatch your console.\nWould you like to fix it?", MsgTypeConfirm)) {
             Write(0x621CE, RegionLock.RawByte);
-            m_changesMade = true;
         }
     }
 }
@@ -197,8 +195,7 @@ void Save::FixInvalidBuildings(void) {
                 }
             }
 
-            Write(0x04be88+(i*4), static_cast<u32>(0x000000FC)); //Write empty building
-            m_changesMade = true;
+            Write(0x04be88 + (i * 4), static_cast<u32>(0x000000FC)); //Write empty building
         }
     }
 }
