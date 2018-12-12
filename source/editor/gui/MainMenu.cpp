@@ -29,55 +29,56 @@ ImageButton *OptionsButton = nullptr;
 ImageButton *GameSelectButton = nullptr;
 ImageButton *TownManagerButton = nullptr;
 
+static const float TextSize = 0.6f;
+
+static int Initialized;
+static std::vector<Text> ButtonText;
+static std::vector<Text> ColumnText;
+static int ButtonIcon[] = {TOWN_ICON, ACRES_ICON, PROFILE_ICON, VILLAGERS_ICON,
+                               PWP_ICON, ISLAND_ICON, SHOPS_ICON, ABOUT_ICON};
+
 bool Editor::SaveCheck(void) {
     return MsgDisp(top, "Would you like to save changes\nmade to your save?", MsgTypeConfirm);
 }
 
-void Editor::Draw_MainMenu(void)
-{
-    static bool FuncInit = false;
-    static const float TextSize = 0.6f;
-    static std::vector<Text> ButtonText;
-    static std::vector<Text> ColumnText;
-    static int ButtonIcon[] = {TOWN_ICON, ACRES_ICON, PROFILE_ICON, VILLAGERS_ICON,
-                               PWP_ICON, ISLAND_ICON, SHOPS_ICON, ABOUT_ICON};
+void Editor::Init_MainMenu(void) {
+    TownButton = new ImageButton(15.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    AcreButton = new ImageButton(89.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    PlayerButton = new ImageButton(163.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    VillagerButton = new ImageButton(237.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    PWPButton = new ImageButton(15.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    IslandButton = new ImageButton(89.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    MainStreetButton = new ImageButton(163.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    AboutButton = new ImageButton(237.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
 
-    if (!FuncInit) {
-        TownButton = new ImageButton(15.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-        AcreButton = new ImageButton(89.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-        PlayerButton = new ImageButton(163.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-        VillagerButton = new ImageButton(237.f, 110.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-        PWPButton = new ImageButton(15.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-        IslandButton = new ImageButton(89.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-        MainStreetButton = new ImageButton(163.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-        AboutButton = new ImageButton(237.f, 180.f, 70.f, 55.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    SaveButton = new ImageButton(220.f, 10.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    OptionsButton = new ImageButton(220.f, 60.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    GameSelectButton = new ImageButton(20.f, 10.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    TownManagerButton = new ImageButton(20.f, 60.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
 
-        SaveButton = new ImageButton(220.f, 10.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-        OptionsButton = new ImageButton(220.f, 60.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-        GameSelectButton = new ImageButton(20.f, 10.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
-        TownManagerButton = new ImageButton(20.f, 60.f, 80.f, 33.f, 0, KEY_A | KEY_TOUCH, BUTTON_MAIN, Editor_ss);
+    SaveButton->SetScale(1.15f, 0.6f);
+    OptionsButton->SetScale(1.15f, 0.6f);
+    GameSelectButton->SetScale(1.15f, 0.6f);
+    TownManagerButton->SetScale(1.15f, 0.6f);
 
-        SaveButton->SetScale(1.15f, 0.6f);
-        OptionsButton->SetScale(1.15f, 0.6f);
-        GameSelectButton->SetScale(1.15f, 0.6f);
-        TownManagerButton->SetScale(1.15f, 0.6f);
+    ButtonText.push_back(Text(COLOR_GREY, "Town", TextSize, TextSize, 37.f, 147.f));
+    ButtonText.push_back(Text(COLOR_GREY, "Acres", TextSize, TextSize, 110.f, 147.f));
+    ButtonText.push_back(Text(COLOR_GREY, "Players", TextSize, TextSize, 178.f, 147.f));
+    ButtonText.push_back(Text(COLOR_GREY, "Villagers", TextSize, TextSize, 248.f, 147.f));
+    ButtonText.push_back(Text(COLOR_GREY, "PWPs", TextSize, TextSize, 37.f, 217.f));
+    ButtonText.push_back(Text(COLOR_GREY, "Island", TextSize, TextSize, 110.f, 217.f));
+    ButtonText.push_back(Text(COLOR_GREY, "Shops", TextSize, TextSize, 182.f, 217.f));
+    ButtonText.push_back(Text(COLOR_GREY, "About", TextSize, TextSize, 256.f, 217.f));
 
-        ButtonText.push_back(Text(COLOR_GREY, "Town", TextSize, TextSize, 37.f, 147.f));
-        ButtonText.push_back(Text(COLOR_GREY, "Acres", TextSize, TextSize, 110.f, 147.f));
-        ButtonText.push_back(Text(COLOR_GREY, "Players", TextSize, TextSize, 178.f, 147.f));
-        ButtonText.push_back(Text(COLOR_GREY, "Villagers", TextSize, TextSize, 248.f, 147.f));
-        ButtonText.push_back(Text(COLOR_GREY, "PWPs", TextSize, TextSize, 37.f, 217.f));
-        ButtonText.push_back(Text(COLOR_GREY, "Island", TextSize, TextSize, 110.f, 217.f));
-        ButtonText.push_back(Text(COLOR_GREY, "Shops", TextSize, TextSize, 182.f, 217.f));
-        ButtonText.push_back(Text(COLOR_GREY, "About", TextSize, TextSize, 256.f, 217.f));
+    ColumnText.push_back(Text(COLOR_GREY, "Game\nSelect", TextSize, TextSize, 44.f, 12.f));
+    ColumnText.push_back(Text(COLOR_GREY, "  Town\nManager", TextSize, TextSize, 40.f, 60.f));
+    ColumnText.push_back(Text(COLOR_GREY, "Save", TextSize, TextSize, 248.f, 18.f));
+    ColumnText.push_back(Text(COLOR_GREY, "Options", TextSize, TextSize, 240.f, 67.f));
 
-        ColumnText.push_back(Text(COLOR_GREY, "Game\nSelect", TextSize, TextSize, 44.f, 12.f));
-        ColumnText.push_back(Text(COLOR_GREY, "  Town\nManager", TextSize, TextSize, 40.f, 60.f));
-        ColumnText.push_back(Text(COLOR_GREY, "Save", TextSize, TextSize, 248.f, 18.f));
-        ColumnText.push_back(Text(COLOR_GREY, "Options", TextSize, TextSize, 240.f, 67.f));
-        FuncInit = true;
-    }
+    Initialized = true;
+}
 
+void Editor::Draw_MainMenu(void) {
     draw_base_interface();
     C2D_SceneBegin(bottom);
     DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
@@ -119,6 +120,10 @@ void Editor::Draw_MainMenu(void)
 
 int Editor::Spawn_MainMenu()
 {
+    if (!Initialized) {
+        Init_MainMenu();
+    }
+
     while (aptMainLoop())
     {
         checkIfCardInserted();
