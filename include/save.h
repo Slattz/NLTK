@@ -5,6 +5,7 @@
 
 #include "player.h"
 #include "offsets.h"
+#include "villager.h"
 
 struct Region_Lock {
     u8 DerivedID;
@@ -12,6 +13,7 @@ struct Region_Lock {
     u8 RawByte;
 };
 
+class Villager;
 class Player;
 
 class Save {
@@ -57,6 +59,7 @@ public:
     void Close(void);
 
     Player *players = nullptr;
+    Villager *villagers = nullptr;
     Region_Lock RegionLock;
 
 private:

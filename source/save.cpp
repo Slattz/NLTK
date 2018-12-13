@@ -5,6 +5,7 @@
 #include "player.h"
 #include "checksum.h"
 #include "save.h"
+#include "utils.h"
 
 Save* Save::m_pSave = nullptr;
 
@@ -46,6 +47,15 @@ Save* Save::Initialize(FS_Archive archive, Handle *handle, bool init) {
     for (int i = 0; i < 4; i++) {
         u32 PlayerOffset = 0xA0 + (i * 0xA480);
         m_pSave->players[i] = Player(PlayerOffset, i);
+    }
+
+    // DEBUG
+    //MsgDisp(top, Format("Villager_s size: %X", sizeof(Villager::Villager_s)));
+
+    // Load Villagers
+    m_pSave->villagers = new Villager[10];
+    for (int i = 0; i < 10; i++) {
+        m_pSave->villagers[i] = Villager(0x292D0 + (i * sizeof(Villager::Villager_s)), i);
     }
 
     m_pSave->RegionLock.RawByte = m_pSave->ReadU8(0x621CE);
