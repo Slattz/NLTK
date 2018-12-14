@@ -177,8 +177,9 @@ bool MsgDisp(C3D_RenderTarget *target, std::string message, MsgType Type, u32 bg
 
     while (aptMainLoop())
     {
-        if (InputManager::Instance()->IsButtonDown(KEY_A) && Type != MsgTypeNone) return true;
-        if (InputManager::Instance()->IsButtonDown(KEY_B) && Type == MsgTypeConfirm) return false;
+        InputManager::Instance()->RefreshInput();
+        if (InputManager::Instance()->IsButtonActive(KEY_A) && Type != MsgTypeNone) return true;
+        if (InputManager::Instance()->IsButtonActive(KEY_B) && Type == MsgTypeConfirm) return false;
         
         if (Type != MsgTypeNone)
             draw_base_interface();
@@ -190,6 +191,7 @@ bool MsgDisp(C3D_RenderTarget *target, std::string message, MsgType Type, u32 bg
         if (Type == MsgTypeNone) break;
         C3D_FrameEnd(0);
     }
+    
     return false;
 }
 
