@@ -2,7 +2,6 @@
 #include <string>
 #include <citro2d.h>
 #include "gfx.h"
-#include "item.h"
 #include "pattern.h"
 #include "jpeg.h"
 #include "player.h"
@@ -28,8 +27,7 @@ Player::Player(u32 offset, u32 index) {
     this->Pockets = new Item[16];
 
     for (int i = 0; i < 16; i++) {
-        u32 itemOffset = offset + 0x6BD0 + i * 4;
-        this->Pockets[i] = Item(Save::Instance()->ReadU16(itemOffset), Save::Instance()->ReadU8(itemOffset + 2), Save::Instance()->ReadU8(itemOffset + 3));
+        this->Pockets[i] = Item(offset + 0x6BD0 + i * 4);
     }
 
     this->Savings = EncryptedInt32(Save::Instance()->ReadU64(offset + 0x6B8C));

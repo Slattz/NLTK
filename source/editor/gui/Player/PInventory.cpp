@@ -11,6 +11,8 @@
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
+static std::vector<std::pair<std::string, s32>> inventoryData; // TODO: I dislike this. Find someother way of doing. Perhaps an item container class?
+
 static void Draw_PlayerMenu_Inventory(int selectedplayer)
 {
     int x = 42;
@@ -35,9 +37,9 @@ static void Draw_PlayerMenu_Inventory(int selectedplayer)
         Item item = Save::Instance()->players[selectedplayer].Pockets[i];
         DrawSprite(Common_ss, ITEM_HOLE, x - 16, y - 16);
 
-        if (item.Icon > -1)
+        if (inventoryData[i].second > -1)
         {
-            DrawSprite(Items_ss, item.Icon, x, y);
+            DrawSprite(Items_ss, inventoryData[i].second, x, y);
         }
 
         x += 38;
@@ -53,7 +55,7 @@ void Editor::Player::Spawn_PlayerMenu_Inventory() {
 
     EditorConfig.DrawingSubmenu = true;
 
-    load_player_invitems(EditorConfig.SelectedPlayer);
+    inventoryData = load_player_invitems(EditorConfig.SelectedPlayer);
 
     while (aptMainLoop())
     {

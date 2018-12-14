@@ -4,10 +4,11 @@
 #define PLAYER_H
 
 #include <citro2d.h>
+#include <string>
 #include "encryptedInt32.h"
+#include "item.h"
 #include "save.h"
 
-class Item;
 class Pattern;
 
 class Player {

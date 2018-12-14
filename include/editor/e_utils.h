@@ -5,10 +5,9 @@
 
 #include <vector>
 #include "save.h"
+#include "item.h"
 
-class Item;
-
-void  load_player_invitems(int selectedplayer);
+std::vector<std::pair<std::string, s32>> load_player_invitems(int selectedplayer);
 bool  CheckUnreadMail(int selectedplayer);
 Item  GetItemFromSave(u32 offset);
 int   CheckItemValidity(Item *item);

@@ -3,8 +3,6 @@
 #ifndef UTILS_H
 #define UTILS_H
 
-class Item;
-
 bool            IsSDCardInserted(void);
 bool            IsGameCartInserted(void);
 bool            is_ACNL(u64 tid);

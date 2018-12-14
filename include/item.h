@@ -3,24 +3,16 @@
 #ifndef ITEM_H
 #define ITEM_H
 
-class Item {
-public:
-    Item();
-    Item(u16 id, u8 flag1, u8 flag2);
-
-    union Item_u {
-        u32 Item;
-        struct Item_s {
-            u16 Id;
-            u16 Flags;
-        };
+union Item {
+    u32 Raw;
+    struct {
+        u16 Id;
+        u16 Flags;
     };
 
-    u16 Id;
-    u8 Flag1;
-    u8 Flag2;
-    std::string Name;
-    s32 Icon;
+    Item(void);
+    Item(const u32 offset);
+    Item(const u16 id, const u16 flags);
 };
 
 #endif

@@ -1,19 +1,12 @@
 #include <3ds.h>
-#include <string>
-#include "e_utils.h"
+#include "save.h"
 #include "item.h"
 
-Item::Item() {
-    Id = 0x7FFE;
-    Flag1 = 0;
-    Flag2 = 0;
-    Name = std::string("Empty");
+Item::Item(const u16 id, const u16 flags) : Id(id), Flags(flags) { 
+    Raw = (flags << 16) | id;
 }
 
-Item::Item(u16 id, u8 flag1, u8 flag2) {
-    Id = id;
-    Flag1 = flag1;
-    Flag2 = flag2;
-    Name = GetItemName(this);
-    Icon = GetItemIcon(this);
-}
+Item::Item() : Item::Item(0x7FFE, 0) { }
+
+Item::Item(const u32 offset)
+    : Item::Item(Save::Instance()->ReadU16(offset), Save::Instance()->ReadU16(offset + 2)) { }
