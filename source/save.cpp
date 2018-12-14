@@ -55,7 +55,9 @@ Save* Save::Initialize(FS_Archive archive, Handle *handle, bool init) {
     // Load Villagers
     m_pSave->villagers = new Villager[10];
     for (int i = 0; i < 10; i++) {
-        m_pSave->villagers[i] = Villager(0x292D0 + (i * sizeof(Villager::Villager_s)), i);
+        int offset = 0x292D0 + (i * sizeof(Villager::Villager_s));
+        MsgDisp(top, Format("Villager #%d offset: %X", i, offset));
+        m_pSave->villagers[i] = new Villager(offset, i);
     }
 
     m_pSave->RegionLock.RawByte = m_pSave->ReadU8(0x621CE);

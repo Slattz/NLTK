@@ -25,3 +25,7 @@ u32 Villager::GetOffset() const {
 u32 Villager::GetIndex() const {
     return this->m_index;
 }
+
+u16 Villager::GetId() const {
+    return this->m_villagerData->Id;
+}

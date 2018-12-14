@@ -43,6 +43,8 @@ public:
     u32 GetOffset(void) const;
     u32 GetIndex(void) const;
 
+    u16 GetId(void) const;
+
 private:
     Villager_s* m_villagerData;
 
