@@ -1,4 +1,6 @@
 #include "villager.h"
+#include "utils.h"
+#include "gfx.h"
 
 Villager::Villager() { }
 
@@ -9,12 +11,7 @@ Villager::~Villager() {
     }
 }
 
-Villager::Villager(const u32 offset, const u32 index) {
-    this->m_offset = offset;
-    this->m_index = index;
-    this->m_villagerData = new Villager_s;
-
-    // Read villager data into struct
+Villager::Villager(const u32 offset, const u32 index) : m_offset(offset), m_index(index), m_villagerData(new Villager_s) {
     Save::Instance()->ReadArray(reinterpret_cast<u8 *>(this->m_villagerData), offset, sizeof(Villager_s));
 }
 

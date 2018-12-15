@@ -151,9 +151,6 @@ int Editor::Spawn_MainMenu()
             Editor::Spawn_PlayerMenu();
 
         else if (VillagerButton->IsActive()) { //Villagers Menu
-            for (int i = 0; i < 10; i++) {
-                MsgDisp(top, Format("Villager #%d id: %04X", i, Save::Instance()->villagers[i].GetId()));
-            }
             MsgDisp(top, "Villagers Menu Coming Soon!");
         }
 

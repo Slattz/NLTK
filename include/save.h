@@ -59,7 +59,7 @@ public:
     void Close(void);
 
     Player *players = nullptr;
-    Villager *villagers = nullptr;
+    Villager* villagers[10];
     Region_Lock RegionLock;
 
 private:
