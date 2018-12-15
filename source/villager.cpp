@@ -1,6 +1,4 @@
 #include "villager.h"
-#include "utils.h"
-#include "gfx.h"
 
 Villager::Villager() { }
 

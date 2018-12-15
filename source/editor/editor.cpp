@@ -1,5 +1,6 @@
 #include <3ds.h>
 #include <string>
+#include <map>
 #include "gfx.h"
 #include "nfs.h"
 #include "save.h"
@@ -12,6 +13,7 @@
 extern u64 g_tid;
 extern Config *config;
 extern FS_MediaType currentMediaType;
+extern std::map<u16, std::string> g_villagerDatabase;
 
 u8* g_ItemBin;
 u64 currentTitleId;
@@ -28,6 +30,10 @@ void Editor::Cleanup(void) {
 void Editor::Init(void) {
     // Load Item Database
     loadItemDatabase();
+
+    // Load Villager Database
+    LoadVillagerDatabase();
+
     Editor::Player::InitInfoGFX();
 
     g_ItemBin = new u8[0x2B720];

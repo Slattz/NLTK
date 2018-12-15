@@ -18,6 +18,7 @@
 extern u64 currentTitleId;
 
 std::map<u16, std::string> g_itemDatabase;
+std::map<u16, std::string> g_villagerDatabase;
 
 // TODO: We should probably just use one item database.
 std::map<std::string, std::map<u16, std::string>> g_sortedItemDatabase;
@@ -139,6 +140,15 @@ std::string Format(const char* fmt, ...)
     return (std::string(buffer));
 }
 
+inline u16 strToU16(std::string str) {
+    u16 out;
+    std::stringstream ss;
+    ss << std::hex << str;
+    ss >> out;
+
+    return out;
+}
+
 void loadItemDatabase() {
     g_itemDatabase.clear();
     std::string currentLine;
@@ -154,12 +164,9 @@ void loadItemDatabase() {
         else if (currentLine.size() > 8 && currentLine.find("//") == std::string::npos) { // confirm we don't have any comments
             itemIdStr = currentLine.substr(2, 4); // skip the 0x hex specifier
             itemName = currentLine.substr(8, currentLine.size() - 9);
-            u16 itemId = 0;
 
             // Convert itemIdStr to a u16
-            std::stringstream ss;
-            ss << std::hex << itemIdStr;
-            ss >> itemId;
+            u16 itemId = strToU16(itemIdStr);
 
             // Add item to the database
             g_itemDatabase.insert(std::make_pair(itemId, itemName));
@@ -168,6 +175,23 @@ void loadItemDatabase() {
     }
 
     itemDatabase.close();
+}
+
+void LoadVillagerDatabase() {
+    g_villagerDatabase.clear();
+
+    std::string currentLine;
+    std::ifstream villagerDatabase("romfs:/Villagers_en.txt", std::ifstream::in);
+
+    while (std::getline(villagerDatabase, currentLine)) {
+        u16 id = strToU16(currentLine.substr(0, 4));
+        std::string name = currentLine.substr(5, currentLine.size() - 6);
+
+        // TODO: Read default things like personality, catchphrases, & furniture.
+        g_villagerDatabase.insert(std::make_pair(id, name));
+    }
+
+    villagerDatabase.close();
 }
 
 // abort override
