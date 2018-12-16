@@ -14,6 +14,7 @@
 #include "gui/PlayerMenu.hpp"
 #include "gui/AcreMenu.hpp"
 #include "gui/ShopsMenu.hpp"
+#include "gui/VillagerMenu.hpp"
 
 ImageButton *TownButton = nullptr;
 ImageButton *AcreButton = nullptr;
@@ -151,7 +152,7 @@ int Editor::Spawn_MainMenu()
             Editor::Spawn_PlayerMenu();
 
         else if (VillagerButton->IsActive()) { //Villagers Menu
-            MsgDisp(top, "Villagers Menu Coming Soon!");
+            VillagerEditor::Spawn();
         }
 
         else if (PWPButton->IsActive()) //Pwp Menu

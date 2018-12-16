@@ -11,6 +11,7 @@
 #include "Items_ss.h"
 #include "Players_ss.h"
 #include "Swkbd_ss.h"
+#include "Villagers_ss.h"
 
 
 #endif

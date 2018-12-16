@@ -26,6 +26,7 @@ C2D_SpriteSheet Editor_ss;
 C2D_SpriteSheet Items_ss;
 C2D_SpriteSheet Players_ss;
 C2D_SpriteSheet Swkbd_ss;
+C2D_SpriteSheet Villagers_ss;
 
 const u32 COLOR_BG              =    C2D_Color32(92,188,105,255);
 const u32 COLOR_MENU_BARS       =    C2D_Color32(33,139,43,255);
@@ -81,6 +82,7 @@ void InitGFX(void)
     Items_ss = C2D_SpriteSheetLoad("romfs:/gfx/Items_ss.t3x");
     Players_ss = C2D_SpriteSheetLoad("romfs:/gfx/Players_ss.t3x");
     Swkbd_ss = C2D_SpriteSheetLoad("romfs:/gfx/Swkbd_ss.t3x");
+    Villagers_ss = C2D_SpriteSheetLoad("romfs:/gfx/Villagers_ss.t3x");
     C3D_TexSetFilter(&About_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Acres_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Common_ss->tex, GPU_LINEAR, GPU_LINEAR);
@@ -89,6 +91,7 @@ void InitGFX(void)
     C3D_TexSetFilter(&Items_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Players_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Swkbd_ss->tex, GPU_LINEAR, GPU_LINEAR);
+    C3D_TexSetFilter(&Villagers_ss->tex, GPU_LINEAR, GPU_LINEAR);
 
     /* Very Hacky, used as a bypass for a tex3ds bug */
     C2D_Image button = C2D_SpriteSheetGetImage(Editor_ss, BUTTON_MAIN);
