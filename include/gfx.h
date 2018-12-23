@@ -34,6 +34,7 @@ extern C2D_SpriteSheet Items_ss;
 extern C2D_SpriteSheet Players_ss;
 extern C2D_SpriteSheet Swkbd_ss;
 extern C2D_SpriteSheet Villagers_ss;
+extern C2D_SpriteSheet Villagers2_ss;
 
 //Colors
 extern const u32 COLOR_BG;  

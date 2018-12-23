@@ -24,6 +24,9 @@ Control::Control(Point_t location, Size_t size, u32 bgColor) {
 Control::Control(u32 x, u32 y, u32 width, u32 height, u32 bgColor)
     : Control(Point_t{ x, y }, Size_t{ width, height }, bgColor) { }
 
+// Empty destructor so that inheriting classes don't implement undefined behavior. We don't allocate anything dynamically.
+Control::~Control() { }
+
 void Control::Draw() {
     if (Visible) {
         C2D_DrawRectSolid(Location.X, Location.Y, ZPos, Size.Width, Size.Height, BackgroundColor);

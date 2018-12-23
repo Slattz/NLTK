@@ -9,10 +9,11 @@
 */
 
 class Control {
-public:
+public:    
     Control(void);
     Control(Point_t location, Size_t size, u32 backgroundColor);
     Control(u32 x, u32 y, u32 width, u32 height, u32 backgroundColor);
+    virtual ~Control();
 
     virtual void Draw();
     virtual bool IsActive();

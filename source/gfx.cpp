@@ -27,6 +27,7 @@ C2D_SpriteSheet Items_ss;
 C2D_SpriteSheet Players_ss;
 C2D_SpriteSheet Swkbd_ss;
 C2D_SpriteSheet Villagers_ss;
+C2D_SpriteSheet Villagers2_ss;
 
 const u32 COLOR_BG              =    C2D_Color32(92,188,105,255);
 const u32 COLOR_MENU_BARS       =    C2D_Color32(33,139,43,255);
@@ -83,6 +84,7 @@ void InitGFX(void)
     Players_ss = C2D_SpriteSheetLoad("romfs:/gfx/Players_ss.t3x");
     Swkbd_ss = C2D_SpriteSheetLoad("romfs:/gfx/Swkbd_ss.t3x");
     Villagers_ss = C2D_SpriteSheetLoad("romfs:/gfx/Villagers_ss.t3x");
+    Villagers2_ss = C2D_SpriteSheetLoad("romfs:/gfx/Villagers2_ss.t3x");
     C3D_TexSetFilter(&About_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Acres_ss->tex, GPU_LINEAR, GPU_LINEAR);
     C3D_TexSetFilter(&Common_ss->tex, GPU_LINEAR, GPU_LINEAR);

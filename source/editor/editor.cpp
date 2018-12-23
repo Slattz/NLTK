@@ -103,3 +103,41 @@ GameSelect:
     Editor::Cleanup();
     return mode; //mode is always 0 when exiting the editor
 }
+
+void Editor::Draw() {
+    while (aptMainLoop()) {
+        InputManager::Instance()->RefreshInput();
+
+        if (InputManager::Instance()->IsButtonActive(KEY_START)) {
+            return; // Immediately exit.
+        }
+
+        if (InputManager::Instance()->IsButtonActive(KEY_B)) {
+            if (Editor::PreviousDrawFunction() == nullptr) {
+                // We've reached the end of the backchain. Exit the program immediately.
+                return;
+            }
+        }
+
+        draw_base_interface();
+
+        if (Editor::DrawFunction != nullptr) {
+            Editor::DrawFunction();
+        }
+
+        InputManager::Instance()->DrawCursor();
+    }
+}
+
+void (*Editor::PreviousDrawFunction(void))(void) {
+    if (Editor::DrawFunctionList.size() == 0) return nullptr;
+
+    Editor::DrawFunction = Editor::DrawFunctionList.back();
+    Editor::DrawFunctionList.pop_back();
+    return Editor::DrawFunction;
+}
+
+void Editor::SetDrawFunction(void (*drawFunction)()) {
+    Editor::DrawFunctionList.push_back(Editor::DrawFunction);
+    Editor::DrawFunction = drawFunction;
+}
