@@ -26,15 +26,15 @@ void checkIfCardInserted() {
     }
 }
 
-int spawn_main_menu(void) {
-    static int ret = -1;
+ReturnMode spawn_main_menu(void) {
+    static ReturnMode ret = ReturnMode::None;
 
     while (aptMainLoop()) {
         draw_main_menu();
         InputManager::Instance()->RefreshInput();
 
         if (InputManager::Instance()->IsButtonActive(KEY_START)) {
-            return MODE_EXIT;
+            return ReturnMode::Exit;
         }
 
         /* For Debugging Keyboard atm, will eventually be removed */
@@ -63,19 +63,19 @@ int spawn_main_menu(void) {
         else if (InputManager::Instance()->IsActive(configact)) //Config Menu
             spawn_config_menu();
 
-        if (ret == MODE_EXIT) {
+        if (ret == ReturnMode::Exit) {
             break;
         }
 
-        else if (ret == MODE_EDITOR) {
+        else if (ret == ReturnMode::Editor) {
             ret = Editor::Main();
         }
 
-        else if (ret == MODE_MANAGER) {
+        else if (ret == ReturnMode::Manager) {
             ret = manager_main();
         }
     }
-    return 0;
+    return ReturnMode::Exit;
 }
 
 u64 spawn_game_select_menu(FS_MediaType *mediaType)

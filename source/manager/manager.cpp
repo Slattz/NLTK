@@ -20,7 +20,7 @@ void InitManager(void) {
     m_ManagerInitiated = true;
 }
 
-int manager_main(void) {
+ReturnMode manager_main(void) {
     if (!m_ManagerInitiated) {
         InitManager();
     }
@@ -39,14 +39,14 @@ GameSelect:
         }
 
         if (g_tid == 0) {
-            return 0;
+            return ReturnMode::Exit;
         }
     }
 
     bool successfullyOpenedArchive = openSaveArchive(&saveArch, g_tid, currentMediaType);
     if (!successfullyOpenedArchive && !(tryOpenSaveArchive(&saveArch, g_tid, &currentMediaType))) {
         MsgDisp(top, "Unable to Open the Save Archive\nSave file may not have been created!");
-        return 0;
+        return ReturnMode::Exit;
     }
 
     // Initialize a new Save class
@@ -55,7 +55,7 @@ GameSelect:
     if (saveFile->GetSaveSize() != SIZE_SAVE) {
         MsgDisp(top, "Save file is the incorrect size!");
         saveFile->Close();
-        return 0;
+        return ReturnMode::Exit;
     }
 
     if (config->Auto_SaveBackup) {
@@ -65,11 +65,11 @@ GameSelect:
     // Update Region of the Save
     saveFile->FixSaveRegion();
 
-    int mode = spawn_manager_main_menu();
+    ReturnMode mode = spawn_manager_main_menu();
 
     saveFile->Close();
 
-    if (mode == 1) //Game Select
+    if (mode == ReturnMode::GameSelect) //Game Select
         goto GameSelect;
 
     return mode; //mode is always 0 when exiting the editor

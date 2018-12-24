@@ -5,8 +5,8 @@
 
 #include "manager/m_gfx.h"
 #include "manager/m_menus.h"
+#include "menus.h"
 
-
-int manager_main(void);
+ReturnMode manager_main(void);
 
 #endif

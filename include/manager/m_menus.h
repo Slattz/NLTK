@@ -4,8 +4,9 @@
 #define M_MENUS_H
 
 #include "common.h"
+#include "menus.h"
 
 bool check_if_saving(void);
-int spawn_manager_main_menu();
+ReturnMode spawn_manager_main_menu();
 
 #endif

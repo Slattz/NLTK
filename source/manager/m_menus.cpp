@@ -13,7 +13,7 @@
 //static bool drawingMenu = false;
 //static bool drawingSubmenu = false;
 
-int spawn_manager_main_menu()
+ReturnMode spawn_manager_main_menu()
 {
     while (aptMainLoop())
     {
@@ -24,13 +24,13 @@ int spawn_manager_main_menu()
 
         if (InputManager::Instance()->IsButtonDown(KEY_START))
         {
-            return MODE_EXIT;
+            return ReturnMode::Exit;
         }
 
         else if (InputManager::Instance()->IsButtonDown(KEY_B))
         {
-            return MODE_MAINMENU;
+            return ReturnMode::MainMenu;
         }
     }
-    return 0;
+    return ReturnMode::Exit;
 }

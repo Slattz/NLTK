@@ -119,7 +119,7 @@ void Editor::Draw_MainMenu(void) {
     C3D_FrameEnd(0);
 }
 
-int Editor::Spawn_MainMenu()
+ReturnMode Editor::Spawn_MainMenu()
 {
     if (!Initialized) {
         Init_MainMenu();
@@ -134,12 +134,12 @@ int Editor::Spawn_MainMenu()
 
         if (InputManager::Instance()->IsButtonDown(KEY_START))
         {
-            return MODE_EXIT;
+            return ReturnMode::Exit;
         }
 
         else if (InputManager::Instance()->IsButtonDown(KEY_B))
         {
-            return MODE_MAINMENU;
+            return ReturnMode::MainMenu;
         }
 
         if (TownButton->IsActive()) //Town Menu
@@ -172,10 +172,10 @@ int Editor::Spawn_MainMenu()
             spawn_config_menu();
 
         else if (GameSelectButton->IsActive()) //Game Select Column
-            return MODE_GAMESELECT;
+            return ReturnMode::GameSelect;
 
         else if (TownManagerButton->IsActive()) //Town Manager Column
-            return MODE_MANAGER;
+            return ReturnMode::Manager;
 
         else if (SaveButton->IsActive()) //Save Column
         {
@@ -188,5 +188,5 @@ int Editor::Spawn_MainMenu()
             }
         }
     }
-    return 0;
+    return ReturnMode::Exit;
 }

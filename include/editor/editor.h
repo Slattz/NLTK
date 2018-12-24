@@ -6,6 +6,7 @@
 #include <vector>
 #include "gui/MainMenu.hpp"
 #include "gui/PlayerMenu.hpp"
+#include "menus.h"
 
 namespace Editor
 {
@@ -14,7 +15,7 @@ namespace Editor
 
     void Cleanup(void);
     void Init(void);
-    int  Main(void);
+    ReturnMode Main(void);
     void Draw(void);
 
     void (*PreviousDrawFunction(void))(void);

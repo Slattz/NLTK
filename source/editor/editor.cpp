@@ -6,7 +6,6 @@
 #include "save.h"
 #include "utils.h"
 #include "config.hpp"
-#include "menus.h"
 #include "editor/editor.h"
 #include "InputManager.h"
 
@@ -42,7 +41,7 @@ void Editor::Init(void) {
     m_editorInitiated = true;
 }
 
-int Editor::Main(void) {
+ReturnMode Editor::Main(void) {
     if (!m_editorInitiated) {
         Editor::Init();
     }
@@ -62,7 +61,7 @@ GameSelect:
 
         if (g_tid == 0) {
             Editor::Cleanup();
-            return 0;
+            return ReturnMode::Exit;
         }
     }
 
@@ -70,7 +69,7 @@ GameSelect:
     if (!successfullyOpenedArchive && !(tryOpenSaveArchive(&saveArch, g_tid, &currentMediaType))) {
         MsgDisp(top, "Unable to Open the Save Archive\nSave file may not have been created!");
         Editor::Cleanup();
-        return 0;
+        return ReturnMode::Exit;
     }
 
     // Set current title id
@@ -83,7 +82,7 @@ GameSelect:
         MsgDisp(top, "Save file is the incorrect size!");
         Editor::Cleanup();
         saveFile->Close();
-        return 0;
+        return ReturnMode::Exit;
     }
 
     if (config->Auto_SaveBackup) {
@@ -93,11 +92,11 @@ GameSelect:
     saveFile->FixSaveRegion();		//Update Region of the Save
     saveFile->FixInvalidBuildings(); //Fix any invalid buildings in save
 
-    int mode = Editor::Spawn_MainMenu();
+    ReturnMode mode = Editor::Spawn_MainMenu();
 
     saveFile->Close();
 
-    if (mode == MODE_GAMESELECT) //Game Select
+    if (mode == ReturnMode::GameSelect) //Game Select
         goto GameSelect;
 
     Editor::Cleanup();
