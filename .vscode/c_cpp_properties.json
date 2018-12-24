@@ -13,7 +13,7 @@
             "intelliSenseMode": "gcc-x64",
             "includePath": [
                 "${default}",
-                "C:/devkitPro/devkitARM/arm-none-eabi/include/c++/8.1.0",
+                "C:/devkitPro/devkitARM/arm-none-eabi/include/c++/8.2.0",
                 "C:/devkitPro/libctru/include",
                 "C:/devkitPro/portlibs/3ds/include",
                 "${workspaceFolder}/build",
