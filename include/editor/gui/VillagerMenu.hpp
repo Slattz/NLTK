@@ -9,7 +9,7 @@ namespace VillagerEditor {
     void Initialize();
     void Cleanup();
     void Draw();
-    void ProcessInput();
+    bool ProcessInput();
     void Spawn();
     void DrawVillagerSprite(u16, const Point_t, const float, const float);
 

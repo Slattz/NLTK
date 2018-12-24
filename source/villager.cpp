@@ -9,7 +9,7 @@ Villager::~Villager() {
     }
 }
 
-Villager::Villager(const u32 offset, const u32 index) : m_offset(offset), m_index(index), m_villagerData(new Villager_s) {
+Villager::Villager(const u32 offset, const u32 index) : m_villagerData(new Villager_s), m_offset(offset), m_index(index) {
     Save::Instance()->ReadArray(reinterpret_cast<u8 *>(this->m_villagerData), offset, sizeof(Villager_s));
 }
 
@@ -23,4 +23,8 @@ u32 Villager::GetIndex() const {
 
 u16 Villager::GetId() const {
     return this->m_villagerData->Id;
+}
+
+void Villager::SetId(const u16 id) {
+    this->m_villagerData->Id = id;
 }

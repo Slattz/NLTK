@@ -44,6 +44,7 @@ public:
     u32 GetIndex(void) const;
 
     u16 GetId(void) const;
+    void SetId(const u16);
 
 private:
     Villager_s* m_villagerData;
