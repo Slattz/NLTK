@@ -6,14 +6,17 @@
 
 extern std::map<u16, std::string> g_villagerDatabase;
 
+static std::vector<ImageButton *> m_villagerEditorButtons;
+static Text *m_villagerNameText = nullptr;
+static Villager *m_currentlySelectedVillager = nullptr;
 bool selectingNewVillager = false;
 u16 newVillagerId = 0xFFFF;
 
 void VillagerEditor::Initialize() {
     // Initialize controls
-    int idx = 0;
-    for (int y = 0; y < 2; y++) {
-        for (int x = 0; x < 5; x++, idx++) { 
+    u32 idx = 0;
+    for (u32 y = 0; y < 2; y++) {
+        for (u32 x = 0; x < 5; x++, idx++) { 
             u16 villagerId = Save::Instance()->villagers[idx]->GetId();
             if (villagerId > 399) {
                 villagerId = 399;
@@ -36,8 +39,12 @@ void VillagerEditor::Cleanup() {
     }
 
     m_villagerEditorButtons.clear();
-    delete m_villagerNameText;
-    m_currentlySelectedVillager = nullptr;
+    if (m_villagerNameText != nullptr) {
+        delete m_villagerNameText;
+        m_villagerNameText = nullptr;
+    }
+
+    m_currentlySelectedVillager = nullptr; //This shouldn't be deleted as it'll then delete the actual Villager
     selectingNewVillager = false;
     newVillagerId = 0xFFFF;
 }
@@ -58,9 +65,10 @@ void VillagerEditor::DrawVillagerSprite(u16 villagerId, const Point_t position, 
 void VillagerEditor::Draw() {
     draw_base_interface();
 
+
     // Draw the currently select villager's portrait in higher resolution on the top screen
-    if (m_currentlySelectedVillager != nullptr) {
-        DrawVillagerSprite(m_currentlySelectedVillager->GetId(), { 174, 66 }, 1.0f, 1.0f);
+    if (selectingNewVillager) {
+        DrawVillagerSprite(newVillagerId, {174, 66}, 1.0f, 1.0f);
         m_villagerNameText->Draw();
     }
 
@@ -94,8 +102,8 @@ void VillagerEditor::Draw() {
 bool VillagerEditor::ProcessInput() {
     bool ignoreB = false;
 
-    // Draw villager buttons.
-    // Skip drawing if one is currently being edited.
+    // Check activated villager buttons.
+    // Skip this if a villager is currently being edited.
     if (!selectingNewVillager) {
         int idx = 0;
         for (auto villagerButton = m_villagerEditorButtons.begin(); villagerButton != m_villagerEditorButtons.end(); villagerButton++, idx++) {
@@ -118,12 +126,20 @@ bool VillagerEditor::ProcessInput() {
 
         if (InputManager::Instance()->IsButtonDown(KEY_A)) {
             selectingNewVillager = false;
+            m_currentlySelectedVillager->SetId(newVillagerId);
+            Save::Instance()->SetChangesMade(true);
         }
+
         else if (InputManager::Instance()->IsButtonDown(KEY_B)) {
             selectingNewVillager = false;
-            newVillagerId = 0xFFFF;
+            //Reset Villager ID
+            newVillagerId = m_currentlySelectedVillager->GetId();
+            //Reset Villager Pic
+            m_villagerEditorButtons[idx]->SetSpriteSheet(newVillagerId < 200 ? Villagers_ss : Villagers2_ss);
+            m_villagerEditorButtons[idx]->SetImageId(newVillagerId < 200 ? newVillagerId : newVillagerId - 200);
             ignoreB = true;
         }
+
         else if (InputManager::Instance()->IsButtonDown(KEY_DDOWN)) {
             if (newVillagerId < 398) {
                 newVillagerId++;
@@ -136,8 +152,8 @@ bool VillagerEditor::ProcessInput() {
             m_villagerEditorButtons[idx]->SetImageId(newVillagerId < 200 ? newVillagerId : newVillagerId - 200);
             *m_villagerNameText = g_villagerDatabase[newVillagerId];
             m_villagerNameText->SetPos((412 - m_villagerNameText->GetWidth()) / 2, 126);
-            m_currentlySelectedVillager->SetId(newVillagerId);
         }
+        
         else if (InputManager::Instance()->IsButtonDown(KEY_DUP)) {
             if (newVillagerId == 0) {
                 newVillagerId = 0xFFFF;
@@ -152,7 +168,6 @@ bool VillagerEditor::ProcessInput() {
             m_villagerEditorButtons[idx]->SetImageId(clampedIdx < 200 ? clampedIdx : clampedIdx - 200);
             *m_villagerNameText = g_villagerDatabase[newVillagerId];
             m_villagerNameText->SetPos((412 - m_villagerNameText->GetWidth()) / 2, 126);
-            m_currentlySelectedVillager->SetId(newVillagerId);
         }
     }
 
@@ -175,8 +190,6 @@ void VillagerEditor::Spawn() {
         if (!VillagerEditor::ProcessInput() && InputManager::Instance()->IsButtonDown(KEY_B)) {
             break;
         }
-
-        InputManager::Instance()->DrawCursor();
     }
 
     // Cleanup.
