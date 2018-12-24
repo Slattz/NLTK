@@ -209,14 +209,15 @@ void DisplayCardError() {
     bool show = true;
     u32 timer = 0;
     u32 maxTimer = 60; // 60 FPS?
-    const char *cardRemovedErrorMessage = "To continue editing, please\nreinsert your Animal Crossing: New Leaf\nGame Card.\n" \
+    const char *cardRemovedErrorMessage = "To continue editing, please reinsert your\nAnimal Crossing: New Leaf Game Card.\n" \
         "Press " FONT_A " when done.";
 
-    Text cardRemovedErrorText(Color(COLOR_GREY), cardRemovedErrorMessage, 0.5, 0.5);
-    cardRemovedErrorText.CenterInBounds(0, 100, 400, 0);
+    Text cardRemovedErrorText(Color(COLOR_GREY), cardRemovedErrorMessage, 0.75f, 0.75f);
+    cardRemovedErrorText.CenterInBounds(55.f, 42.5f, 295.f, 175.f);
 
     while (aptMainLoop())
     {
+        InputManager::Instance()->RefreshInput();
         if (IsGameCartInserted() && checkGameCartIsACNL() && InputManager::Instance()->IsButtonDown(KEY_A)) break;
 
         draw_base_interface();
