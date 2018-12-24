@@ -30,8 +30,6 @@ int spawn_main_menu(void) {
     static int ret = -1;
 
     while (aptMainLoop()) {
-        checkIfCardInserted();
-
         draw_main_menu();
         InputManager::Instance()->RefreshInput();
 
