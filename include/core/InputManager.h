@@ -25,9 +25,13 @@ public:
     bool IsButtonDown(int button);
     bool IsButtonHeld(int button);
     bool IsButtonActive(int button);
+    bool IsDown(Rect_t rect);
+    bool IsDown(Rect_t rect, std::initializer_list<u32> keys);
+    bool IsHeld(Rect_t rect);
+    bool IsHeld(Rect_t rect, std::initializer_list<u32> keys);
     bool IsActive(Rect_t rect);
     bool IsActive(Rect_t rect, std::initializer_list<u32> keys);
-    void RefreshInput();
+    void RefreshInput(void);
     void DrawCursor(void);
 
 private:

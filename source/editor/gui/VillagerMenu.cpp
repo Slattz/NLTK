@@ -6,6 +6,8 @@
 
 extern std::map<u16, std::string> g_villagerDatabase;
 
+bool selectingNewVillager = false;
+
 void VillagerEditor::Initialize() {
     // Initialize controls
     int idx = 0;
@@ -34,6 +36,20 @@ void VillagerEditor::Cleanup() {
 
     m_villagerEditorButtons.clear();
     delete m_villagerNameText;
+    m_currentlySelectedVillager = nullptr;
+}
+
+void VillagerEditor::DrawVillagerSprite(u16 villagerId, const Point_t position, const float sizeX, const float sizeY) {
+    if (villagerId > 399) {
+        villagerId = 399;
+    }
+
+    if (villagerId < 200) {
+        DrawSprite(Villagers_ss, villagerId, position.X, position.Y, nullptr, sizeX, sizeY);
+    }
+    else {
+        DrawSprite(Villagers2_ss, villagerId - 200, position.X, position.Y, nullptr, sizeX, sizeY);
+    }
 }
 
 void VillagerEditor::Draw() {
@@ -41,12 +57,7 @@ void VillagerEditor::Draw() {
 
     // Draw the currently select villager's portrait in higher resolution on the top screen
     if (m_currentlySelectedVillager != nullptr) {
-        u16 id = m_currentlySelectedVillager->GetId();
-        if (id > 399) {
-            id = 399;
-        }
-
-        DrawSprite(id < 200 ? Villagers_ss : Villagers2_ss, id < 200 ? id : id - 200, 174, 66);
+        DrawVillagerSprite(m_currentlySelectedVillager->GetId(), { 174, 66 }, 1.0f, 1.0f);
         m_villagerNameText->Draw();
     }
 
@@ -64,7 +75,7 @@ void VillagerEditor::Draw() {
 void VillagerEditor::ProcessInput() {
     int idx = 0;
     for (auto villagerButton = m_villagerEditorButtons.begin(); villagerButton != m_villagerEditorButtons.end(); villagerButton++, idx++) {
-        if ((*villagerButton)->IsActive()) {
+        if ((*villagerButton)->IsDown()) {
             m_currentlySelectedVillager = Save::Instance()->villagers[idx];
             *m_villagerNameText = g_villagerDatabase[m_currentlySelectedVillager->GetId()];
             m_villagerNameText->SetPos((412 - m_villagerNameText->GetWidth()) / 2, 126);

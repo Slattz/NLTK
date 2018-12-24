@@ -11,6 +11,7 @@ namespace VillagerEditor {
     void Draw();
     void ProcessInput();
     void Spawn();
+    void DrawVillagerSprite(u16, const Point_t, const float, const float);
 
     static std::vector<ImageButton*> m_villagerEditorButtons;
     static Text* m_villagerNameText;

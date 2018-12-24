@@ -125,8 +125,46 @@ bool InputManager::IsActive(Rect_t rect, u32 x, u32 y) {
            y >= rect.TopLeft.Y && y <= rect.BottomRight.Y;
 }
 
-bool InputManager::IsActive(Rect_t rect) {
+bool InputManager::IsDown(Rect_t rect) {
     return _input.CursorEnabled && _input.CursorDown ? this->IsActive(rect, this->_input.Cursor.X, this->_input.Cursor.Y) :
+        this->IsButtonDown(KEY_TOUCH) && this->IsActive(rect, this->_input.Touch.X, this->_input.Touch.Y);
+}
+
+bool InputManager::IsDown(Rect_t rect, std::initializer_list<u32> keys) {
+        if (this->IsDown(rect)) {
+        for (auto button : keys) {
+            if (!this->IsButtonDown(button)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool InputManager::IsHeld(Rect_t rect) {
+    return _input.CursorEnabled && _input.CursorHeld ? this->IsActive(rect, this->_input.Cursor.X, this->_input.Cursor.Y) :
+        this->IsButtonHeld(KEY_TOUCH) && this->IsActive(rect, this->_input.Touch.X, this->_input.Touch.Y);
+}
+
+bool InputManager::IsHeld(Rect_t rect, std::initializer_list<u32> keys) {
+        if (this->IsHeld(rect)) {
+        for (auto button : keys) {
+            if (!this->IsButtonHeld(button)) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    return false;
+}
+
+bool InputManager::IsActive(Rect_t rect) {
+    return _input.CursorEnabled && (_input.CursorDown || _input.CursorHeld) ? this->IsActive(rect, this->_input.Cursor.X, this->_input.Cursor.Y) :
         this->IsButtonActive(KEY_TOUCH) && this->IsActive(rect, this->_input.Touch.X, this->_input.Touch.Y);
 }
 
