@@ -94,14 +94,12 @@ void InputManager::RefreshInput() {
 
     if (this->_input.Cursor.Y < 5)
         this->_input.Cursor.Y = 235;
-
-    if (this->_input.Cursor.Y > 235)
+    else if (this->_input.Cursor.Y > 235)
         this->_input.Cursor.Y = 5;
 
     if (this->_input.Cursor.X < 5)
         this->_input.Cursor.X = 315;
-
-    if (this->_input.Cursor.X > 315)
+    else if (this->_input.Cursor.X > 315)
         this->_input.Cursor.X = 5;
 }
 
