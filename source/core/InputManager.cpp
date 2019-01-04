@@ -18,15 +18,15 @@ InputManager* InputManager::Instance() {
     return m_pInputManager;
 }
 
-bool InputManager::IsButtonDown(int button) {
+bool InputManager::IsButtonDown(const int& button) {
     return this->_input.KeysDown & button;
 }
 
-bool InputManager::IsButtonHeld(int button) {
+bool InputManager::IsButtonHeld(const int& button) {
     return this->_input.KeysHeld & button;
 }
 
-bool InputManager::IsButtonActive(int button) {
+bool InputManager::IsButtonActive(const int& button) {
     return this->IsButtonDown(button) || this->IsButtonHeld(button);
 }
 
@@ -120,19 +120,19 @@ void InputManager::DrawCursor(void) {
     C2D_Flush();
 }
 
-bool InputManager::IsActive(Rect_t rect, u32 x, u32 y) {
+bool InputManager::IsActive(const Rect_t& rect, u32 x, u32 y) {
     return x >= rect.TopLeft.X && x <= rect.BottomRight.X &&
            y >= rect.TopLeft.Y && y <= rect.BottomRight.Y;
 }
 
-bool InputManager::IsDown(Rect_t rect) {
+bool InputManager::IsDown(const Rect_t& rect) {
     return _input.CursorEnabled && _input.CursorDown ? this->IsActive(rect, this->_input.Cursor.X, this->_input.Cursor.Y) :
         this->IsButtonDown(KEY_TOUCH) && this->IsActive(rect, this->_input.Touch.X, this->_input.Touch.Y);
 }
 
-bool InputManager::IsDown(Rect_t rect, std::initializer_list<u32> keys) {
+bool InputManager::IsDown(const Rect_t& rect, std::initializer_list<u32> keys) {
         if (this->IsDown(rect)) {
-        for (auto button : keys) {
+        for (const auto& button : keys) {
             if (!this->IsButtonDown(button)) {
                 return false;
             }
@@ -144,14 +144,14 @@ bool InputManager::IsDown(Rect_t rect, std::initializer_list<u32> keys) {
     return false;
 }
 
-bool InputManager::IsHeld(Rect_t rect) {
+bool InputManager::IsHeld(const Rect_t& rect) {
     return _input.CursorEnabled && _input.CursorHeld ? this->IsActive(rect, this->_input.Cursor.X, this->_input.Cursor.Y) :
         this->IsButtonHeld(KEY_TOUCH) && this->IsActive(rect, this->_input.Touch.X, this->_input.Touch.Y);
 }
 
-bool InputManager::IsHeld(Rect_t rect, std::initializer_list<u32> keys) {
+bool InputManager::IsHeld(const Rect_t& rect, std::initializer_list<u32> keys) {
         if (this->IsHeld(rect)) {
-        for (auto button : keys) {
+        for (const auto& button : keys) {
             if (!this->IsButtonHeld(button)) {
                 return false;
             }
@@ -163,14 +163,14 @@ bool InputManager::IsHeld(Rect_t rect, std::initializer_list<u32> keys) {
     return false;
 }
 
-bool InputManager::IsActive(Rect_t rect) {
+bool InputManager::IsActive(const Rect_t& rect) {
     return _input.CursorEnabled && (_input.CursorDown || _input.CursorHeld) ? this->IsActive(rect, this->_input.Cursor.X, this->_input.Cursor.Y) :
         this->IsButtonActive(KEY_TOUCH) && this->IsActive(rect, this->_input.Touch.X, this->_input.Touch.Y);
 }
 
-bool InputManager::IsActive(Rect_t rect, std::initializer_list<u32> keys) {
+bool InputManager::IsActive(const Rect_t& rect, std::initializer_list<u32> keys) {
     if (this->IsActive(rect)) {
-        for (auto button : keys) {
+        for (const auto& button : keys) {
             if (!this->IsButtonActive(button)) {
                 return false;
             }

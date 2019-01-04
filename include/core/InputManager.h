@@ -22,20 +22,20 @@ class InputManager {
 public:
     static InputManager* Instance();
 
-    bool IsButtonDown(int button);
-    bool IsButtonHeld(int button);
-    bool IsButtonActive(int button);
-    bool IsDown(Rect_t rect);
-    bool IsDown(Rect_t rect, std::initializer_list<u32> keys);
-    bool IsHeld(Rect_t rect);
-    bool IsHeld(Rect_t rect, std::initializer_list<u32> keys);
-    bool IsActive(Rect_t rect);
-    bool IsActive(Rect_t rect, std::initializer_list<u32> keys);
+    bool IsButtonDown(const int& button);
+    bool IsButtonHeld(const int& button);
+    bool IsButtonActive(const int& button);
+    bool IsDown(const Rect_t& rect);
+    bool IsDown(const Rect_t& rect, std::initializer_list<u32> keys);
+    bool IsHeld(const Rect_t& rect);
+    bool IsHeld(const Rect_t& rect, std::initializer_list<u32> keys);
+    bool IsActive(const Rect_t& rect);
+    bool IsActive(const Rect_t& rect, std::initializer_list<u32> keys);
     void RefreshInput(void);
     void DrawCursor(void);
 
 private:
-    bool IsActive(Rect_t rect, u32 x, u32 y);
+    bool IsActive(const Rect_t& rect, u32 x, u32 y);
 
     InputManager(void);
     InputManager(InputManager const&) {};

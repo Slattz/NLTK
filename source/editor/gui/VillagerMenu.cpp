@@ -34,7 +34,7 @@ void VillagerEditor::Initialize() {
 }
 
 void VillagerEditor::Cleanup() {
-    for (auto button : m_villagerEditorButtons) {
+    for (const auto button : m_villagerEditorButtons) {
         delete button;
     }
 
@@ -75,7 +75,7 @@ void VillagerEditor::Draw() {
     C2D_SceneBegin(bottom);
 
     // Draw villager selector buttons
-    for (auto button : m_villagerEditorButtons) {
+    for (const auto button : m_villagerEditorButtons) {
         button->Draw();
     }
 
