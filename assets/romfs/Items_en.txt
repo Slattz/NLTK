@@ -4958,6 +4958,7 @@
 0x324A, Pic Of Clay
 0x324B, Pic Of Flurry
 0x324C, Pic Of Hamphrey
+0x324D, Pic Of Holden (Unused)
 0x324E, Pic Of Rocco
 0x324F, Pic Of Bubbles
 0x3250, Pic Of Bertha
@@ -4979,6 +4980,7 @@
 0x3260, Pic Of Colton
 0x3261, Pic Of Papi
 0x3262, Pic Of Julian
+0x3263, Pic Of Filly (Unused)
 0x3264, Pic Of Epona
 0x3265, Pic Of Yuka
 0x3266, Pic Of Alice
