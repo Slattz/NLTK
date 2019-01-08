@@ -273,6 +273,11 @@ bool Save::Commit(bool close) {
         players[i].Write();
     }
 
+    // Save Villagers
+    for (int i = 0; i < 10; i++) {
+        villagers[i]->Write();
+    }
+
     // Update Checksums
     FixCRC32s();
 

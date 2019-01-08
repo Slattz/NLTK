@@ -46,6 +46,8 @@ public:
     u16 GetId(void) const;
     void SetId(const u16);
 
+    void Write(void);
+
 private:
     Villager_s* m_villagerData;
 

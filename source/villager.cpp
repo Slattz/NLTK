@@ -28,3 +28,7 @@ u16 Villager::GetId() const {
 void Villager::SetId(const u16 id) {
     this->m_villagerData->Id = id;
 }
+
+void Villager::Write() {
+    Save::Instance()->Write(m_offset, reinterpret_cast<u8 *>(this->m_villagerData), sizeof(Villager_s));
+}
