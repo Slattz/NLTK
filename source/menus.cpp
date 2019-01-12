@@ -42,8 +42,7 @@ ReturnMode spawn_main_menu(void) {
         {
             std::string lol;
             u8 intype = KeyboardInType::Letters | KeyboardInType::Numbers | KeyboardInType::Symbols | KeyboardInType::ACNLSymbols;
-            Keyboard keyboard(intype, 30, true, "This is the hint text", "This is the main text");
-            keyboard.Open(lol);
+            Keyboard::Instance()->Open(lol, intype, 30, "This is default text", "This is hint text", true);
         }
 
         //TODO: Needs to be reworked into using ImageButtons

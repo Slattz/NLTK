@@ -9,6 +9,7 @@
 #include "imagebutton.h"
 #include "textbutton.h"
 
+/* Current Status of the Keyboard */
 enum class KeyboardStatus : s8
 {
     Abort = -1,
@@ -16,7 +17,16 @@ enum class KeyboardStatus : s8
     Close = 1
 };
 
-enum class KeyboardInType : u8 //Used to enable and disable different input types
+/* Return Code of the Keyboard */
+enum class KeyboardRetCode : s8
+{
+    NoInputType = -2,
+    Abort = -1,
+    Success = 0
+};
+
+/* Used to enable various input types */
+enum class KeyboardInType : u8
 {
     None = 0,
     Letters = 1,
@@ -25,6 +35,7 @@ enum class KeyboardInType : u8 //Used to enable and disable different input type
     ACNLSymbols = 8
 };
 
+/* Used to determine various keyboard tabs */
 enum class KeyboardTab : u8
 {
     Letters = 0,
@@ -34,64 +45,51 @@ enum class KeyboardTab : u8
 
 KeyboardTab& operator++(KeyboardTab& tab);
 KeyboardTab& operator--(KeyboardTab& tab);
-u8 operator|(KeyboardInType val, KeyboardInType orval);
-u8 operator|(u8 val, KeyboardInType orval);
+
+inline u8 operator|(KeyboardInType val, KeyboardInType intype) {return static_cast<u8>(val) | static_cast<u8>(intype);}
+inline u8 operator|(u8 val, KeyboardInType intype) {return val|static_cast<u8>(intype);}
+inline u8 operator&(KeyboardInType val, KeyboardInType intype) {return static_cast<u8>(val) & static_cast<u8>(intype);}
+inline u8 operator&(u8 val, KeyboardInType intype) {return val & static_cast<u8>(intype);}
+inline bool operator==(u8 val, KeyboardInType intype) {return val == static_cast<u8>(intype);}
 
 class Keyboard {
 public:
+    static Keyboard* Instance(void);
+    
+    KeyboardRetCode Open(std::string &output, u8 InType, u32 MaxSize, const std::string &DefaultText = "", const std::string &HintText = "", bool CanAbort = true);
+    KeyboardRetCode Open(u32 &output, u32 MaxVal, const u32 &DefaultValue = 0, const std::string &HintText = "", bool CanAbort = true);
+    KeyboardRetCode Open(u16 &output, u16 MaxVal, const u16 &DefaultValue = 0, const std::string &HintText = "", bool CanAbort = true);
+    KeyboardRetCode Open(u8 &output, u8 MaxVal, const u8 &DefaultValue = 0, const std::string &HintText = "", bool CanAbort = true);
+
+  private:
     Keyboard(void);
-    Keyboard(u8 InType, u32 MaxSize = 30, bool CanAbort = true);
-    Keyboard(u8 InType, u32 MaxSize, bool CanAbort, const std::string &HintText, const std::string &DefaultText = "");
-    Keyboard(u32 MaxSize, bool CanAbort, const std::string &HintText, const u32 &DefaultValue);
     ~Keyboard(void);
+    
+    void Setup();
+    void SetupDefaults();
+    void SetupLetters();
+    void SetupSymbols();
+    void SetupACNLSymbols();
 
-    void SetHint(const std::string &HintText);
-    void SetText(const std::string &DefaultText);
-    void SetValue(const u32 &DefaultValue);
-    void CanAbort(bool canAbort);
-    void SetMaxLength(u32 maxSize);
-    void SetInputType(u8 InType);
+    void UpdateHID();
+    void Update();
+    void Draw();
+    KeyboardRetCode _Open(std::string &output);
 
-    int Open(std::string& output);
-    int Open(u32& output);
+    static Keyboard* m_Instance;
 
-private:
-  void SetupCommon();
-  void SetupLetters();
-  void SetupSymbols();
-  void SetupACNLSymbols();
-  void UpdateHID();
-  void Update();
-  void Draw();
-  int _Open(std::string& output);
-
-  bool m_CanAbort = true;
-  bool m_ShiftOn = false;
-  u32 m_MaxSize;
-  u32 m_NinSymbolsPage = 0;
-  u8  m_InputType;
-  KeyboardTab m_KeyboardTab = KeyboardTab::Letters;
-  KeyboardStatus m_KeyboardStatus = KeyboardStatus::Loop;
-  Text m_HintText;
-  Text m_Text;
-  std::vector<Text> m_Characters;
-  std::vector<Text> m_Symbols;
-  std::vector<Text> m_ACNLSymbols;
-
-  Button*      SpaceButton;
-  ImageButton* BackButton;
-  ImageButton* EnterButton;
-  ImageButton* ConfirmButton;
-  ImageButton* CancelButton;
-  TextButton*  LetterTab;
-  TextButton*  SymTab;
-  TextButton*  NinSymTab;
-  TextButton*  Comma;
-  TextButton*  FStop;
-  TextButton*  UpBtn;
-  TextButton*  DownBtn;
-  Text         Page;
-  Text         PageNum;
+    bool m_CanAbort;
+    bool m_ShiftOn;
+    u32 m_MaxSize;
+    u32 m_NinSymbolsPage;
+    u8 m_InputType;
+    KeyboardTab m_KeyboardTab;
+    KeyboardStatus m_KeyboardStatus;
+    Text m_HintText;
+    Text m_Text;
+    std::vector<Text> m_Characters;
+    std::vector<Text> m_Symbols;
+    std::vector<Text> m_ACNLSymbols;
 };
 
 

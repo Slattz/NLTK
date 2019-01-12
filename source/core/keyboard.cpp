@@ -16,8 +16,8 @@ static const u32 SWKBD_CHAR_BG = C2D_Color32(0x19, 0x68, 0x1F, 0xFF);
 static const u32 SWKBD_INFILTER = C2D_Color32(119, 119, 119, 170);
 
 static const u8 kbd_lyt[] = {0,0,1,3};
-static const char Letters[] = "1234567890qwertyuiopasdfghjklzxcvbnmOOBTEXT";
-static const wchar_t Symbols[] = L"@#$_&-+=!?*\"\':;()<>%&[]{}▲▼◀▶£€|\\/♂♀OOBSYML"; //Needs to be wchar_t as £ and € are utf-16 :/
+static const char Letters[] = "1234567890qwertyuiopasdfghjklzxcvbnm";
+static const wchar_t Symbols[] = L"@#$_&-+=!?*\"\':;()<>%&[]{}▲▼◀▶£€|\\/♂♀"; //Needs to be wchar_t as £ and € are utf-16 :/
 static const char16_t NinSymbols[] = { //Laid out in same layout as characters per keyboard row: 10,10,9,7
     0xE000, 0xE001, 0xE002, 0xE003, 0xE004, 0xE005, 0xE006, 0xE077, 0xE008, 0xE009, //10
     0xE070, 0xE06F, 0xE06C, 0xE00C, 0xE00D, 0xE00E, 0xE00F, 0xE010, 0xE011, 0xE012, //10
@@ -32,15 +32,30 @@ static const char16_t NinSymbols[] = { //Laid out in same layout as characters p
     0xE047, 0xE048, 0xE049, 0xE04A, 0xE04B, 0xE04C, 0xE04D, 0xE04E, 0xE04F, 0xE050, //10
     0xE051, 0xE052, 0xE053, 0xE054, 0xE055, 0xE056, 0xE057, 0xE058, 0xE059, 0xE05A, //10
     0xE05B, 0xE05C, 0xE05D, 0xE05E, 0xE05F, 0xE060, 0xE061, 0xE062, 0xE063,         //9
-    0xE064, 0xE065, 0xE067, 0xE073, 0xE074, 0xE076, 0xE075, //End of page 3         //7
-    0x004F, 0x004F, 0x0042, 0x004E, 0x0049, 0x004E}; //OOBNIN
+    0xE064, 0xE065, 0xE067, 0xE073, 0xE074, 0xE076, 0xE075  //End of page 3         //7
+};
 
-Keyboard::Keyboard(void)
-{
-    m_InputType = 0|KeyboardInType::None;
-    m_MaxSize = 100;
-    m_CanAbort = true;
-    SetupCommon();
+Button *SpaceButton;
+ImageButton *BackButton;
+ImageButton *EnterButton;
+ImageButton *ConfirmButton;
+ImageButton *CancelButton;
+TextButton *LetterTab;
+TextButton *SymTab;
+TextButton *NinSymTab;
+TextButton *Comma;
+TextButton *FStop;
+TextButton *UpBtn;
+TextButton *DownBtn;
+Text PageText;
+Text PageNumText;
+
+Keyboard* Keyboard::m_Instance = nullptr;
+
+Keyboard::Keyboard(void) {
+    Setup();
+    m_HintText = Text(COLOR_DARK_GREY, "", 1.f, 1.f);
+    m_Text = Text(COLOR_WHITE, "", 1.f, 1.f);
 }
 
 Keyboard::~Keyboard(void) {
@@ -50,68 +65,25 @@ Keyboard::~Keyboard(void) {
     m_Characters.shrink_to_fit();
     m_Symbols.shrink_to_fit();
     m_ACNLSymbols.shrink_to_fit();
+    m_Instance = nullptr;
 }
 
-Keyboard::Keyboard(u8 InType, u32 MaxSize, bool CanAbort) {
-    m_InputType = InType;
-    m_MaxSize = MaxSize;
-    m_CanAbort = CanAbort;
-    SetupCommon();
-}
-Keyboard::Keyboard(u8 InType, u32 MaxSize, bool CanAbort, const std::string &HintText, const std::string &DefaultText)
-    : m_HintText(COLOR_DARK_GREY, HintText, 1.f, 1.f), m_Text(COLOR_WHITE, DefaultText, 1.f, 1.f)
-{
-    m_InputType = InType;
-    m_MaxSize = MaxSize;
-    m_CanAbort = CanAbort;
-    SetupCommon();
-}
-Keyboard::Keyboard(u32 MaxSize, bool CanAbort, const std::string &HintText, const u32 &DefaultValue)
-    : m_HintText(COLOR_DARK_GREY, HintText, 1.f, 1.f), m_Text(COLOR_WHITE, std::to_string(DefaultValue), 1.f, 1.f)
-{
-    m_InputType = 0|KeyboardInType::Numbers;
-    m_MaxSize = MaxSize;
-    m_CanAbort = CanAbort;
-    SetupCommon();
+Keyboard* Keyboard::Instance(void) {
+    if (m_Instance == nullptr) {
+        m_Instance = new Keyboard;
+    }
+
+    return m_Instance;
 }
 
-void Keyboard::SetupCommon() {
-    SetupLetters();
-    SetupSymbols();
-    SetupACNLSymbols();
-    Comma = new TextButton(83.f, 155.f, 1.f, 1.f, SWKBD_CHAR_BG, KEY_A | KEY_TOUCH, COLOR_WHITE, ",");
-    FStop = new TextButton(235.f, 155.f, 1.f, 1.f, SWKBD_CHAR_BG, KEY_A | KEY_TOUCH, COLOR_WHITE, ".");
-    LetterTab = new TextButton(0.f, 200.f, 100.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "ABC\n123");
-    SymTab = new TextButton(100.f, 200.f, 124.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "Symbols");
-    NinSymTab = new TextButton(224.f, 200.f, 98.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "Nintendo\nSymbols");
-    UpBtn = new TextButton(293.f, 43.f, 1.f, 1.f, SWKBD_BG, KEY_A|KEY_TOUCH, COLOR_GREY, "▲");
-    DownBtn = new TextButton(293.f, 93.f, 1.f, 1.f, SWKBD_BG, KEY_A|KEY_TOUCH, COLOR_GREY, "▼");
-    SpaceButton = new Button(100.f, 162.f, 124.f, 20.f, COLOR_GREY, KEY_A|KEY_TOUCH);
-    BackButton = new ImageButton(255.f, 127.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_BACK, Swkbd_ss);
-    EnterButton = new ImageButton(256.f, 160.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_ENTER, Swkbd_ss);
-    ConfirmButton = new ImageButton(287.f, 127.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_CONFIRM, Swkbd_ss);
-    CancelButton = new ImageButton(287.f, 160.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_CANCEL, Swkbd_ss);
-    Page = Text(COLOR_GREY, "Page", 0.6f, 0.6f, 290.f, 65.f);
-    PageNum = Text(COLOR_GREY, "1", 0.8f, 0.8f, 299.f, 80.f);
-    Comma->SetTextSize(0.8f, 0.8f);
-    FStop->SetTextSize(0.8f, 0.8f);
-    LetterTab->SetTextSize(0.6f, 0.6f);
-    SymTab->SetTextSize(0.6f, 0.6f);
-    NinSymTab->SetTextSize(0.6f, 0.6f);
-    UpBtn->SetTextSize(0.8f, 0.8f);
-    DownBtn->SetTextSize(0.8f, 0.8f);
-    BackButton->SetScale(0.8f);
-    EnterButton->SetScale(0.8f);
-    ConfirmButton->SetScale(0.8f);
-    CancelButton->SetScale(0.8f);
-    SpaceButton->SetZPos(0.5f);
-    BackButton->SetZPos(0.5f);
-    EnterButton->SetZPos(0.5f);
-    ConfirmButton->SetZPos(0.5f);
-    CancelButton->SetZPos(0.5f);
-    LetterTab->CentreText();
-    SymTab->CentreText();
-    NinSymTab->CentreText();
+void Keyboard::SetupDefaults(void) {
+    m_KeyboardTab = KeyboardTab::Letters;
+    m_KeyboardStatus = KeyboardStatus::Loop;
+    m_InputType = 0;
+    m_MaxSize = 30;
+    m_CanAbort = true;
+    m_ShiftOn = false;
+    m_NinSymbolsPage = 0;
 }
 
 void Keyboard::SetupLetters() {
@@ -181,30 +153,44 @@ void Keyboard::SetupACNLSymbols() {
     }
 }
 
-
-void Keyboard::SetHint(const std::string &HintText)
-{
-    m_HintText = HintText;
-}
-
-void Keyboard::SetText(const std::string &DefaultText) {
-    m_Text = DefaultText;
-}
-
-void Keyboard::SetValue(const u32 &DefaultValue) {
-    m_Text = std::to_string(DefaultValue);
-}
-
-void Keyboard::CanAbort(bool canAbort) {
-    m_CanAbort = canAbort;
-}
-
-void Keyboard::SetMaxLength(u32 maxSize) {
-    m_MaxSize = maxSize;
-}
-
-void Keyboard::SetInputType(u8 InType) {
-    m_InputType = InType;
+void Keyboard::Setup() {
+    SetupDefaults();
+    SetupLetters();
+    SetupSymbols();
+    SetupACNLSymbols();
+    Comma = new TextButton(83.f, 155.f, 1.f, 1.f, SWKBD_CHAR_BG, KEY_A | KEY_TOUCH, COLOR_WHITE, ",");
+    FStop = new TextButton(235.f, 155.f, 1.f, 1.f, SWKBD_CHAR_BG, KEY_A | KEY_TOUCH, COLOR_WHITE, ".");
+    LetterTab = new TextButton(0.f, 200.f, 100.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "ABC\n123");
+    SymTab = new TextButton(100.f, 200.f, 124.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "Symbols");
+    NinSymTab = new TextButton(224.f, 200.f, 98.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "Nintendo\nSymbols");
+    UpBtn = new TextButton(293.f, 43.f, 1.f, 1.f, SWKBD_BG, KEY_A|KEY_TOUCH, COLOR_GREY, "▲");
+    DownBtn = new TextButton(293.f, 93.f, 1.f, 1.f, SWKBD_BG, KEY_A|KEY_TOUCH, COLOR_GREY, "▼");
+    SpaceButton = new Button(100.f, 162.f, 124.f, 20.f, COLOR_GREY, KEY_A|KEY_TOUCH);
+    BackButton = new ImageButton(255.f, 127.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_BACK, Swkbd_ss);
+    EnterButton = new ImageButton(256.f, 160.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_ENTER, Swkbd_ss);
+    ConfirmButton = new ImageButton(287.f, 127.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_CONFIRM, Swkbd_ss);
+    CancelButton = new ImageButton(287.f, 160.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_CANCEL, Swkbd_ss);
+    PageText = Text(COLOR_GREY, "Page", 0.6f, 0.6f, 290.f, 65.f);
+    PageNumText = Text(COLOR_GREY, "1", 0.8f, 0.8f, 299.f, 80.f);
+    Comma->SetTextSize(0.8f, 0.8f);
+    FStop->SetTextSize(0.8f, 0.8f);
+    LetterTab->SetTextSize(0.6f, 0.6f);
+    SymTab->SetTextSize(0.6f, 0.6f);
+    NinSymTab->SetTextSize(0.6f, 0.6f);
+    UpBtn->SetTextSize(0.8f, 0.8f);
+    DownBtn->SetTextSize(0.8f, 0.8f);
+    BackButton->SetScale(0.8f);
+    EnterButton->SetScale(0.8f);
+    ConfirmButton->SetScale(0.8f);
+    CancelButton->SetScale(0.8f);
+    SpaceButton->SetZPos(0.5f);
+    BackButton->SetZPos(0.5f);
+    EnterButton->SetZPos(0.5f);
+    ConfirmButton->SetZPos(0.5f);
+    CancelButton->SetZPos(0.5f);
+    LetterTab->CentreText();
+    SymTab->CentreText();
+    NinSymTab->CentreText();
 }
 
 void Keyboard::Draw() {
@@ -243,7 +229,7 @@ void Keyboard::Draw() {
             if (m_ShiftOn) DrawSprite(Swkbd_ss, SWKBD_SHIFT_ON, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
             else  DrawSprite(Swkbd_ss, SWKBD_SHIFT_OFF, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
             LetterTab->SetActive(true);                                                         //Highlight selected tab
-            if (!(m_InputType & BIT(0))) {//Check if Letters not enabled
+            if (!(m_InputType & KeyboardInType::Letters)) {//Check if Letters not enabled
                 for (u32 i = 1; i < KEYBOARD_ROWS; i++)
                 {
                     float indent = 0.f;
@@ -253,7 +239,7 @@ void Keyboard::Draw() {
                     C2D_DrawRectSolid(38.f+indent, 40.f + (30.f * i), 0.5f, (24.5f*KeysPerRow), 30.f, SWKBD_INFILTER);
                 }
             }
-            if (!(m_InputType & BIT(1))) { //Check if Numbers not enabled
+            if (!(m_InputType & KeyboardInType::Numbers)) { //Check if Numbers not enabled
                 C2D_DrawRectSolid(38.f, 37.f, 0.5f, (24.5f*KEYS_PER_ROW), 33.f, SWKBD_INFILTER);
             }
             break;
@@ -271,12 +257,12 @@ void Keyboard::Draw() {
             }
 
             NinSymTab->SetActive(true);                    //Highlight selected tab
-            PageNum = std::to_string(m_NinSymbolsPage + 1); //Update page number text
+            PageNumText = std::to_string(m_NinSymbolsPage + 1); //Update page number text
 
             UpBtn->Draw();
             DownBtn->Draw();
-            Page.Draw();
-            PageNum.Draw();
+            PageText.Draw();
+            PageNumText.Draw();
             break;
 
         default:
@@ -334,10 +320,10 @@ void Keyboard::UpdateHID() {
             m_KeyboardTab = static_cast<KeyboardTab>(2);
 
         else --m_KeyboardTab;
-        if (m_KeyboardTab == KeyboardTab::ACNLSymbols && !(m_InputType & BIT(3))) //If ACNL Symbols not allowed, skip tab
+        if (m_KeyboardTab == KeyboardTab::ACNLSymbols && !(m_InputType & KeyboardInType::ACNLSymbols)) //If ACNL Symbols not allowed, skip tab
             --m_KeyboardTab;
 
-        if (m_KeyboardTab == KeyboardTab::Symbols && !(m_InputType & BIT(2))) //If Symbols not allowed, skip tab
+        if (m_KeyboardTab == KeyboardTab::Symbols && !(m_InputType & KeyboardInType::Symbols)) //If Symbols not allowed, skip tab
             --m_KeyboardTab;
     }
 
@@ -346,10 +332,10 @@ void Keyboard::UpdateHID() {
             m_KeyboardTab = static_cast<KeyboardTab>(0);
 
         else ++m_KeyboardTab;
-        if (m_KeyboardTab == KeyboardTab::Symbols && !(m_InputType & BIT(2))) //If Symbols not allowed, skip tab
+        if (m_KeyboardTab == KeyboardTab::Symbols && !(m_InputType & KeyboardInType::Symbols)) //If Symbols not allowed, skip tab
             ++m_KeyboardTab;
 
-        if (m_KeyboardTab == KeyboardTab::ACNLSymbols && !(m_InputType & BIT(3))) //If ACNL Symbols not allowed, skip tab
+        if (m_KeyboardTab == KeyboardTab::ACNLSymbols && !(m_InputType & KeyboardInType::ACNLSymbols)) //If ACNL Symbols not allowed, skip tab
             m_KeyboardTab = static_cast<KeyboardTab>(0);
     }
 
@@ -424,30 +410,59 @@ void Keyboard::Update() {
     }
 }
 
-int Keyboard::_Open(std::string &output)
+KeyboardRetCode Keyboard::_Open(std::string &output)
 {
-    if (m_InputType == 0) { //KeyboardInType::None
+    if (m_InputType == KeyboardInType::None) {
         MsgDisp(top, std::string("Keyboard Error (-2):\n\nNo Input Type has been specified."));
-        return -2;
+        return KeyboardRetCode::NoInputType;
     } 
     while (aptMainLoop() && m_KeyboardStatus == KeyboardStatus::Loop) {
         Update();
         Draw();
     }
 
-    return -1;
+    return KeyboardRetCode::Abort;
 }
 
-int Keyboard::Open(std::string &output) {
-    int res = _Open(output);
-    return res;
+KeyboardRetCode Keyboard::Open(std::string &output, u8 InType, u32 MaxSize, const std::string &DefaultText, const std::string &HintText, bool CanAbort)
+{
+    SetupDefaults();
+    m_InputType = InType;
+    m_MaxSize = MaxSize;
+    m_CanAbort = CanAbort;
+    m_HintText = Text(COLOR_DARK_GREY, HintText, 1.f, 1.f);
+    m_Text = Text(COLOR_WHITE, DefaultText, 1.f, 1.f);
+    return _Open(output);
 }
 
-int Keyboard::Open(u32& output) {
-    std::string str = std::to_string(output);
-    int res = _Open(str);
+KeyboardRetCode Keyboard::Open(u32 &output, u32 MaxVal, const u32 &DefaultValue, const std::string &HintText, bool CanAbort)
+{
+    SetupDefaults();
+    m_InputType = 0|KeyboardInType::Numbers;
+    m_MaxSize = MaxVal;
+    m_CanAbort = CanAbort;
+    m_HintText = Text(COLOR_DARK_GREY, HintText, 1.f, 1.f);
+    m_Text = Text(COLOR_WHITE, std::to_string(DefaultValue), 1.f, 1.f);
+    std::string str;
+    KeyboardRetCode ret = _Open(str);
     output = stoul(str);
-    return res;
+    return ret;
+}
+
+KeyboardRetCode Keyboard::Open(u16 &output, u16 MaxVal, const u16 &DefaultValue, const std::string &HintText, bool CanAbort)
+{
+    u32 out;
+    KeyboardRetCode ret = Open(out, MaxVal, DefaultValue, HintText, CanAbort);
+    output = (out&0xFFFF);
+    return ret;
+}
+
+KeyboardRetCode Keyboard::Open(u8 &output, u8 MaxVal, const u8 &DefaultValue, const std::string &HintText, bool CanAbort)
+{
+    u32 out;
+    KeyboardRetCode ret = Open(out, MaxVal, DefaultValue, HintText, CanAbort);
+    output = (out&0xFF);
+    return ret;
 }
 
 KeyboardTab& operator++(KeyboardTab& tab)
@@ -470,18 +485,4 @@ KeyboardTab& operator--(KeyboardTab& tab)
         case KeyboardTab::ACNLSymbols: return tab = KeyboardTab::Symbols;
     }
     return tab = KeyboardTab::Letters;
-}
-
-u8 operator|(KeyboardInType val, KeyboardInType orval)
-{
-    u8 value = static_cast<u8>(val);
-    u8 ORval = static_cast<u8>(orval);
-
-    return value|ORval;
-}
-
-u8 operator|(u8 val, KeyboardInType orval)
-{
-    u8 ORval = static_cast<u8>(orval);
-    return val|ORval;
 }
