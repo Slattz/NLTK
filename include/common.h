@@ -7,8 +7,8 @@
 #define TOSTRING(x)    STRINGIFY(x)
 
 #define MAJOR_VERSION  0
-#define MINOR_VERSION  2
-#define REV_VERSION    7
+#define MINOR_VERSION  3
+#define REV_VERSION    0
 #define BETA_VERSION   0
 #define VERSION        "v" TOSTRING(MAJOR_VERSION) "." TOSTRING(MINOR_VERSION) "." TOSTRING(REV_VERSION)
 #define WORKDIR        "sdmc:/NLTK"
