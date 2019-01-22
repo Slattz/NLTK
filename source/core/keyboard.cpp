@@ -429,7 +429,10 @@ KeyboardRetCode Keyboard::_Open(std::string &output)
         Draw();
     }
 
-    return KeyboardRetCode::Abort;
+    output = m_Text.GetText();
+
+    if (m_KeyboardStatus == KeyboardStatus::Close) return KeyboardRetCode::Success;
+    else return KeyboardRetCode::Abort;
 }
 
 KeyboardRetCode Keyboard::Open(std::string &output, u8 InType, u32 MaxSize, const std::string &DefaultText, const std::string &HintText, bool CanAbort)
@@ -454,7 +457,7 @@ KeyboardRetCode Keyboard::Open(u32 &output, u32 MaxVal, const u32 &DefaultValue,
     m_Text = Text(COLOR_WHITE, std::to_string(DefaultValue), 1.f, 1.f);
     std::string str;
     KeyboardRetCode ret = _Open(str);
-    output = stoul(str);
+    output = std::stoul(str);
     return ret;
 }
 
