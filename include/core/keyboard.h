@@ -32,7 +32,8 @@ enum class KeyboardInType : u8
     Letters = 1,
     Numbers = 2,
     Symbols = 4,
-    ACNLSymbols = 8
+    ACNLSymbols = 8,
+    All = Numbers|Letters|Symbols|ACNLSymbols
 };
 
 /* Used to determine various keyboard tabs */
@@ -57,6 +58,7 @@ public:
     static Keyboard* Instance(void);
     
     KeyboardRetCode Open(std::string &output, u8 InType, u32 MaxSize, const std::string &DefaultText = "", const std::string &HintText = "", bool CanAbort = true);
+    KeyboardRetCode Open(std::string &output, KeyboardInType InType, u32 MaxSize, const std::string &DefaultText = "", const std::string &HintText = "", bool CanAbort = true);
     KeyboardRetCode Open(u32 &output, u32 MaxVal, const u32 &DefaultValue = 0, const std::string &HintText = "", bool CanAbort = true);
     KeyboardRetCode Open(u16 &output, u16 MaxVal, const u16 &DefaultValue = 0, const std::string &HintText = "", bool CanAbort = true);
     KeyboardRetCode Open(u8 &output, u8 MaxVal, const u8 &DefaultValue = 0, const std::string &HintText = "", bool CanAbort = true);

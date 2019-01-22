@@ -218,7 +218,7 @@ void Keyboard::Draw() {
     BackButton->Draw();                                                 //Keyboard Back Icon
     EnterButton->Draw();                                                //Keyboard Enter Icon
     ConfirmButton->Draw();                                              //Keyboard Confirm Icon
-    CancelButton->Draw();                                               //Keyboard Cancel Icon
+    if (m_CanAbort) CancelButton->Draw();                               //Keyboard Cancel Icon
     Comma->Draw();                                                      //Comma
     FStop->Draw();                                                      //Full Stops
 
@@ -305,23 +305,89 @@ void Keyboard::UpdateHID() {
         return;
     }
 
-    if ((UpBtn->IsDown() || InputManager::Instance()->IsButtonDown(KEY_DUP)) && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
-        if (m_NinSymbolsPage == 0)
-            m_NinSymbolsPage = 2;
+    if (!(m_InputType == KeyboardInType::Numbers)) {
+        if ((UpBtn->IsDown() || InputManager::Instance()->IsButtonDown(KEY_DUP)) && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
+            if (m_NinSymbolsPage == 0)
+                m_NinSymbolsPage = 2;
 
-        else m_NinSymbolsPage--;        
-    }
+            else m_NinSymbolsPage--;        
+        }
 
-    if ((DownBtn->IsDown() || InputManager::Instance()->IsButtonDown(KEY_DDOWN)) && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
-        if (m_NinSymbolsPage == 2)
-            m_NinSymbolsPage = 0;
+        if ((DownBtn->IsDown() || InputManager::Instance()->IsButtonDown(KEY_DDOWN)) && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
+            if (m_NinSymbolsPage == 2)
+                m_NinSymbolsPage = 0;
 
-        else m_NinSymbolsPage++;
-    }
+            else m_NinSymbolsPage++;
+        }
 
-    if (InputManager::Instance()->IsButtonDown(KEY_Y) || ShiftOnButton->IsDown() || ShiftOffButton->IsDown()) { //Toggle Shift
-        m_ShiftOn = !m_ShiftOn; //Toggle m_ShiftOn
-        SetupLetters(); //UPPER <-> lower
+        if (InputManager::Instance()->IsButtonDown(KEY_Y) || ShiftOnButton->IsDown() || ShiftOffButton->IsDown()) { //Toggle Shift
+            m_ShiftOn = !m_ShiftOn; //Toggle m_ShiftOn
+            SetupLetters(); //UPPER <-> lower
+        }
+
+        if (InputManager::Instance()->IsButtonDown(KEY_DRIGHT) || SpaceButton->IsDown()) { //Space
+            std::string str = m_Text.GetText();
+            str.push_back(' '); //Add space
+            m_StringSize = UTF8_StringSize(str);
+            m_Text = str;
+        }
+
+        if (Comma->IsDown()) { //Comma
+            std::string str = m_Text.GetText();
+            str.push_back(','); //Add Comma
+            m_StringSize = UTF8_StringSize(str);
+            m_Text = str;
+        }
+
+        if (FStop->IsDown()) { //Full Stop
+            std::string str = m_Text.GetText();
+            str.push_back('.'); //Add Full Stip
+            m_StringSize = UTF8_StringSize(str);
+            m_Text = str;
+        }
+
+        if (EnterButton->IsDown()) { //Newline
+            std::string str = m_Text.GetText();
+            str.push_back('\n'); //Add Newline
+            m_StringSize = UTF8_StringSize(str);
+            m_Text = str;
+        }
+
+        if (InputManager::Instance()->IsButtonDown(KEY_L)) {
+            if (m_KeyboardTab == static_cast<KeyboardTab>(0))
+                m_KeyboardTab = static_cast<KeyboardTab>(2);
+
+            else --m_KeyboardTab;
+            if (m_KeyboardTab == KeyboardTab::ACNLSymbols && !(m_InputType & KeyboardInType::ACNLSymbols)) //If ACNL Symbols not allowed, skip tab
+                --m_KeyboardTab;
+
+            if (m_KeyboardTab == KeyboardTab::Symbols && !(m_InputType & KeyboardInType::Symbols)) //If Symbols not allowed, skip tab
+                --m_KeyboardTab;
+        }
+
+        if (InputManager::Instance()->IsButtonDown(KEY_R)) {
+            if (m_KeyboardTab == static_cast<KeyboardTab>(2))
+                m_KeyboardTab = static_cast<KeyboardTab>(0);
+
+            else ++m_KeyboardTab;
+            if (m_KeyboardTab == KeyboardTab::Symbols && !(m_InputType & KeyboardInType::Symbols)) //If Symbols not allowed, skip tab
+                ++m_KeyboardTab;
+
+            if (m_KeyboardTab == KeyboardTab::ACNLSymbols && !(m_InputType & KeyboardInType::ACNLSymbols)) //If ACNL Symbols not allowed, skip tab
+                m_KeyboardTab = static_cast<KeyboardTab>(0);
+        }
+
+        if (LetterTab->IsDown()) {
+            m_KeyboardTab = KeyboardTab::Letters;
+        }
+
+        else if (SymTab->IsDown()) {
+            m_KeyboardTab = KeyboardTab::Symbols;
+        }
+
+        else if (NinSymTab->IsDown()) {
+            m_KeyboardTab = KeyboardTab::ACNLSymbols;
+        }
     }
 
     if (InputManager::Instance()->IsButtonDown(KEY_DLEFT) || BackButton->IsDown()) { //Remove Character
@@ -332,74 +398,6 @@ void Keyboard::UpdateHID() {
             m_StringSize = UTF8_StringSize(str);
             m_Text = str;
         }
-    }
-
-    if (InputManager::Instance()->IsButtonDown(KEY_DRIGHT) || SpaceButton->IsDown()) { //Space
-        std::string str = m_Text.GetText();
-            str.push_back(' '); //Add space
-            m_StringSize = UTF8_StringSize(str);
-            m_Text = str;
-    }
-
-    if (Comma->IsDown()) { //Comma
-        std::string str = m_Text.GetText();
-            str.push_back(','); //Add Comma
-            m_StringSize = UTF8_StringSize(str);
-            m_Text = str;
-    }
-
-    if (FStop->IsDown()) { //Full Stop
-        std::string str = m_Text.GetText();
-            str.push_back('.'); //Add Full Stip
-            m_StringSize = UTF8_StringSize(str);
-            m_Text = str;
-    }
-
-    if (EnterButton->IsDown()) { //Newline
-        std::string str = m_Text.GetText();
-            str.push_back('\n'); //Add Newline
-            m_StringSize = UTF8_StringSize(str);
-            m_Text = str;
-    }
-
-
-
-    if (InputManager::Instance()->IsButtonDown(KEY_L)) {
-        if (m_KeyboardTab == static_cast<KeyboardTab>(0))
-            m_KeyboardTab = static_cast<KeyboardTab>(2);
-
-        else --m_KeyboardTab;
-        if (m_KeyboardTab == KeyboardTab::ACNLSymbols && !(m_InputType & KeyboardInType::ACNLSymbols)) //If ACNL Symbols not allowed, skip tab
-            --m_KeyboardTab;
-
-        if (m_KeyboardTab == KeyboardTab::Symbols && !(m_InputType & KeyboardInType::Symbols)) //If Symbols not allowed, skip tab
-            --m_KeyboardTab;
-    }
-
-    if (InputManager::Instance()->IsButtonDown(KEY_R)) {
-        if (m_KeyboardTab == static_cast<KeyboardTab>(2))
-            m_KeyboardTab = static_cast<KeyboardTab>(0);
-
-        else ++m_KeyboardTab;
-        if (m_KeyboardTab == KeyboardTab::Symbols && !(m_InputType & KeyboardInType::Symbols)) //If Symbols not allowed, skip tab
-            ++m_KeyboardTab;
-
-        if (m_KeyboardTab == KeyboardTab::ACNLSymbols && !(m_InputType & KeyboardInType::ACNLSymbols)) //If ACNL Symbols not allowed, skip tab
-            m_KeyboardTab = static_cast<KeyboardTab>(0);
-    }
-
-    if (LetterTab->IsDown()) {
-        m_KeyboardTab = KeyboardTab::Letters;
-    }
-
-    else if (SymTab->IsDown())
-    {
-        m_KeyboardTab = KeyboardTab::Symbols;
-    }
-
-    else if (NinSymTab->IsDown())
-    {
-        m_KeyboardTab = KeyboardTab::ACNLSymbols;
     }
 
     if (InputManager::Instance()->IsButtonDown(KEY_A) || InputManager::Instance()->IsButtonDown(KEY_TOUCH)) {
@@ -491,6 +489,18 @@ KeyboardRetCode Keyboard::Open(std::string &output, u8 InType, u32 MaxSize, cons
 {
     SetupDefaults();
     m_InputType = InType;
+    m_MaxSize = MaxSize;
+    m_CanAbort = CanAbort;
+    m_StringSize = UTF8_StringSize(DefaultText);
+    m_HintText = Text(COLOR_DARK_GREY, HintText, 1.f, 1.f);
+    m_Text = Text(COLOR_WHITE, DefaultText, 1.f, 1.f);
+    return _Open(output);
+}
+
+KeyboardRetCode Keyboard::Open(std::string &output, KeyboardInType InType, u32 MaxSize, const std::string &DefaultText, const std::string &HintText, bool CanAbort)
+{
+    SetupDefaults();
+    m_InputType = 0|InType;
     m_MaxSize = MaxSize;
     m_CanAbort = CanAbort;
     m_StringSize = UTF8_StringSize(DefaultText);
