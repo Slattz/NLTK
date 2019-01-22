@@ -18,6 +18,7 @@ public:
     virtual void Draw();
     virtual bool IsActive();
     void SetZPos(float Zpos);
+    void SetSize(Size_t size);
     Rect_t GetActiveArea(void);
 
     Point_t Location;

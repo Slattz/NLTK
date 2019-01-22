@@ -18,6 +18,14 @@ ImageButton::ImageButton(Point_t location, Size_t size, u32 bgColor, u32 activat
 ImageButton::ImageButton(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 activatorKeys, u32 imageId, C2D_SpriteSheet sheet)
     : ImageButton(Point_t{ x, y }, Size_t{ width, height }, bgColor, activatorKeys, imageId, sheet) { }
 
+ImageButton::ImageButton(u32 x, u32 y, u32 bgColor, u32 activatorKeys, u32 imageId, C2D_SpriteSheet sheet)
+    : ImageButton(Point_t{ x, y }, Size_t{ 0, 0 }, bgColor, activatorKeys, imageId, sheet) {
+
+    C2D_Image img = C2D_SpriteSheetGetImage(sheet, imageId);
+    SetSize(Size_t{ img.subtex->width, img.subtex->height });
+
+};
+
 void ImageButton::Draw(void) {
     if (Visible) {
         if (m_active) {

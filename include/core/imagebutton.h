@@ -7,6 +7,7 @@ public:
     ImageButton(void);
     ImageButton(Point_t location, Size_t size, u32 bgColor, u32 activatorKeys, u32 imageId, C2D_SpriteSheet sheet);
     ImageButton(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 activatorKeys, u32 imageId, C2D_SpriteSheet sheet);
+    ImageButton(u32 x, u32 y, u32 bgColor, u32 activatorKeys, u32 imageId, C2D_SpriteSheet sheet);
     
     void Draw(void);
     void SetImageId(u32 id);

@@ -37,6 +37,11 @@ void Control::SetZPos(float Zpos) {
     ZPos = Zpos;
 }
 
+void Control::SetSize(Size_t size) {
+    Size = size;
+    ActiveArea = Rect_t{Location, Point_t{Location.X + size.Width, Location.Y + size.Height}};
+}
+
 Rect_t Control::GetActiveArea(void) {
     return ActiveArea;
 }

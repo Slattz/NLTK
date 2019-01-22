@@ -14,6 +14,12 @@ TextButton::TextButton(Point_t location, Size_t size, u32 bgColor, u32 activator
 TextButton::TextButton(u32 x, u32 y, u32 width, u32 height, u32 bgColor, u32 activatorKeys, u32 textColor, std::string text)
     : TextButton(Point_t{ x, y }, Size_t{ width, height }, bgColor, activatorKeys, textColor, text) { }
 
+TextButton::TextButton(u32 x, u32 y, u32 bgColor, u32 activatorKeys, u32 textColor, std::string text)
+    : TextButton(Point_t{ x, y }, Size_t{ 0, 0 }, bgColor, activatorKeys, textColor, text) {
+
+    SetSize(Size_t{ static_cast<u32>(myText.GetWidth()), static_cast<u32>(myText.GetHeight()) });
+}
+
 void TextButton::Draw(void) {
     Button::Draw();
     myText.Draw();
