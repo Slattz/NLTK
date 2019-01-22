@@ -429,9 +429,11 @@ KeyboardRetCode Keyboard::_Open(std::string &output)
         Draw();
     }
 
-    output = m_Text.GetText();
-
-    if (m_KeyboardStatus == KeyboardStatus::Close) return KeyboardRetCode::Success;
+    if (m_KeyboardStatus == KeyboardStatus::Close) {    
+        output = m_Text.GetText();
+        return KeyboardRetCode::Success;
+    }
+ 
     else return KeyboardRetCode::Abort;
 }
 
