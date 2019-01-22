@@ -1,6 +1,5 @@
 #include <citro2d.h>
 #include "gfx.h"
-#include "swkbd.h"
 #include "textbox.h"
 
 TextBox::TextBox() {
@@ -16,12 +15,12 @@ TextBox::TextBox() {
     Visible = true;
 }
 
-TextBox::TextBox(Point_t location, Size_t size, std::string text, std::string hint, u32 maxLength, SwkbdType type, u32 bgColor, u32 textColor) 
+TextBox::TextBox(Point_t location, Size_t size, std::string text, std::string hint, u32 maxLength, KeyboardInType inType, u32 bgColor, u32 textColor) 
     : myText(text) {
 
     Hint = hint;
     MaxLength = maxLength;
-    Type = type;
+    InputType = inType;
 
     Location = location;
     Size = size;
@@ -34,8 +33,8 @@ TextBox::TextBox(Point_t location, Size_t size, std::string text, std::string hi
     Visible = true;
 }
 
-TextBox::TextBox(u32 x, u32 y, u32 width, u32 height, std::string text, std::string hint, u32 maxLength, SwkbdType type, u32 bgColor, u32 textColor)
-    : TextBox(Point_t{x, y}, Size_t{width, height}, text, hint, maxLength, type, bgColor, textColor) { }
+TextBox::TextBox(u32 x, u32 y, u32 width, u32 height, std::string text, std::string hint, u32 maxLength, KeyboardInType inType, u32 bgColor, u32 textColor)
+    : TextBox(Point_t{x, y}, Size_t{width, height}, text, hint, maxLength, inType, bgColor, textColor) { }
 
 void TextBox::Draw() {
     if (Visible) {
@@ -49,9 +48,11 @@ bool TextBox::CheckActivate(u32 x, u32 y) {
 }
 
 std::string TextBox::Activate() {
-    std::string result = getKeyboardInput(myText, Hint.c_str(), MaxLength, Type);
-    if (result.compare(std::string(" ")) != 0) {
-        myText = result;
+    std::string out;
+
+    KeyboardRetCode res = Keyboard::Instance()->Open(out, this->InputType, this->MaxLength, this->myText.GetText(), this->Hint);
+    if (res == KeyboardRetCode::Success) {
+        myText = out;
     }
 
     return myText.GetText();

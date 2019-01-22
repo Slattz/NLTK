@@ -37,16 +37,6 @@ ReturnMode spawn_main_menu(void) {
             return ReturnMode::Exit;
         }
 
-        /* For Debugging Keyboard atm, will eventually be removed */
-        if (InputManager::Instance()->IsButtonDown(KEY_DLEFT) && config->IsDebug)
-        {
-            static std::string lol = "This is lol";
-            MsgDisp(top, lol);
-            u8 intype = KeyboardInType::Letters | KeyboardInType::Numbers | KeyboardInType::Symbols | KeyboardInType::ACNLSymbols;
-            Keyboard::Instance()->Open(lol, intype, 20, "This is default text", "This is hint text", true);
-            MsgDisp(top, lol);
-        }
-
         //TODO: Needs to be reworked into using ImageButtons
         static const Rect_t editoract = {{90, 90}, {140, 140}};
         static const Rect_t manageract = {{180, 90}, {230, 140}};

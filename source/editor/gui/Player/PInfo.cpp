@@ -30,15 +30,15 @@ void Editor::Player::InitInfoGFX(void)
 {
     // Create Controls
     playerNameLabel = Label(10, 10, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Name:");
-    playerNameBox = TextBox(68, 10, 100, 16, "Name", "Enter a name for the player.", 8, SWKBD_TYPE_NORMAL, COLOR_WHITE, COLOR_BLACK);
+    playerNameBox = TextBox(68, 10, 100, 16, "Name", "Enter a name for the player.", 8, KeyboardInType::All, COLOR_WHITE, COLOR_BLACK);
     playerWalletLabel = Label(10, 30, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Wallet:");
-    playerWalletBox = TextBox(68, 30, 100, 16, "0", "Enter wallet amount.", 5, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
+    playerWalletBox = TextBox(68, 30, 100, 16, "0", "Enter wallet amount.", 5, KeyboardInType::Numbers, COLOR_WHITE, COLOR_BLACK);
     playerSavingsLabel = Label(10, 50, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Savings:");
-    playerSavingsBox = TextBox(68, 50, 100, 16, "0", "Enter savings amount.", 9, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
+    playerSavingsBox = TextBox(68, 50, 100, 16, "0", "Enter savings amount.", 9, KeyboardInType::Numbers, COLOR_WHITE, COLOR_BLACK);
     playerMedalsLabel = Label(10, 70, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Medals:");
-    playerMedalsBox = TextBox(68, 70, 100, 16, "0", "Enter island medals amount.", 5, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
+    playerMedalsBox = TextBox(68, 70, 100, 16, "0", "Enter island medals amount.", 5, KeyboardInType::Numbers, COLOR_WHITE, COLOR_BLACK);
     playerCouponsLabel = Label(10, 90, 58, 16, COLOR_TRANSPARENT, COLOR_WHITE, "Coupons:");
-    playerCouponsBox = TextBox(68, 90, 100, 16, "0", "Enter meow coupons amount.", 5, SWKBD_TYPE_NUMPAD, COLOR_WHITE, COLOR_BLACK);
+    playerCouponsBox = TextBox(68, 90, 100, 16, "0", "Enter meow coupons amount.", 5, KeyboardInType::Numbers, COLOR_WHITE, COLOR_BLACK);
 
     editorPlayerInfoControls.push_back(&playerNameBox);
     editorPlayerInfoControls.push_back(&playerWalletBox);
