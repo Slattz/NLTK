@@ -8,12 +8,14 @@
 
 #define KEYS_PER_ROW 10
 #define KEYBOARD_ROWS 4
+#define KEYS_AMOUNT 36
 
 static const u32 SWKBD_BG = C2D_Color32(0x21, 0x8B, 0x2B, 0xFF);
 static const u32 SWKBD_BAR = C2D_Color32(0x14, 0x56, 0x1A, 0xFF);
 static const u32 SWKBD_TAB_CLR = C2D_Color32(0x35, 0xCC, 0x1A, 0xFF);
 static const u32 SWKBD_CHAR_BG = C2D_Color32(0x19, 0x68, 0x1F, 0xFF);
 static const u32 SWKBD_INFILTER = C2D_Color32(119, 119, 119, 170);
+static const Rect_t BG_RECT = {{37, 36}, {282, 189}};
 
 static const u8 kbd_lyt[] = {0,0,1,3};
 static const char Letters[] = "1234567890qwertyuiopasdfghjklzxcvbnm";
@@ -49,6 +51,19 @@ TextButton *UpBtn;
 TextButton *DownBtn;
 Text PageText;
 Text PageNumText;
+
+// This is needed for non ASCII characters; https://stackoverflow.com/a/17436539
+void utf_pop_back(std::string& str) {
+    while (str.size() > 0)
+    {
+        char c = str.back();
+        str.pop_back();
+
+        // If we found an initial character, we're done
+        if ((c & 0xC0) != 0x80)
+            break;
+    }
+}
 
 Keyboard* Keyboard::m_Instance = nullptr;
 
@@ -304,7 +319,7 @@ void Keyboard::UpdateHID() {
         std::string str = m_Text.GetText();
         if (!str.empty())
         {
-            str.pop_back();
+            utf_pop_back(str);
             m_Text = str;
         }
     }
@@ -343,7 +358,7 @@ void Keyboard::UpdateHID() {
         m_KeyboardStatus = KeyboardStatus::Abort;
     }
 
-    else if (InputManager::Instance()->IsButtonDown(KEY_A)) {
+    else if (InputManager::Instance()->IsButtonDown(KEY_A) || InputManager::Instance()->IsButtonDown(KEY_TOUCH)) {
         std::string str = m_Text.GetText();
         static const Rect_t keyboardactivator = {{99, 161}, {225, 183}};
         if (InputManager::Instance()->IsActive(keyboardactivator)) {
@@ -354,13 +369,13 @@ void Keyboard::UpdateHID() {
         for (u32 i = 0; i < KEYBOARD_ROWS; i++)
         {
             u32 indent = 0;
-            if (kbd_lyt[i] == 1) indent = 15; //'asdfghjkl' indent
-            else if (kbd_lyt[i] == 3) indent = 39; //'zxcvbnm' indent
+            if (kbd_lyt[i] == 1) indent = 10; //'asdfghjkl' indent
+            else if (kbd_lyt[i] == 3) indent = 35; //'zxcvbnm' indent
             u8 KeysPerRow = KEYS_PER_ROW - kbd_lyt[i];
 
             for (u32 j = 0; j < KeysPerRow; j++)
             {
-                Rect_t key = {{38+(25*j)+indent, 37+(30*i)}, {38+(50*j)+indent, 37+(60*i)}}; //38.f, 37.f, 245.f, 153.f
+                Rect_t key = {{37+(25*j)+indent, 36+(30*i)}, {37+24+(25*j)+indent, 36+29+(30*i)}};
                 if (InputManager::Instance()->IsActive(key)) {
                     switch (m_KeyboardTab)
                     {
@@ -373,14 +388,14 @@ void Keyboard::UpdateHID() {
 
                         case KeyboardTab::Symbols :
                         {
-                            std::u16string symbl(reinterpret_cast<const char16_t *>(Symbols+ (j + CurIndex)), 1);
+                            std::u16string symbl(reinterpret_cast<const char16_t *>(Symbols + (j + CurIndex)), 1);
                             str.append(u16tou8(symbl));
                             break;
                         }
 
                         case KeyboardTab::ACNLSymbols :
                         {
-                            std::u16string symbl(reinterpret_cast<const char16_t *>(NinSymbols + (j + CurIndex)), 1);
+                            std::u16string symbl(reinterpret_cast<const char16_t *>(NinSymbols + (j + CurIndex) + (KEYS_AMOUNT*m_NinSymbolsPage)), 1);
                             str.append(u16tou8(symbl));
                             break;
                         }
@@ -404,7 +419,7 @@ void Keyboard::Update() {
 
     if (str.length() > m_MaxSize) { //Make sure max string length
         while (str.length() > m_MaxSize) {
-            str.pop_back();
+            utf_pop_back(str);
         }
         m_Text = str;
     }
