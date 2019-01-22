@@ -42,6 +42,8 @@ ImageButton *BackButton;
 ImageButton *EnterButton;
 ImageButton *ConfirmButton;
 ImageButton *CancelButton;
+ImageButton *ShiftOnButton;
+ImageButton *ShiftOffButton;
 TextButton *LetterTab;
 TextButton *SymTab;
 TextButton *NinSymTab;
@@ -82,7 +84,8 @@ void Keyboard::SetupDefaults(void) {
     m_KeyboardTab = KeyboardTab::Letters;
     m_KeyboardStatus = KeyboardStatus::Loop;
     m_InputType = 0;
-    m_MaxSize = 30;
+    m_MaxSize = 10;
+    m_StringSize = 0;
     m_CanAbort = true;
     m_ShiftOn = false;
     m_NinSymbolsPage = 0;
@@ -160,20 +163,22 @@ void Keyboard::Setup() {
     SetupLetters();
     SetupSymbols();
     SetupACNLSymbols();
-    Comma = new TextButton(83.f, 155.f, 1.f, 1.f, SWKBD_CHAR_BG, KEY_A | KEY_TOUCH, COLOR_WHITE, ",");
-    FStop = new TextButton(235.f, 155.f, 1.f, 1.f, SWKBD_CHAR_BG, KEY_A | KEY_TOUCH, COLOR_WHITE, ".");
+    Comma = new TextButton(72.f, 156.f, 25.f, 30.f, SWKBD_CHAR_BG, KEY_A | KEY_TOUCH, COLOR_WHITE, ",");
+    FStop = new TextButton(225.f, 156.f, 25.f, 30.f, SWKBD_CHAR_BG, KEY_A | KEY_TOUCH, COLOR_WHITE, ".");
     LetterTab = new TextButton(0.f, 200.f, 100.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "ABC\n123");
     SymTab = new TextButton(100.f, 200.f, 124.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "Symbols");
     NinSymTab = new TextButton(224.f, 200.f, 98.f, 40.f, SWKBD_BAR, KEY_A|KEY_TOUCH, COLOR_WHITE, "Nintendo\nSymbols");
-    UpBtn = new TextButton(293.f, 43.f, 1.f, 1.f, SWKBD_BG, KEY_A|KEY_TOUCH, COLOR_GREY, "▲");
-    DownBtn = new TextButton(293.f, 93.f, 1.f, 1.f, SWKBD_BG, KEY_A|KEY_TOUCH, COLOR_GREY, "▼");
+    UpBtn = new TextButton(293.f, 40.f, SWKBD_BG, KEY_A|KEY_TOUCH, COLOR_GREY, "▲");
+    DownBtn = new TextButton(293.f, 90.f, SWKBD_BG, KEY_A|KEY_TOUCH, COLOR_GREY, "▼");
     SpaceButton = new Button(100.f, 162.f, 124.f, 20.f, COLOR_GREY, KEY_A|KEY_TOUCH);
-    BackButton = new ImageButton(255.f, 127.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_BACK, Swkbd_ss);
-    EnterButton = new ImageButton(256.f, 160.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_ENTER, Swkbd_ss);
-    ConfirmButton = new ImageButton(287.f, 127.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_CONFIRM, Swkbd_ss);
-    CancelButton = new ImageButton(287.f, 160.f, 0, 0, 0, KEY_A|KEY_TOUCH, SWKBD_CANCEL, Swkbd_ss);
-    PageText = Text(COLOR_GREY, "Page", 0.6f, 0.6f, 290.f, 65.f);
-    PageNumText = Text(COLOR_GREY, "1", 0.8f, 0.8f, 299.f, 80.f);
+    BackButton = new ImageButton(255.f, 130.f, 0, KEY_A|KEY_TOUCH, SWKBD_BACK, Swkbd_ss);
+    EnterButton = new ImageButton(256.f, 160.f, 0, KEY_A|KEY_TOUCH, SWKBD_ENTER, Swkbd_ss);
+    ConfirmButton = new ImageButton(287.f, 127.f, 0, KEY_A|KEY_TOUCH, SWKBD_CONFIRM, Swkbd_ss);
+    CancelButton = new ImageButton(287.f, 160.f,  0, KEY_A|KEY_TOUCH, SWKBD_CANCEL, Swkbd_ss);
+    ShiftOnButton = new ImageButton(45.f, 128.f, 0, KEY_A | KEY_TOUCH, SWKBD_SHIFT_ON, Swkbd_ss);
+    ShiftOffButton = new ImageButton(45.f, 128.f, 0, KEY_A | KEY_TOUCH, SWKBD_SHIFT_OFF, Swkbd_ss);
+    PageText = Text(COLOR_GREY, "Page", 0.6f, 0.6f, 290.f, 62.f);
+    PageNumText = Text(COLOR_GREY, "1", 0.8f, 0.8f, 299.f, 77.f);
     Comma->SetTextSize(0.8f, 0.8f);
     FStop->SetTextSize(0.8f, 0.8f);
     LetterTab->SetTextSize(0.6f, 0.6f);
@@ -185,14 +190,20 @@ void Keyboard::Setup() {
     EnterButton->SetScale(0.8f);
     ConfirmButton->SetScale(0.8f);
     CancelButton->SetScale(0.8f);
+    ShiftOnButton->SetScale(0.8f);
+    ShiftOffButton->SetScale(0.8f);
     SpaceButton->SetZPos(0.5f);
     BackButton->SetZPos(0.5f);
     EnterButton->SetZPos(0.5f);
     ConfirmButton->SetZPos(0.5f);
     CancelButton->SetZPos(0.5f);
+    ShiftOnButton->SetZPos(0.5f);
+    ShiftOffButton->SetZPos(0.5f);
     LetterTab->CentreText();
     SymTab->CentreText();
     NinSymTab->CentreText();
+    Comma->SetTextPos(83.f, 156.f);
+    FStop->SetTextPos(235.f, 156.f);
 }
 
 void Keyboard::Draw() {
@@ -221,6 +232,8 @@ void Keyboard::Draw() {
     LetterTab->SetActive(false);
     SymTab->SetActive(false);
     NinSymTab->SetActive(false);
+    ShiftOnButton->Visible = m_ShiftOn;
+    ShiftOffButton->Visible = !m_ShiftOn;
 
     switch (m_KeyboardTab) //Draw correct keys per tab
     {
@@ -228,8 +241,8 @@ void Keyboard::Draw() {
             for (u32 i = 0; i < m_Characters.size(); i++)
                 m_Characters[i].Draw();
 
-            if (m_ShiftOn) DrawSprite(Swkbd_ss, SWKBD_SHIFT_ON, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
-            else  DrawSprite(Swkbd_ss, SWKBD_SHIFT_OFF, 45.f, 128.f, nullptr, 0.8f, 0.8f, 0.5f); //Keyboard Shift Icon
+            ShiftOnButton->Draw();
+            ShiftOffButton->Draw();
             LetterTab->SetActive(true);                                                         //Highlight selected tab
             if (!(m_InputType & KeyboardInType::Letters)) {//Check if Letters not enabled
                 for (u32 i = 1; i < KEYBOARD_ROWS; i++)
@@ -278,31 +291,40 @@ void Keyboard::Draw() {
 
     C3D_FrameEnd(0);
 }
+
 void Keyboard::UpdateHID() {
     InputManager::Instance()->RefreshInput(); //Update cursor info
 
-    if (InputManager::Instance()->IsButtonDown(KEY_DUP) && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
+    if ((InputManager::Instance()->IsButtonDown(KEY_B) || CancelButton->IsDown()) && m_CanAbort) { //Abort
+        m_KeyboardStatus = KeyboardStatus::Abort;
+        return;
+    }
 
+    else if (InputManager::Instance()->IsButtonDown(KEY_START) || ConfirmButton->IsDown()) { //Close
+        m_KeyboardStatus = KeyboardStatus::Close;
+        return;
+    }
+
+    if ((UpBtn->IsDown() || InputManager::Instance()->IsButtonDown(KEY_DUP)) && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
         if (m_NinSymbolsPage == 0)
             m_NinSymbolsPage = 2;
 
         else m_NinSymbolsPage--;        
     }
 
-    if (InputManager::Instance()->IsButtonDown(KEY_DDOWN) && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
-
+    if ((DownBtn->IsDown() || InputManager::Instance()->IsButtonDown(KEY_DDOWN)) && m_KeyboardTab == KeyboardTab::ACNLSymbols) {
         if (m_NinSymbolsPage == 2)
             m_NinSymbolsPage = 0;
 
         else m_NinSymbolsPage++;
     }
 
-    if (InputManager::Instance()->IsButtonDown(KEY_Y)) { //Toggle Shift
+    if (InputManager::Instance()->IsButtonDown(KEY_Y) || ShiftOnButton->IsDown() || ShiftOffButton->IsDown()) { //Toggle Shift
         m_ShiftOn = !m_ShiftOn; //Toggle m_ShiftOn
         SetupLetters(); //UPPER <-> lower
     }
 
-    if (InputManager::Instance()->IsButtonDown(KEY_DLEFT)) { //Remove Character
+    if (InputManager::Instance()->IsButtonDown(KEY_DLEFT) || BackButton->IsDown()) { //Remove Character
         std::string str = m_Text.GetText();
         if (!str.empty())
         {
@@ -312,12 +334,35 @@ void Keyboard::UpdateHID() {
         }
     }
 
-    if (InputManager::Instance()->IsButtonDown(KEY_DRIGHT)) { //Add Space
+    if (InputManager::Instance()->IsButtonDown(KEY_DRIGHT) || SpaceButton->IsDown()) { //Space
         std::string str = m_Text.GetText();
             str.push_back(' '); //Add space
             m_StringSize = UTF8_StringSize(str);
             m_Text = str;
     }
+
+    if (Comma->IsDown()) { //Comma
+        std::string str = m_Text.GetText();
+            str.push_back(','); //Add Comma
+            m_StringSize = UTF8_StringSize(str);
+            m_Text = str;
+    }
+
+    if (FStop->IsDown()) { //Full Stop
+        std::string str = m_Text.GetText();
+            str.push_back('.'); //Add Full Stip
+            m_StringSize = UTF8_StringSize(str);
+            m_Text = str;
+    }
+
+    if (EnterButton->IsDown()) { //Newline
+        std::string str = m_Text.GetText();
+            str.push_back('\n'); //Add Newline
+            m_StringSize = UTF8_StringSize(str);
+            m_Text = str;
+    }
+
+
 
     if (InputManager::Instance()->IsButtonDown(KEY_L)) {
         if (m_KeyboardTab == static_cast<KeyboardTab>(0))
@@ -343,16 +388,22 @@ void Keyboard::UpdateHID() {
             m_KeyboardTab = static_cast<KeyboardTab>(0);
     }
 
-    if (InputManager::Instance()->IsButtonDown(KEY_B) && m_CanAbort) { //Abort
-        m_KeyboardStatus = KeyboardStatus::Abort;
+    if (LetterTab->IsDown()) {
+        m_KeyboardTab = KeyboardTab::Letters;
     }
 
-    else if (InputManager::Instance()->IsButtonDown(KEY_A) || InputManager::Instance()->IsButtonDown(KEY_TOUCH)) {
+    else if (SymTab->IsDown())
+    {
+        m_KeyboardTab = KeyboardTab::Symbols;
+    }
+
+    else if (NinSymTab->IsDown())
+    {
+        m_KeyboardTab = KeyboardTab::ACNLSymbols;
+    }
+
+    if (InputManager::Instance()->IsButtonDown(KEY_A) || InputManager::Instance()->IsButtonDown(KEY_TOUCH)) {
         std::string str = m_Text.GetText();
-        static constexpr Rect_t keyboardactivator = {{99, 161}, {225, 183}};
-        if (InputManager::Instance()->IsActive(keyboardactivator)) {
-            str.push_back(' ');
-        }
 
         u8 CurIndex = 0;
         for (u32 i = 0; i < KEYBOARD_ROWS; i++)
@@ -400,7 +451,6 @@ void Keyboard::UpdateHID() {
         m_StringSize = UTF8_StringSize(str);
         m_Text = str;
     }
-
 }
 
 void Keyboard::Update() {

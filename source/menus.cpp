@@ -40,9 +40,11 @@ ReturnMode spawn_main_menu(void) {
         /* For Debugging Keyboard atm, will eventually be removed */
         if (InputManager::Instance()->IsButtonDown(KEY_DLEFT) && config->IsDebug)
         {
-            std::string lol;
+            static std::string lol = "This is lol";
+            MsgDisp(top, lol);
             u8 intype = KeyboardInType::Letters | KeyboardInType::Numbers | KeyboardInType::Symbols | KeyboardInType::ACNLSymbols;
-            Keyboard::Instance()->Open(lol, intype, 30, "This is default text", "This is hint text", true);
+            Keyboard::Instance()->Open(lol, intype, 20, "This is default text", "This is hint text", true);
+            MsgDisp(top, lol);
         }
 
         //TODO: Needs to be reworked into using ImageButtons
