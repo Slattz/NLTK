@@ -101,6 +101,30 @@ s64 Seconds(float amount)
     return (s64)(amount*1000000000);
 }
 
+u32 UTF8_StringSize(std::string str) {
+    char* data = str.data();
+    u32 len = 0;
+
+    while (*data) {
+        len += (*data++ & 0xC0) != 0x80;
+    }
+
+    return len;
+}
+
+// This is needed for non ASCII characters; https://stackoverflow.com/a/17436539
+void UTF8_String_PopBack(std::string& str) {
+    while (str.size() > 0)
+    {
+        char c = str.back();
+        str.pop_back();
+
+        // If we found an initial character, we're done
+        if ((c & 0xC0) != 0x80)
+            break;
+    }
+}
+
 std::string u16tou8(std::u16string src)
 {
     static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;

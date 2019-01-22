@@ -15,12 +15,12 @@ static const u32 SWKBD_BAR = C2D_Color32(0x14, 0x56, 0x1A, 0xFF);
 static const u32 SWKBD_TAB_CLR = C2D_Color32(0x35, 0xCC, 0x1A, 0xFF);
 static const u32 SWKBD_CHAR_BG = C2D_Color32(0x19, 0x68, 0x1F, 0xFF);
 static const u32 SWKBD_INFILTER = C2D_Color32(119, 119, 119, 170);
-static const Rect_t BG_RECT = {{37, 36}, {282, 189}};
+static constexpr Rect_t BG_RECT = {{37, 36}, {282, 189}};
 
-static const u8 kbd_lyt[] = {0,0,1,3};
-static const char Letters[] = "1234567890qwertyuiopasdfghjklzxcvbnm";
-static const wchar_t Symbols[] = L"@#$_&-+=!?*\"\':;()<>%&[]{}▲▼◀▶£€|\\/♂♀"; //Needs to be wchar_t as £ and € are utf-16 :/
-static const char16_t NinSymbols[] = { //Laid out in same layout as characters per keyboard row: 10,10,9,7
+static constexpr u8 kbd_lyt[] = {0,0,1,3};
+static constexpr char Letters[] = "1234567890qwertyuiopasdfghjklzxcvbnm";
+static constexpr wchar_t Symbols[] = L"@#$_&-+=!?*\"\':;()<>%&[]{}▲▼◀▶£€|\\/♂♀"; //Needs to be wchar_t as £ and € are utf-16 :/
+static constexpr char16_t NinSymbols[] = { //Laid out in same layout as characters per keyboard row: 10,10,9,7
     0xE000, 0xE001, 0xE002, 0xE003, 0xE004, 0xE005, 0xE006, 0xE077, 0xE008, 0xE009, //10
     0xE070, 0xE06F, 0xE06C, 0xE00C, 0xE00D, 0xE00E, 0xE00F, 0xE010, 0xE011, 0xE012, //10
     0xE013, 0xE03C, 0xE03B, 0xE03D, 0xE072, 0xE019, 0xE01A, 0xE01B, 0xE01C,         //9
@@ -51,19 +51,6 @@ TextButton *UpBtn;
 TextButton *DownBtn;
 Text PageText;
 Text PageNumText;
-
-// This is needed for non ASCII characters; https://stackoverflow.com/a/17436539
-void utf_pop_back(std::string& str) {
-    while (str.size() > 0)
-    {
-        char c = str.back();
-        str.pop_back();
-
-        // If we found an initial character, we're done
-        if ((c & 0xC0) != 0x80)
-            break;
-    }
-}
 
 Keyboard* Keyboard::m_Instance = nullptr;
 
@@ -319,7 +306,8 @@ void Keyboard::UpdateHID() {
         std::string str = m_Text.GetText();
         if (!str.empty())
         {
-            utf_pop_back(str);
+            UTF8_String_PopBack(str);
+            m_StringSize = UTF8_StringSize(str);
             m_Text = str;
         }
     }
@@ -327,6 +315,7 @@ void Keyboard::UpdateHID() {
     if (InputManager::Instance()->IsButtonDown(KEY_DRIGHT)) { //Add Space
         std::string str = m_Text.GetText();
             str.push_back(' '); //Add space
+            m_StringSize = UTF8_StringSize(str);
             m_Text = str;
     }
 
@@ -360,7 +349,7 @@ void Keyboard::UpdateHID() {
 
     else if (InputManager::Instance()->IsButtonDown(KEY_A) || InputManager::Instance()->IsButtonDown(KEY_TOUCH)) {
         std::string str = m_Text.GetText();
-        static const Rect_t keyboardactivator = {{99, 161}, {225, 183}};
+        static constexpr Rect_t keyboardactivator = {{99, 161}, {225, 183}};
         if (InputManager::Instance()->IsActive(keyboardactivator)) {
             str.push_back(' ');
         }
@@ -408,6 +397,7 @@ void Keyboard::UpdateHID() {
             CurIndex += KeysPerRow;
         }
 
+        m_StringSize = UTF8_StringSize(str);
         m_Text = str;
     }
 
@@ -416,10 +406,12 @@ void Keyboard::UpdateHID() {
 void Keyboard::Update() {
     UpdateHID();
     std::string str = m_Text.GetText();
+    m_StringSize = UTF8_StringSize(str);
 
-    if (str.length() > m_MaxSize) { //Make sure max string length
-        while (str.length() > m_MaxSize) {
-            utf_pop_back(str);
+    if (m_StringSize > m_MaxSize) { //Make sure max string length
+        while (m_StringSize > m_MaxSize) {
+            UTF8_String_PopBack(str);
+            m_StringSize = UTF8_StringSize(str);
         }
         m_Text = str;
     }
@@ -430,7 +422,8 @@ KeyboardRetCode Keyboard::_Open(std::string &output)
     if (m_InputType == KeyboardInType::None) {
         MsgDisp(top, std::string("Keyboard Error (-2):\n\nNo Input Type has been specified."));
         return KeyboardRetCode::NoInputType;
-    } 
+    }
+
     while (aptMainLoop() && m_KeyboardStatus == KeyboardStatus::Loop) {
         Update();
         Draw();
@@ -445,6 +438,7 @@ KeyboardRetCode Keyboard::Open(std::string &output, u8 InType, u32 MaxSize, cons
     m_InputType = InType;
     m_MaxSize = MaxSize;
     m_CanAbort = CanAbort;
+    m_StringSize = UTF8_StringSize(DefaultText);
     m_HintText = Text(COLOR_DARK_GREY, HintText, 1.f, 1.f);
     m_Text = Text(COLOR_WHITE, DefaultText, 1.f, 1.f);
     return _Open(output);

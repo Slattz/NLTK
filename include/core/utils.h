@@ -9,6 +9,8 @@ bool            is_ACNL(u64 tid);
 bool            DebugCode(bool complete);
 void            Sleep(u64 nanoseconds);
 s64             Seconds(float amount);
+u32             UTF8_StringSize(std::string str);
+void            UTF8_String_PopBack(std::string& str);
 std::string     u16tou8(std::u16string src);
 std::u16string  u8tou16(const char* src);
 bool            checkGameCartIsACNL();

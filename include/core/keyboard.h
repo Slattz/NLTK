@@ -81,6 +81,7 @@ public:
     bool m_CanAbort;
     bool m_ShiftOn;
     u32 m_MaxSize;
+    u32 m_StringSize;
     u32 m_NinSymbolsPage;
     u8 m_InputType;
     KeyboardTab m_KeyboardTab;
