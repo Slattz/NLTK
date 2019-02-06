@@ -14,6 +14,8 @@
 #include "menus.h"
 #include "gui/AcreMenu.hpp"
 
+#define ACRE_ID_MAX 218
+
 AcreSettings AcreConfig;
 C2D_ImageTint* AcreTint = new C2D_ImageTint[sizeof(C2D_ImageTint)];
 std::vector<Control*> acreEditorControls = {};
