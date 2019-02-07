@@ -10,7 +10,6 @@
 #include "InputManager.h"
 
 extern u64 g_tid;
-extern Config *config;
 extern FS_MediaType currentMediaType;
 extern std::map<u16, std::string> g_villagerDatabase;
 
@@ -52,8 +51,8 @@ GameSelect:
 
     {
         InputManager::Instance()->RefreshInput();
-        if (config->Auto_loadprefGame && !InputManager::Instance()->IsButtonDown(KEY_DOWN) && is_ACNL(config->prefGame|0x4000000000000)) {
-            g_tid = config->prefGame|0x4000000000000; // TODO: Support media type in config
+        if (Config::Instance()->Auto_loadprefGame && !InputManager::Instance()->IsButtonDown(KEY_DOWN) && is_ACNL(Config::Instance()->prefGame|0x4000000000000)) {
+            g_tid = Config::Instance()->prefGame|0x4000000000000; // TODO: Support media type in config
         }
         else {
             g_tid = spawn_game_select_menu(&currentMediaType);
@@ -85,7 +84,7 @@ GameSelect:
         return ReturnMode::Exit;
     }
 
-    if (config->Auto_SaveBackup) {
+    if (Config::Instance()->Auto_SaveBackup) {
         saveBackup(g_tid);
     }
 

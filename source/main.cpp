@@ -12,7 +12,6 @@
 
 static FontHandle g_acnlFont;
 u64 g_tid = 0;
-Config *config;
 FS_MediaType currentMediaType;
 
 // Override ctrulib appInit to check for Rosalina hbl
@@ -52,7 +51,7 @@ void PrepareToCloseApp(void) {
         fsEndUseSession();
     }
 
-    config->Save();
+    Config::Instance()->Save();
     ExitGFX();
     cfguExit();
     httpc.Exit();
@@ -62,7 +61,6 @@ void PrepareToCloseApp(void) {
 
 int main() {
     InitApp();
-    config = new Config();
     g_acnlFont = Font::Open("romfs:/ACNL_font.bcfnt");
 
     if (g_acnlFont->IsLoaded()) {
@@ -73,10 +71,10 @@ int main() {
 
     InputManager::Instance()->RefreshInput();
     if (InputManager::Instance()->IsButtonActive(KEY_SELECT)) {
-        config->Reset();
+        Config::Instance()->Reset();
     }
 
-    if (config->Auto_Update) {
+    if (Config::Instance()->Auto_Update) {
         if (Updater::Launch()) {
             return 0;
         }

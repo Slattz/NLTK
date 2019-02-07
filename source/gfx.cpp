@@ -9,7 +9,6 @@
 #include "gfx.h"
 #include "utils.h"
 
-extern Config *config;
 extern NLTK_Titles_Info MediaInfo;
 
 C3D_RenderTarget* top;
@@ -56,7 +55,7 @@ struct C2D_SpriteSheet_s
         ButtonText.push_back(Text(COLOR_GREY, "Town", TextSize, TextSize, 37.f, 147.f));
     }
 
-    if (config->IsDebug)
+    if (Config::Instance()->IsDebug)
     {
         Text Cursor()
         DrawText(100, 120, 0.5, 0.5, COLOR_GREY, Format("Cursor X: %d, Cursor Y: %d", g_cursorpos.x, g_cursorpos.y).c_str());
@@ -157,7 +156,7 @@ void draw_base_interface(void)
     C2D_DrawRectSolid(0, 0, 0, 400, 20, COLOR_MENU_BARS);
     BarText[0].Draw();
 
-    if (config->IsDebug)
+    if (Config::Instance()->IsDebug)
         BarText[1].Draw();
     C2D_Flush();
 }
@@ -267,9 +266,9 @@ void draw_main_menu(void)
     ColumnText[1].Draw(); //Options
 
     DrawSprite(Common_ss, EDITOR_ICON, 90, 90); //Editor Icon
-    if (config->IsDebug) DrawSprite(Common_ss, MANAGER_ICON, 180, 90); //Manager Icon
+    if (Config::Instance()->IsDebug) DrawSprite(Common_ss, MANAGER_ICON, 180, 90); //Manager Icon
     ModeText[0].Draw(); //Editor
-    if (config->IsDebug) ModeText[1].Draw(); //Manager
+    if (Config::Instance()->IsDebug) ModeText[1].Draw(); //Manager
     
     C2D_SceneBegin(top);
     InputManager::Instance()->DrawCursor();
@@ -281,8 +280,8 @@ void draw_config_menu(void)
     static bool TextInit = false;
     static const float TextSize = 0.7f;
     static std::vector<Text> ConfigText;
-    bool  ConfigBools[] = {config->Auto_Update, config->Auto_SaveBackup, config->Auto_loadprefGame, 
-                    config->IsDebug};
+    bool  ConfigBools[] = {Config::Instance()->Auto_Update, Config::Instance()->Auto_SaveBackup, Config::Instance()->Auto_loadprefGame, 
+                    Config::Instance()->IsDebug};
     u32 configamount = 4;
 
     if (!TextInit) {
@@ -303,7 +302,7 @@ void draw_config_menu(void)
         ConfigText[i].Draw(52, 23+(28*i)); //ConfigText
     }
 
-    if (config->IsDebug)
+    if (Config::Instance()->IsDebug)
     {
         DrawSprite(Common_ss, CHECKBOX_FILLED, 20, 20+(28*(configamount-1)));
         ConfigText[configamount-1].Draw(52, 23+(28*(configamount-1)));

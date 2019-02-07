@@ -7,10 +7,9 @@
 
 class Config : public Json {
 
-  public:
-    Config(const char* path);
-    Config(void);
-    ~Config(void);
+public:
+    static Config* Instance(void);
+
     int Save(void);
     bool Reset(void);
 
@@ -24,9 +23,13 @@ class Config : public Json {
     int  prefGame = 0;
     int  prefGameMediaType = 0;
 
-  protected:
+private:
+    Config(void);
+    ~Config(void);
     void SetupValues(void);
     void ApplyValues(void);
+
+    static Config* m_Instance;
     const char *m_configPath = nullptr;
 };
 

@@ -16,7 +16,6 @@
 
 extern FS_MediaType currentMediaType;
 extern NLTK_Titles_Info MediaInfo;
-extern Config *config;
 
 static bool drawingMenu = false;
 
@@ -45,7 +44,7 @@ ReturnMode spawn_main_menu(void) {
         if (InputManager::Instance()->IsActive(editoract)) //Editor Icon
             ret = Editor::Main();
 
-        else if (InputManager::Instance()->IsActive(manageract) && config->IsDebug) //Manager Icon
+        else if (InputManager::Instance()->IsActive(manageract) && Config::Instance()->IsDebug) //Manager Icon
             ret = manager_main();
 
         else if (InputManager::Instance()->IsActive(aboutact)) //About Menu
@@ -256,7 +255,7 @@ void spawn_config_menu(void)
         if (DebugCode(debugcomplete))
         {
             debugcomplete = true;
-            config->IsDebug = true;
+            Config::Instance()->IsDebug = true;
         }
 
         if (InputManager::Instance()->IsButtonDown(KEY_B))
@@ -267,23 +266,23 @@ void spawn_config_menu(void)
         static const Rect_t prefgame = {{20, 76}, {44, 100}};
         static const Rect_t debugg = {{20, 104}, {44, 128}};
 
-        if (InputManager::Instance()->IsActive(aupdate)) //config->Auto_Update
-            config->Auto_Update = !config->Auto_Update;
+        if (InputManager::Instance()->IsActive(aupdate)) //Config::Instance()->Auto_Update
+            Config::Instance()->Auto_Update = !Config::Instance()->Auto_Update;
 
-        if (InputManager::Instance()->IsActive(svebakup)) //config->Auto_SaveBackup
-            config->Auto_SaveBackup = !config->Auto_SaveBackup;
+        if (InputManager::Instance()->IsActive(svebakup)) //Config::Instance()->Auto_SaveBackup
+            Config::Instance()->Auto_SaveBackup = !Config::Instance()->Auto_SaveBackup;
 
-        if (InputManager::Instance()->IsActive(prefgame)) //config->Auto_loadprefGame
-            config->Auto_loadprefGame = !config->Auto_loadprefGame;
+        if (InputManager::Instance()->IsActive(prefgame)) //Config::Instance()->Auto_loadprefGame
+            Config::Instance()->Auto_loadprefGame = !Config::Instance()->Auto_loadprefGame;
 
-        if (InputManager::Instance()->IsActive(debugg)) { //config->IsDebug
-            if (config->IsDebug)
+        if (InputManager::Instance()->IsActive(debugg)) { //Config::Instance()->IsDebug
+            if (Config::Instance()->IsDebug)
             {
-                config->IsDebug = false;
+                Config::Instance()->IsDebug = false;
                 debugcomplete = false;
             }
         }
     }
-    config->Save();
+    Config::Instance()->Save();
     drawingMenu = false;
 }

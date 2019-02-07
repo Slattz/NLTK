@@ -1,19 +1,12 @@
 #include <3ds.h>
-#include <cstring>
-#include "common.h"
-#include "gfx.h"
-#include "utils.h"
 #include "config.hpp"
+#include "common.h"
 
 static const char* configPath = WORKDIR "/config.json";
 static const char* configRomPath = "romfs:/config.json";
 
-Config::Config(const char* path) : Json(path) {
-    m_configPath = path;
-}
+Config* Config::m_Instance = nullptr;
 
-
-/* Load Config From Default Path */
 Config::Config(void) : Json(configRomPath) {
     m_configPath = configPath;
 
@@ -31,7 +24,18 @@ Config::Config(void) : Json(configRomPath) {
     }
 }
 
-Config::~Config() { }
+Config::~Config() {
+    json_decref(m_json);
+    m_Instance = nullptr;
+}
+
+Config* Config::Instance(void) {
+    if (m_Instance == nullptr) {
+        m_Instance = new Config;
+    }
+
+    return m_Instance;
+}
 
 void Config::SetupValues(void) {
     GetValue("debug", &IsDebug);
