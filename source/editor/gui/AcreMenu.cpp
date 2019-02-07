@@ -63,15 +63,19 @@ void Editor::Acre::InitAcreGFX(const u8 LoopMax, const u8 GridXMax,
 }
 
 static void Draw_SelectionPanel(void) {
-    int numAcresShown = 5; // 5 acres shown at a time max
+    static constexpr int numAcresShown = 5; // 5 acres shown at a time max
     u32 xLocation = 130;
     u32 yLocation = 120;
     s32 startAcreId = AcreConfig.SelectedAcre - 2;
 
     for (int i = 0; i < numAcresShown; i++) {
         s32 acreId = startAcreId + i;
-        if (acreId < 0 || acreId > ACRE_ID_MAX) {
-            continue;
+        if (acreId > ACRE_ID_MAX) {
+            acreId = acreId-ACRE_ID_MAX-1; //Take 1 so max is actually included
+        }
+
+        if (acreId < 0) {
+            acreId = acreId+ACRE_ID_MAX+1; //Add 1 so max is actually included
         }
 
         if (i == 2) {
@@ -89,11 +93,6 @@ static void Draw_AcresMenu()
 {
 
     draw_base_interface();
-
-    // Draw selected acre (if one is selected)
-    /*if (currentAcreId > -1 && currentAcreId <= ACRE_ID_MAX) {
-        DrawSprite(Acres_ss, ACRE_PNG + currentAcreId, (400 / 2) - (40 / 2), (240 / 2) - (40 / 2));
-    }*/
 
     if (AcreConfig.SelectedAcre > -1 && AcreConfig.SelectedAcre <= ACRE_ID_MAX)
     {
@@ -158,11 +157,32 @@ void Editor::Spawn_AcresMenu()
             break;
         }
 
-        if (AcreConfig.SelectedAcre > 0 && InputManager::Instance()->IsButtonDown(KEY_DLEFT)) {
-            AcreConfig.SelectedAcre--;
+        if (InputManager::Instance()->IsButtonDown(KEY_DLEFT)) {
+            if (AcreConfig.SelectedAcre > 0)
+                AcreConfig.SelectedAcre--;
+
+            else AcreConfig.SelectedAcre = ACRE_ID_MAX;
         }
-        else if (AcreConfig.SelectedAcre > -1 && AcreConfig.SelectedAcre < ACRE_ID_MAX && InputManager::Instance()->IsButtonDown(KEY_DRIGHT)) {
-            AcreConfig.SelectedAcre++;
+
+        else if (InputManager::Instance()->IsButtonDown(KEY_DRIGHT)) {
+            if (AcreConfig.SelectedAcre > -1 && AcreConfig.SelectedAcre < ACRE_ID_MAX)
+                AcreConfig.SelectedAcre++;
+
+            else AcreConfig.SelectedAcre = 0;
+        }
+
+        if (InputManager::Instance()->IsButtonDown(KEY_L)) {
+            if (AcreConfig.SelectedAcre > 4)
+                AcreConfig.SelectedAcre -= 5;
+
+            else AcreConfig.SelectedAcre = ACRE_ID_MAX;
+        }
+
+        else if (InputManager::Instance()->IsButtonDown(KEY_R)) {
+            if (AcreConfig.SelectedAcre > -1 && AcreConfig.SelectedAcre < ACRE_ID_MAX-4)
+                AcreConfig.SelectedAcre += 5;
+
+            else AcreConfig.SelectedAcre = 0;
         }
 
         if (AcreConfig.SelectedAcre > -1 && AcreConfig.SelectedAcre <= ACRE_ID_MAX && InputManager::Instance()->IsButtonDown(KEY_A)) {
