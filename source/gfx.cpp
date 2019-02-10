@@ -134,13 +134,9 @@ void draw_base_interface(void)
     static bool Init = false;
     static std::vector<Text> BarText;
     static std::string title = TITLE " " VERSION;
-    static int titleX = 320;
+    static const u32 titleX = 320;
 
     if (!Init) {
-        if (BETA_VERSION > 0) {
-            title += " B" TOSTRING(BETA_VERSION);
-            titleX -= 20;
-        }
 
         BarText.push_back(Text(COLOR_GREY, title, 0.6, 0.6, titleX, 2.f));
         BarText.push_back(Text(COLOR_ORANGE, "Debug: ON", 0.6, 0.6, 3.f, 2.f));

@@ -21,51 +21,32 @@ bool CheckVersion(const char *releaseName)
     int major = 0;
     int minor = 0;
     int revision = 0;
-    int beta_ver = 0;
     char *next = NULL;
 
     if (releaseName && *releaseName == 'v')
         releaseName++;
 
     major = strtol(releaseName, &next, 10); //Get major version
-    if (Config::Instance()->IsDebug) MsgDisp(top, Format("Major: %d, Result: %d", major, major >= MAJOR_VERSION));
+    if (Config::Instance()->IsDebug) MsgDisp(top, Format("Major: %d, Result: %d", major, major >= VERSION_MAJOR));
 
     if (next && *next == '.') //If minor version
         next++;
     else
-        return major > MAJOR_VERSION;
+        return major > VERSION_MAJOR;
 
     minor = strtol(next, &next, 10); //Get minor version
-    if (Config::Instance()->IsDebug) MsgDisp(top, Format("Minor: %d, Result %d", minor, minor >= MINOR_VERSION));
+    if (Config::Instance()->IsDebug) MsgDisp(top, Format("Minor: %d, Result %d", minor, minor >= VERSION_MINOR));
 
-    if (next && *next == '.') //If revision version
+    if (next && *next == '.') //If micro version
         next++;
 
-    else if (next && *next == 'B') //If there's no revision ver but it's beta
-    {
-        next++;
-        beta_ver = strtol(next, NULL, 10); //Get beta version
-        if (Config::Instance()->IsDebug) MsgDisp(top, Format("Beta 1: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION));
+    else //If there's no micro ver
+        return major >= VERSION_MAJOR && minor > VERSION_MINOR;
 
-        return major >= MAJOR_VERSION && minor >= MINOR_VERSION && beta_ver > BETA_VERSION;
-    }
+    revision = strtol(next, &next, 10); //Get micro version
+    if (Config::Instance()->Instance()->Instance()->Instance()->IsDebug) MsgDisp(top, Format("Micro: %d, Result %d", revision, revision >= VERSION_MICRO));
 
-    else //If there's no revision ver & beta ver
-        return major >= MAJOR_VERSION && minor > MINOR_VERSION;
-
-    revision = strtol(next, &next, 10); //Get revision version
-    if (Config::Instance()->Instance()->Instance()->Instance()->IsDebug) MsgDisp(top, Format("Revision: %d, Result %d", revision, revision >= REV_VERSION));
-
-    if (next && *next == 'B') //If there's a beta ver after revision ver
-        next++;
-
-    else
-        return major >= MAJOR_VERSION && minor >= MINOR_VERSION && revision > REV_VERSION;
-
-    beta_ver = strtol(next, NULL, 10); //Get beta version
-    if (Config::Instance()->Instance()->Instance()->IsDebug)
-        MsgDisp(top, Format("Beta 2: %d, Result %d", beta_ver, beta_ver >= BETA_VERSION));
-    return major >= MAJOR_VERSION && minor >= MINOR_VERSION && revision >= REV_VERSION && beta_ver > BETA_VERSION;
+    return major >= VERSION_MAJOR && minor >= VERSION_MINOR && revision > VERSION_MICRO;
 }
 
 bool HTTPDownload(const char *src, u8 **output, u32 *outSize)

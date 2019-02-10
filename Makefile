@@ -35,6 +35,11 @@ APP_TITLE		:= 	NLTK
 APP_DESCRIPTION	:=	New Leaf ToolKit
 APP_AUTHOR		:=	Slattz & Cuyler
 
+VERSION_MAJOR := 3
+VERSION_MINOR := 0
+VERSION_MICRO := 0
+GIT_REV="$(shell git rev-parse --short HEAD)"
+
 TARGET			:=	$(subst $e ,_,$(notdir $(APP_TITLE)))
 OUTDIR			:=	out
 BUILD			:=	build
@@ -86,7 +91,11 @@ ARCH	:=	-march=armv6k -mtune=mpcore -mfloat-abi=hard -mtp=soft
 
 CFLAGS	:=	-g -Wall -Wextra -Wno-psabi -O2 -mword-relocations \
 			-fomit-frame-pointer -ffunction-sections \
-			$(ARCH)
+			$(ARCH) \
+			-DVERSION_MAJOR=${VERSION_MAJOR} \
+			-DVERSION_MINOR=${VERSION_MINOR} \
+			-DVERSION_MICRO=${VERSION_MICRO} \
+			-DGIT_REV=\"$(GIT_REV)\" \
 
 CFLAGS	+=	$(INCLUDE) -DARM11 -D_3DS
 
@@ -204,7 +213,7 @@ all: $(BUILD) $(GFXBUILD) $(DEPSDIR) $(ROMFS_T3XFILES) $(T3XHFILES) $(OUTDIR)
 	@$(MAKE) --no-print-directory -C $(BUILD) -f $(CURDIR)/Makefile
 	@bannertool makebanner -i "$(BANNER_IMAGE)" -a "$(BANNER_AUDIO)" -o $(BUILD)/banner.bnr
 	@bannertool makesmdh -s "$(APP_TITLE)" -l "$(APP_DESCRIPTION)" -p "$(APP_AUTHOR)" -i "$(APP_ICON)" -f "$(ICON_FLAGS)" -o $(BUILD)/icon.icn
-	@makerom -f cia -o $(OUTPUT).cia -target t -exefslogo -elf "$(OUTPUT).elf" -rsf "$(RSF_PATH)" -banner "$(BUILD)/banner.bnr" -icon "$(BUILD)/icon.icn" -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(UNIQUE_ID)" -logo "$(LOGO)"
+	@makerom -f cia -o $(OUTPUT).cia -target t -exefslogo -elf "$(OUTPUT).elf" -rsf "$(RSF_PATH)" -ver "$$(($(VERSION_MAJOR)*1024+$(VERSION_MINOR)*16+$(VERSION_MICRO)))" -banner "$(BUILD)/banner.bnr" -icon "$(BUILD)/icon.icn" -DAPP_TITLE="$(APP_TITLE)" -DAPP_PRODUCT_CODE="$(PRODUCT_CODE)" -DAPP_UNIQUE_ID="$(UNIQUE_ID)" -logo "$(LOGO)"
 	@echo Building Finished!
 
 $(BUILD):

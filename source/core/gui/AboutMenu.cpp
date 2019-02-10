@@ -32,6 +32,7 @@ static const char *twittertext = "Follow on Twitter for AC Hacking,\nNLTK stuff 
 ImageButton* DiscordIcon;
 ImageButton* TwitterIcon;
 static Label* CreditText;
+static Label* CommitText;
 static std::vector<Label *> CreditsNameText;
 static std::vector<Label *> CreditsDescText;
 static bool g_Initialized = false; //We only need to initialize once as this screen is static
@@ -49,6 +50,9 @@ void Core::AboutMenu::Initialize(void) {
 
     CreditText = new Label(175, 30, 0, 0, COLOR_TRANSPARENT, COLOR_WHITE, std::string("Credits:"));
     CreditText->SetTextSize(0.6f, 0.6f);
+    CommitText = new Label(225, 3, 0, 0, COLOR_TRANSPARENT, COLOR_GREY, std::string("Commit: " GIT_REV));
+    CommitText->SetTextSize(0.4f, 0.4f);
+
     DiscordIcon = new ImageButton(55, 180, COLOR_TRANSPARENT, KEY_A | KEY_TOUCH, DISCORD_ICON, About_ss);
     TwitterIcon = new ImageButton(215, 180, COLOR_TRANSPARENT, KEY_A | KEY_TOUCH, TWITTER_ICON, About_ss);
 
@@ -69,6 +73,7 @@ void Core::Draw_AboutMenu(void) {
 
     C2D_SceneBegin(bottom);
     DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
+    CommitText->Draw(); //Git Commit
     DiscordIcon->Draw(); //Discord Icon
     TwitterIcon->Draw(); //Twitter Icon
     /* L:55, M:135, R:215 */
