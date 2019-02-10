@@ -20,10 +20,10 @@ static std::vector<Label *> ConfigCheckboxText;
 static const char *ConfigCheckboxStrings[CONFIG_BOOL_AMOUNT] = {"Auto Update", "Auto Save Backup", "Auto Load Preferred Game", "Debug"};
 
 void Core::ConfigMenu::Initialize(void) {
-    for (u32 i = 0; i < CONFIG_BOOL_AMOUNT; i++) {
-        bool *ConfigBools[CONFIG_BOOL_AMOUNT] = {&Config::Instance()->Auto_Update, &Config::Instance()->Auto_SaveBackup, 
-            &Config::Instance()->Auto_loadprefGame, &Config::Instance()->IsDebug};
+    bool *ConfigBools[CONFIG_BOOL_AMOUNT] = {&Config::Instance()->Auto_Update, &Config::Instance()->Auto_SaveBackup, 
+        &Config::Instance()->Auto_loadprefGame, &Config::Instance()->IsDebug};
 
+    for (u32 i = 0; i < CONFIG_BOOL_AMOUNT; i++) {
         Label* Lbl = new Label({52, 23+(28*i)}, {0, 0}, COLOR_TRANSPARENT, COLOR_WHITE, std::string(ConfigCheckboxStrings[i]));
         Lbl->SetTextSize(0.6f, 0.6f);
         ConfigCheckboxText.push_back(Lbl);

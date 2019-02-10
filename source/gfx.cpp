@@ -4,7 +4,6 @@
 #include "unicode.h"
 #include "common.h"
 #include "structs.h"
-#include "about.h"
 #include "config.hpp"
 #include "gfx.h"
 #include "utils.h"
@@ -271,47 +270,6 @@ void draw_main_menu(void)
     if (Config::Instance()->IsDebug) ModeText[1].Draw(); //Manager
     
     C2D_SceneBegin(top);
-    InputManager::Instance()->DrawCursor();
-    C3D_FrameEnd(0);
-}
-
-void draw_about_menu(bool discord, bool twitter)
-{
-    static bool TextInit = false;
-    static const float TextSize = 0.6f;
-    static std::vector<Text> AboutLText;
-    static std::vector<Text> AboutRText;
-    static Text CreditTxt(COLOR_GREY, "Credits:", TextSize, TextSize, 175, 30);
-
-    if (!TextInit) {
-        for (int i = 0; i < creditsCount; i++) {
-            AboutLText.push_back(Text(COLOR_GREY, credits[i*2], TextSize, TextSize));
-            AboutRText.push_back(Text(COLOR_GREY, credits[1+i*2], TextSize, TextSize));
-        }
-        TextInit = true;
-    }
-
-    draw_base_interface();
-    CreditTxt.Draw();
-
-    for (int i = 0; i < creditsCount; i++)
-    {
-        AboutLText[i].Draw(10, 55+(i*20)); //Name
-        AboutRText[i].Draw(120, 55+(i*20)); //Description
-    }
-
-    C2D_SceneBegin(bottom);
-    DrawSprite(Common_ss, NLTK_ICON, 126, 10); //NLTK's Icon
-    DrawSprite(About_ss, DISCORD_ICON, 55, 180); //Discord Icon
-    DrawSprite(About_ss, TWITTER_ICON, 215, 180); //Twitter Icon
-    /* L:55, M:135, R:215 */
-
-    if (discord)
-        MsgDisp(bottom, discordtext, MsgTypeNone, COLOR_BROWN, COLOR_GREY, 0.6f, 60.f, 100.f, 200.f, 70.f);
-
-    else if (twitter)
-        MsgDisp(bottom, twittertext, MsgTypeNone, COLOR_BROWN, COLOR_GREY, 0.6f, 60.f, 100.f, 200.f, 70.f);
-
     InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }

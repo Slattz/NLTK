@@ -13,6 +13,7 @@
 #include "manager/manager.h"
 #include "editor/editor.h"
 #include "core/gui/ConfigMenu.hpp"
+#include "core/gui/AboutMenu.hpp"
 #include "menus.h"
 
 extern FS_MediaType currentMediaType;
@@ -49,7 +50,7 @@ ReturnMode spawn_main_menu(void) {
             ret = manager_main();
 
         else if (InputManager::Instance()->IsActive(aboutact)) //About Menu
-            spawn_about_menu();
+            Core::Spawn_AboutMenu();
 
         else if (InputManager::Instance()->IsActive(configact)) //Config Menu
             Core::Spawn_ConfigMenu();
@@ -197,42 +198,4 @@ u64 spawn_game_select_menu(FS_MediaType *mediaType)
         }
     }
     return 0;
-}
-
-void spawn_about_menu(void)
-{
-    if (drawingMenu)
-        return;
-
-    drawingMenu = true;
-
-    static bool discord = false;
-    static bool twitter = false;
-    while (aptMainLoop())
-    {
-        checkIfCardInserted();
-
-        draw_about_menu(discord, twitter);
-        InputManager::Instance()->RefreshInput();
-
-        if (InputManager::Instance()->IsButtonDown(KEY_B))
-            break;
-
-        static const Rect_t discordrect = {{55, 180}, {105, 230}};
-        static const Rect_t twiterrect = {{215, 180}, {265, 230}};
-
-        if (InputManager::Instance()->IsActive(discordrect)) //Left Icon - Discord
-            discord = true;
-
-        else
-            discord = false;
-
-        if (InputManager::Instance()->IsActive(twiterrect)) //Right Icon - Twitter
-            twitter = true;
-
-        else
-            twitter = false;
-    }
-
-    drawingMenu = false;
 }

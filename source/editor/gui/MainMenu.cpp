@@ -11,6 +11,7 @@
 #include "imagebutton.h"
 #include "menus.h"
 #include "core/gui/ConfigMenu.hpp"
+#include "core/gui/AboutMenu.hpp"
 #include "gui/MainMenu.hpp"
 #include "gui/PlayerMenu.hpp"
 #include "gui/AcreMenu.hpp"
@@ -163,10 +164,10 @@ ReturnMode Editor::Spawn_MainMenu()
             MsgDisp(top, "Island Menu Coming Soon!");
 
         else if (MainStreetButton->IsActive()) //Main Street Menu
-            Editor::Spawn_ShopsMenu();
+            MsgDisp(top, "Shops Menu Coming Soon!");
 
         else if (AboutButton->IsActive()) //About Menu
-            spawn_about_menu();
+            Core::Spawn_AboutMenu();
 
         /* Menu Columns */
         else if (OptionsButton->IsActive()) //Options Column
