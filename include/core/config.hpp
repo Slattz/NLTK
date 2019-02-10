@@ -16,7 +16,6 @@ public:
 
     bool IsDebug = false;
     bool Auto_Update = false;
-    bool Use_Sys_Keyboard = false;
     bool Auto_SaveBackup = false;
     int  Auto_loadprefMode = 0;
     bool Auto_loadprefGame = false;

@@ -1,7 +1,6 @@
 {
     "debug": false,
     "auto_update": true,
-    "use_sys_keyboard": false,
     "auto_savebackup": false,
     "auto_loadprefMode": 0,
     "auto_loadprefGame": false,

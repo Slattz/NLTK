@@ -275,42 +275,6 @@ void draw_main_menu(void)
     C3D_FrameEnd(0);
 }
 
-void draw_config_menu(void)
-{
-    static bool TextInit = false;
-    static const float TextSize = 0.7f;
-    static std::vector<Text> ConfigText;
-    bool  ConfigBools[] = {Config::Instance()->Auto_Update, Config::Instance()->Auto_SaveBackup, Config::Instance()->Auto_loadprefGame, 
-                    Config::Instance()->IsDebug};
-    u32 configamount = 4;
-
-    if (!TextInit) {
-        ConfigText.push_back(Text(COLOR_GREY, "Auto Update", TextSize, TextSize));
-        ConfigText.push_back(Text(COLOR_GREY, "Auto Save Backup", TextSize, TextSize));
-        ConfigText.push_back(Text(COLOR_GREY, "Auto Load Preferred Game", TextSize, TextSize));
-        ConfigText.push_back(Text(COLOR_GREY, "Debug", TextSize, TextSize));
-        TextInit = true;
-    }
-
-    draw_base_interface();
-    C2D_SceneBegin(bottom);
-
-    u32 i;
-    for (i = 0; i < configamount-1; i++) //configmax-1: exclude Debug
-    {
-        DrawSprite(Common_ss, (ConfigBools[i] == true ? CHECKBOX_FILLED : CHECKBOX_EMPTY), 20, 20+(28*i));
-        ConfigText[i].Draw(52, 23+(28*i)); //ConfigText
-    }
-
-    if (Config::Instance()->IsDebug)
-    {
-        DrawSprite(Common_ss, CHECKBOX_FILLED, 20, 20+(28*(configamount-1)));
-        ConfigText[configamount-1].Draw(52, 23+(28*(configamount-1)));
-    }
-    InputManager::Instance()->DrawCursor();
-    C3D_FrameEnd(0);
-}
-
 void draw_about_menu(bool discord, bool twitter)
 {
     static bool TextInit = false;

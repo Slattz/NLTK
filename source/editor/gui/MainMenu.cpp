@@ -10,6 +10,7 @@
 #include "InputManager.h"
 #include "imagebutton.h"
 #include "menus.h"
+#include "core/gui/ConfigMenu.hpp"
 #include "gui/MainMenu.hpp"
 #include "gui/PlayerMenu.hpp"
 #include "gui/AcreMenu.hpp"
@@ -169,7 +170,7 @@ ReturnMode Editor::Spawn_MainMenu()
 
         /* Menu Columns */
         else if (OptionsButton->IsActive()) //Options Column
-            spawn_config_menu();
+            Core::Spawn_ConfigMenu();
 
         else if (GameSelectButton->IsActive()) //Game Select Column
             return ReturnMode::GameSelect;

@@ -12,6 +12,7 @@
 #include "core/imagebutton.h"
 #include "manager/manager.h"
 #include "editor/editor.h"
+#include "core/gui/ConfigMenu.hpp"
 #include "menus.h"
 
 extern FS_MediaType currentMediaType;
@@ -51,7 +52,7 @@ ReturnMode spawn_main_menu(void) {
             spawn_about_menu();
 
         else if (InputManager::Instance()->IsActive(configact)) //Config Menu
-            spawn_config_menu();
+            Core::Spawn_ConfigMenu();
 
         if (ret == ReturnMode::Exit) {
             break;
@@ -233,56 +234,5 @@ void spawn_about_menu(void)
             twitter = false;
     }
 
-    drawingMenu = false;
-}
-
-void spawn_config_menu(void)
-{
-    if (drawingMenu)
-        return;
-
-    drawingMenu = true;
-
-    static bool debugcomplete = false;
-
-    while (aptMainLoop())
-    {
-        checkIfCardInserted();
-
-        draw_config_menu();
-        InputManager::Instance()->RefreshInput();
-
-        if (DebugCode(debugcomplete))
-        {
-            debugcomplete = true;
-            Config::Instance()->IsDebug = true;
-        }
-
-        if (InputManager::Instance()->IsButtonDown(KEY_B))
-            break;
-
-        static const Rect_t aupdate = {{20, 20}, {44, 44}};
-        static const Rect_t svebakup = {{20, 48}, {44, 72}};
-        static const Rect_t prefgame = {{20, 76}, {44, 100}};
-        static const Rect_t debugg = {{20, 104}, {44, 128}};
-
-        if (InputManager::Instance()->IsActive(aupdate)) //Config::Instance()->Auto_Update
-            Config::Instance()->Auto_Update = !Config::Instance()->Auto_Update;
-
-        if (InputManager::Instance()->IsActive(svebakup)) //Config::Instance()->Auto_SaveBackup
-            Config::Instance()->Auto_SaveBackup = !Config::Instance()->Auto_SaveBackup;
-
-        if (InputManager::Instance()->IsActive(prefgame)) //Config::Instance()->Auto_loadprefGame
-            Config::Instance()->Auto_loadprefGame = !Config::Instance()->Auto_loadprefGame;
-
-        if (InputManager::Instance()->IsActive(debugg)) { //Config::Instance()->IsDebug
-            if (Config::Instance()->IsDebug)
-            {
-                Config::Instance()->IsDebug = false;
-                debugcomplete = false;
-            }
-        }
-    }
-    Config::Instance()->Save();
     drawingMenu = false;
 }

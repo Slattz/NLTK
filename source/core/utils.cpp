@@ -54,43 +54,6 @@ bool is_ACNL(u64 tid)
     else return false;
 }
 
-bool DebugCode(bool complete)
-{
-    static const u32 debug_code[] =
-    {
-        KEY_X, KEY_Y, KEY_X, KEY_Y, KEY_UP,
-        KEY_RIGHT, KEY_DOWN, KEY_LEFT, KEY_X, KEY_A
-    };
-
-    const u32 maxpos = sizeof(debug_code)/sizeof(debug_code[0]);
-    static u32 pos = 0;
-    static u32 timeout = 60;
-    u32 down = hidKeysDown();
-
-    if (!complete)
-    {
-        if (timeout > 0)
-            timeout--;
-
-        if (timeout == 0)
-            pos = 0;
-
-        if (pos == maxpos)
-        {
-            pos = 0;
-            timeout = 30;
-            return true;
-        }
-
-        else if (down)
-        {
-            pos = (down & debug_code[pos]) ? pos+1 : 0;
-            timeout = 30;
-        }
-    }
-    return false;
-}
-
 void Sleep(u64 nanoseconds)
 {
     svcSleepThread(nanoseconds);

@@ -130,6 +130,5 @@ void draw_base_interface(void);
 void draw_main_menu(void);
 void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmedia);
 void draw_about_menu(bool discord, bool twitter);
-void draw_config_menu(void);
 
 #endif

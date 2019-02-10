@@ -40,6 +40,7 @@ OUTDIR			:=	out
 BUILD			:=	build
 SOURCES         :=	source \
                     source/core \
+                    source/core/gui \
                     source/editor \
                     source/editor/gui \
                     source/editor/gui/Player \

@@ -40,7 +40,6 @@ Config* Config::Instance(void) {
 void Config::SetupValues(void) {
     GetValue("debug", &IsDebug);
     GetValue("auto_update", &Auto_Update);
-    GetValue("use_sys_keyboard", &Use_Sys_Keyboard);
     GetValue("auto_savebackup", &Auto_SaveBackup);
     GetValue("auto_loadprefMode", &Auto_loadprefMode);
     GetValue("auto_loadprefGame", &Auto_loadprefGame);
@@ -51,7 +50,6 @@ void Config::SetupValues(void) {
 void Config::ApplyValues(void) {
     SetValue("debug", IsDebug);
     SetValue("auto_update", Auto_Update);
-    SetValue("use_sys_keyboard", Use_Sys_Keyboard);
     SetValue("auto_savebackup", Auto_SaveBackup);
     SetValue("auto_loadprefMode", Auto_loadprefMode);
     SetValue("auto_loadprefGame", Auto_loadprefGame);

@@ -22,6 +22,5 @@ void checkIfCardInserted(void);
 ReturnMode spawn_main_menu(void);
 u64 spawn_game_select_menu(FS_MediaType *mediaType);
 void spawn_about_menu(void);
-void spawn_config_menu(void);
 
 #endif
