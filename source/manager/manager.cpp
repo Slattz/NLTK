@@ -8,6 +8,7 @@
 #include "structs.h"
 #include "menus.h"
 #include "manager/manager.h"
+#include "core/gui/GameSelectMenu.hpp"
 
 extern u64 g_tid;
 extern FS_MediaType currentMediaType;
@@ -34,7 +35,7 @@ GameSelect:
             g_tid = Config::Instance()->prefGame|0x4000000000000; // TODO: Support media type in config
         }
         else {
-            g_tid = spawn_game_select_menu(&currentMediaType);
+            g_tid = Core::Spawn_GameSelectMenu(&currentMediaType);
         }
 
         if (g_tid == 0) {

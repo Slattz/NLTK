@@ -8,8 +8,6 @@
 #include "gfx.h"
 #include "utils.h"
 
-extern NLTK_Titles_Info MediaInfo;
-
 C3D_RenderTarget* top;
 C3D_RenderTarget* bottom;
 C2D_ImageTint* GreyFilter = new C2D_ImageTint[sizeof(C2D_ImageTint)];
@@ -266,128 +264,6 @@ void draw_main_menu(void)
     if (Config::Instance()->IsDebug) ModeText[1].Draw(); //Manager
     
     C2D_SceneBegin(top);
-    InputManager::Instance()->DrawCursor();
-    C3D_FrameEnd(0);
-}
-
-void draw_game_select_menu(int selectedgame, int selectedregion, int selectedmedia)
-{
-    static const Text ConfirmTxt(COLOR_GREY, "Confirm", 0.7f, 0.7f, 128, 195);
-    static Text SelectTxt(COLOR_GREY, "Select your installed ACNL game:", 0.8f, 0.8f);
-    SelectTxt.CenterInBounds(0.f, 90.f, 400.f, 0.f);
-    draw_base_interface();
-    C2D_SceneBegin(bottom);
-
-    if (selectedmedia == -1 || selectedgame == -1 || selectedregion == -1) {
-        C2D_DrawRectSolid(75, 190, 0, 170, 30, COLOR_BROWN); //Confirm Button
-    }
-    else {
-        C2D_DrawRectSolid(75, 190, 0, 170, 30, COLOR_LIGHT_BROWN); //Confirm Button (Can Confirm)
-    }
-
-    // Media Type
-    if (selectedmedia == 1) { //Game Card
-        C2D_DrawRectSolid(98, 3, 0, 54, 54, COLOR_GREY); //Grey Outline
-        DrawSprite(GameSelect_ss, GAME_CART, 101, 6); //Game Card is selected
-        DrawSprite(GameSelect_ss, SD_CARD, 169, 6, GreyFilter); //Grey filter over SD card
-    }
-    else if (selectedmedia == 0) { //SD Card
-        C2D_DrawRectSolid(166, 3, 0, 54, 54, COLOR_GREY); //Grey Outline
-        DrawSprite(GameSelect_ss, SD_CARD, 169, 6); //SD Card is selected
-        DrawSprite(GameSelect_ss, GAME_CART, 101, 6, GreyFilter); //Grey Filter over Game Cart
-    }
-    else { //No Media selected yet
-        if (MediaInfo.GameCartInfo.HasACNLData) {
-            DrawSprite(GameSelect_ss, GAME_CART, 101, 6);
-        }
-        else {
-            DrawSprite(GameSelect_ss, GAME_CART, 101, 6, GreyFilter);
-        }
-
-        if (MediaInfo.SDCardInfo.HasACNLData) {
-            DrawSprite(GameSelect_ss, SD_CARD, 169, 6);
-        }
-        else {
-            DrawSprite(GameSelect_ss, SD_CARD, 169, 6, GreyFilter);
-        }
-    }
-
-    NLTK_Media_Installed mediaInstalled = selectedmedia == 0
-        ? MediaInfo.SDCardInfo : MediaInfo.GameCartInfo;
-
-    /* Grey Outlines */
-    if (selectedgame == 1) //Orig ACNL
-        C2D_DrawRectSolid(98, 63, 0, 54, 54, COLOR_GREY);
-
-    else if (selectedgame == 2) //WA ACNL
-        C2D_DrawRectSolid(166, 63, 0, 54, 54, COLOR_GREY);
-
-    if (selectedregion == 0) //JPN
-        C2D_DrawRectSolid(167, 127, 0, 50, 36, COLOR_GREY);
-
-    else if (selectedregion == 1) //USA
-        C2D_DrawRectSolid(103, 127, 0, 50, 33, COLOR_GREY);
-
-    else if (selectedregion == 2) //EUR
-        C2D_DrawRectSolid(39, 127, 0, 50, 36, COLOR_GREY);
-
-    else if (selectedregion == 3) //KOR
-        C2D_DrawRectSolid(231, 127, 0, 50, 36, COLOR_GREY);
-
-    DrawSprite(GameSelect_ss, ACNL_ICON, 101, 66);
-    DrawSprite(GameSelect_ss, ACNL_WA_ICON, 169, 66);
-    DrawSprite(GameSelect_ss, EUR_FLAG, 42, 130);
-    DrawSprite(GameSelect_ss, USA_FLAG, 106, 127);
-    DrawSprite(GameSelect_ss, JPN_FLAG, 170, 130);
-    DrawSprite(GameSelect_ss, KOR_FLAG, 234, 130);
-    ConfirmTxt.Draw(); //Confirm Button Text
-
-    if (selectedmedia == -1 || !mediaInstalled.InstalledTitles.ORIG_installed) //Grey out Orig ACNL Icon if no ORIG ACNL game is found
-    C2D_DrawRectSolid(101, 66, 0, 48, 48, COLOR_GREY_FILTER);
-
-    if (selectedmedia == -1 || !mediaInstalled.InstalledTitles.WA_installed) //Grey out WA ACNL Icon if no WA ACNL game is found
-    C2D_DrawRectSolid(169, 66, 0, 48, 48, COLOR_GREY_FILTER);
-
-    if (selectedgame == 1)
-    {
-        if (!mediaInstalled.InstalledTitles.ORIG_JPN_installed) //Grey out JPN Flag if no orig JPN game is found
-            C2D_DrawRectSolid(170, 130, 0, 44, 30, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.ORIG_USA_installed) //Grey out USA Flag if no orig USA game is found
-            C2D_DrawRectSolid(106, 130, 0, 44, 27, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.ORIG_EUR_installed) //Grey out EUR Flag if no orig EUR game is found
-            C2D_DrawRectSolid(42, 130, 0, 44, 30, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.ORIG_KOR_installed) //Grey out KOR Flag if no orig KOR game is found
-            C2D_DrawRectSolid(234, 130, 0, 44, 30, COLOR_GREY_FILTER);
-    }
-
-    else if (selectedgame == 2)
-    {
-        if (!mediaInstalled.InstalledTitles.WA_JPN_installed) //Grey out JPN Flag if no WA JPN game is found
-            C2D_DrawRectSolid(170, 130, 0, 44, 30, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.WA_USA_installed) //Grey out USA Flag if no WA USA game is found
-            C2D_DrawRectSolid(106, 130, 0, 44, 27, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.WA_EUR_installed) //Grey out EUR Flag if no WA EUR game is found
-            C2D_DrawRectSolid(42, 130, 0, 44, 30, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.WA_KOR_installed) //Grey out KOR Flag if no WA KOR game is found
-            C2D_DrawRectSolid(234, 130, 0, 44, 30, COLOR_GREY_FILTER);
-    }
-
-    else
-    {
-        C2D_DrawRectSolid(170, 130, 0, 44, 30, COLOR_GREY_FILTER); //JPN
-        C2D_DrawRectSolid(106, 130, 0, 44, 27, COLOR_GREY_FILTER); //USA
-        C2D_DrawRectSolid(42, 130, 0, 44, 30, COLOR_GREY_FILTER); //EUR
-        C2D_DrawRectSolid(234, 130, 0, 44, 30, COLOR_GREY_FILTER); //KOR
-    }
-
-    C2D_SceneBegin(top);
-    SelectTxt.Draw();
     InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
 }

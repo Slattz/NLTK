@@ -20,6 +20,5 @@ enum class ReturnMode {
 
 void checkIfCardInserted(void);
 ReturnMode spawn_main_menu(void);
-u64 spawn_game_select_menu(FS_MediaType *mediaType);
 
 #endif

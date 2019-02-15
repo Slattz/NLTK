@@ -6,17 +6,6 @@
 #include <3ds.h>
 #include <string>
 
-enum GameType {
-    NL_JPN,
-    NL_USA,
-    NL_EUR,
-    NL_KOR,
-    WA_JPN,
-    WA_USA,
-    WA_EUR,
-    WA_KOR
-};
-
 //NLTK Settings
 struct NLTK_Settings
 {
