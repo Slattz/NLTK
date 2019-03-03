@@ -7,6 +7,7 @@
 #include "config.hpp"
 #include "gfx.h"
 #include "utils.h"
+#include "nfs.h"
 
 C3D_RenderTarget* top;
 C3D_RenderTarget* bottom;

@@ -12,7 +12,6 @@
 
 static FontHandle g_acnlFont;
 u64 g_tid = 0;
-FS_MediaType currentMediaType;
 
 // Override ctrulib appInit to check for Rosalina hbl
 void __appInit(void)

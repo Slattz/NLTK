@@ -18,8 +18,6 @@
 
 extern FS_MediaType currentMediaType;
 
-static bool drawingMenu = false;
-
 void checkIfCardInserted() {
     if (currentMediaType == MEDIATYPE_GAME_CARD && !IsGameCartInserted()) {
         DisplayCardError();

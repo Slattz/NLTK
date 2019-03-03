@@ -35,7 +35,7 @@ GameSelect:
             g_tid = Config::Instance()->prefGame|0x4000000000000; // TODO: Support media type in config
         }
         else {
-            g_tid = Core::Spawn_GameSelectMenu(&currentMediaType);
+            g_tid = Core::Spawn_GameSelectMenu(currentMediaType);
         }
 
         if (g_tid == 0) {

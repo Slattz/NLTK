@@ -5,7 +5,7 @@
 
 namespace Core
 {
-    u64 Spawn_GameSelectMenu(FS_MediaType *mediaType);
+    u64 Spawn_GameSelectMenu(FS_MediaType &mediaType);
     void Draw_GameSelectMenu(void);
 
     namespace GameSelectMenu

@@ -4,6 +4,7 @@
 #include <citro2d.h>
 #include "CTRFont.hpp"
 #include "InputManager.h"
+#include "common.h"
 #include "core/gui/GameSelectMenu.hpp"
 #include "label.h"
 #include "imagebutton.h"
@@ -188,7 +189,7 @@ void Core::Draw_GameSelectMenu(void) {
     C3D_FrameEnd(0);
 }
 
-u64 Core::Spawn_GameSelectMenu(FS_MediaType *mediaType) {
+u64 Core::Spawn_GameSelectMenu(FS_MediaType &mediaType) {
     checkInstalledTitles();
 
     if (MediaInfo.GameCartInfo.HasACNLData == false && MediaInfo.SDCardInfo.HasACNLData == false)
@@ -291,7 +292,7 @@ u64 Core::Spawn_GameSelectMenu(FS_MediaType *mediaType) {
             else
             {
                 // Set Media Type
-                *mediaType = static_cast<FS_MediaType>(static_cast<u8>(SelectedMedia) + 1);
+                mediaType = static_cast<FS_MediaType>(static_cast<u8>(SelectedMedia) + 1);
 
                 if (SelectedGame == GameType::Orig)
                     return JPN_TID + (static_cast<u8>(SelectedRegion) * 0x100); //Form orig TID
