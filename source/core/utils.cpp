@@ -23,26 +23,6 @@ std::map<u16, std::string> g_villagerDatabase;
 // TODO: We should probably just use one item database.
 std::map<std::string, std::map<u16, std::string>> g_sortedItemDatabase;
 
-/*
-    bool IsSDCardInserted(void)
-        => returns whether or not the SD Card is inserted
-*/
-bool IsSDCardInserted() {
-    bool inserted = false;
-    FSUSER_IsSdmcDetected(&inserted);
-    return inserted;
-}
-
-/*
-    bool IsGameCartInserted(void)
-        => returns whether or not a GameCard is inserted
-*/
-bool IsGameCartInserted() {
-    bool inserted = false;
-    FSUSER_CardSlotIsInserted(&inserted);
-    return inserted;
-}
-
 bool is_ACNL(u64 tid)
 {
     if (tid == JPN_TID || tid == USA_TID || tid == EUR_TID || tid == KOR_TID)

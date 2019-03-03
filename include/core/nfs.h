@@ -1,13 +1,12 @@
 #pragma once
 
-#ifndef FS_H
-#define FS_H
-
-#include <cstdio>
-#include "save.h"
+#ifndef NFS_H
+#define NFS_H
 
 struct NLTK_Media_Installed;
 
+bool IsSDCardInserted(void);
+bool IsGameCartInserted(void);
 bool openSaveArchive(FS_Archive *out, u64 id, FS_MediaType mediaType);
 bool tryOpenSaveArchive(FS_Archive *out, u64 id, FS_MediaType *mediaTypeOut);
 NLTK_Media_Installed getInstalledTitles(FS_MediaType mediaType);

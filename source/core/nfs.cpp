@@ -11,11 +11,29 @@
 #include "common.h"
 #include "nfs.h"
 
-extern FS_MediaType currentMediaType;
+FS_MediaType currentMediaType;
 
 NLTK_Titles_Info MediaInfo;
-bool loadedFromCart = true;
-AM_TitleEntry* titleInfo;
+
+/*
+    bool IsSDCardInserted(void)
+        => returns whether or not the SD Card is inserted
+*/
+bool IsSDCardInserted() {
+    bool inserted = false;
+    FSUSER_IsSdmcDetected(&inserted);
+    return inserted;
+}
+
+/*
+    bool IsGameCartInserted(void)
+        => returns whether or not a GameCard is inserted
+*/
+bool IsGameCartInserted() {
+    bool inserted = false;
+    FSUSER_CardSlotIsInserted(&inserted);
+    return inserted;
+}
 
 /*
     bool openSaveArchive(FS_Archive *out, u64 id, FS_MediaType mediaType)
