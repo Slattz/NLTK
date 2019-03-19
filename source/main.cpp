@@ -3,6 +3,7 @@
 #include "save.h"
 #include "nfs.h"
 #include "gfx.h"
+#include "utils.h"
 #include "config.hpp"
 #include "menus.h"
 #include "core/updater.hpp"
@@ -37,12 +38,16 @@ void __appInit(void)
 }
 
 void InitApp(void) {
+    if (Utils_IsNew3DS())
+        osSetSpeedupEnable(true);
+
     romfsInit();
     amInit();
     cfguInit();
     httpc.Init(0);
     FS::Initialize();
     InitGFX();
+
 }
 
 void PrepareToCloseApp(void) {
@@ -51,11 +56,15 @@ void PrepareToCloseApp(void) {
     }
 
     Config::Instance()->Save();
+    FS::Cleanup();
     ExitGFX();
-    cfguExit();
     httpc.Exit();
+    cfguExit();
     amExit();
     romfsExit();
+
+    if (Utils_IsNew3DS())
+        osSetSpeedupEnable(false);
 }
 
 int main() {

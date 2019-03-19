@@ -17,5 +17,6 @@ void            loadItemDatabase();
 void            LoadVillagerDatabase();
 C2D_Image       ImageDataToC2DImage(u32 *imageData, u32 width, u32 height, GPU_TEXCOLOR colorFormat = GPU_TEXCOLOR::GPU_RGBA8);
 void            C2D_ImageDelete(C2D_Image image);
+bool            Utils_IsNew3DS(void);
 
 #endif

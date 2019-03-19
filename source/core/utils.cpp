@@ -92,7 +92,7 @@ bool checkGameCartIsACNL() {
         if (titles.Cart_Titles == FS::ACNL_Game::NONE) return false;
         else return true;
     }
-    
+
     else {
         return checkGameCartTitleSame(currentTitleId);
     }
@@ -238,4 +238,13 @@ void    C2D_ImageDelete(C2D_Image image)
     C3D_TexDelete(image.tex);
     delete image.tex;
     delete image.subtex;
+}
+
+bool Utils_IsNew3DS(void) {
+    bool isNew3DS = false;
+    if (R_SUCCEEDED(APT_CheckNew3DS(&isNew3DS))) {
+        return isNew3DS;
+    }
+
+    return false;
 }
