@@ -35,8 +35,8 @@ APP_TITLE		:= 	NLTK
 APP_DESCRIPTION	:=	New Leaf ToolKit
 APP_AUTHOR		:=	Slattz & Cuyler
 
-VERSION_MAJOR := 3
-VERSION_MINOR := 0
+VERSION_MAJOR := 0
+VERSION_MINOR := 3
 VERSION_MICRO := 0
 GIT_REV="$(shell git rev-parse --short HEAD)"
 
