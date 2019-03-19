@@ -1,6 +1,9 @@
 #include <3ds.h>
 #include <string>
 #include <cstring>
+#include <vector>
+#include <array>
+#include <algorithm>
 #include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
@@ -11,9 +14,114 @@
 #include "common.h"
 #include "nfs.h"
 
-FS_MediaType currentMediaType;
+static void SetACNLTitlesOnCart(void);
+static void SetACNLTitlesOnSD(void);
 
-NLTK_Titles_Info MediaInfo;
+FS_MediaType currentMediaType;
+static FS::ACNL_TitlesInstalled InstalledTitles;
+static FS_Archive sdmcArch = 0;
+
+static constexpr std::array<u64, 8> ACNLTitleIDs = {
+    0x0004000000086200, //Orig JPN
+    0x0004000000086300, //Orig USA
+    0x0004000000086400, //Orig EUR
+    0x0004000000086500, //Orig KOR
+
+    0x0004000000198D00, //WA JPN
+    0x0004000000198E00, //WA USA
+    0x0004000000198F00, //WA EUR
+    0x0004000000199000, //WA KOR
+};
+
+Result FS::Initialize(void) {
+    Result res = 0;
+
+    if (R_FAILED(res = FSUSER_OpenArchive(&sdmcArch, ARCHIVE_SDMC, fsMakePath(PATH_EMPTY, ""))))
+        return res;
+
+    CreateDir(WORKDIR);
+    CreateDir(WORKDIR "/Saves");
+    CreateDir(WORKDIR "/TownManager");
+
+    SetACNLTitlesOnCart();
+    SetACNLTitlesOnSD();
+
+    return res;
+}
+
+
+void FS::Cleanup(void) {
+    FSUSER_CloseArchive(sdmcArch);
+}
+
+Result FS::CreateDir(const std::string &path) {
+    return FSUSER_CreateDirectory(GetSDMCArchive(), fsMakePath(PATH_ASCII, path.c_str()), 0);
+}
+
+FS_Archive FS::GetSDMCArchive(void)
+{
+    return sdmcArch;
+}
+
+Result FS::OpenSaveArchive(FS_Archive *archive, FS_MediaType MediaType, u64 TitleID) {
+    u32 path[3] = {MediaType, static_cast<u32>(TitleID), static_cast<u32>(TitleID >> 32)};
+    FS_Path TitlePath = {PATH_BINARY, 12, path};
+    return FSUSER_OpenArchive(archive, ARCHIVE_USER_SAVEDATA, TitlePath);
+}
+
+bool FS::IsSaveAccessible(FS_MediaType MediaType, u64 TitleID) {
+    FS_Archive archive;
+    Result res = OpenSaveArchive(&archive, MediaType, TitleID);
+    if (R_SUCCEEDED(res)) {
+        FSUSER_CloseArchive(archive);
+        return true;
+    }
+    return false;
+}
+
+static void SetACNLTitlesOnCart(void) {
+    u32 amount = 0;
+    u64 TitleID = 0;
+    InstalledTitles.Cart_Titles = FS::ACNL_Game::NONE; //Set ACNL_Game values
+
+    AM_GetTitleCount(MEDIATYPE_GAME_CARD, &amount); //Get amount of titles on cart (should only be 1)
+    if (amount > 0) {
+        AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, amount, &TitleID); //Get all installed title ids
+
+        for(u32 i = 0; i < ACNLTitleIDs.size(); i++)
+        {
+            u64 ID = ACNLTitleIDs.at(i);
+            if (ID == TitleID) {
+                InstalledTitles.Cart_Titles |= (1 << i); //Set ACNL_Game values
+                break; //Only 1 on cart, so no need to go further in loop
+            }
+        }
+    }
+}
+
+static void SetACNLTitlesOnSD(void) {
+    u32 amount = 0;
+    InstalledTitles.SD_Titles = FS::ACNL_Game::NONE; //Set ACNL_Game values
+
+    AM_GetTitleCount(MEDIATYPE_SD, &amount); //Get how many titles are installed on SD
+    if (amount > 0) {
+        std::vector<u64> titles(amount);
+        u64 *ptr = titles.data();
+        AM_GetTitleList(NULL, MEDIATYPE_SD, amount, ptr); //Get all installed title ids
+
+        for(u32 i = 0; i < ACNLTitleIDs.size(); i++) {
+            u64 ID = ACNLTitleIDs.at(i);
+            if (std::find(titles.begin(), titles.end(), ID) != titles.end()) {
+                InstalledTitles.SD_Titles |= (1 << i); //Set ACNL_Game values
+            }
+        }
+    }
+}
+
+FS::ACNL_TitlesInstalled FS::GetInstalledTitles(void) {
+    //SetACNLTitlesOnCart(); //Set the ACNL on cart again incase changed
+    return InstalledTitles;
+}
 
 /*
     bool IsSDCardInserted(void)
@@ -36,107 +144,6 @@ bool IsGameCartInserted() {
 }
 
 /*
-    bool openSaveArchive(FS_Archive *out, u64 id, FS_MediaType mediaType)
-        => Attempts to open the save data of the specified id from mediaType.
-            => returns bool successful
-*/
-bool openSaveArchive(FS_Archive *out, u64 id, FS_MediaType mediaType) {
-    u32 pathInfo[3] = { mediaType, static_cast<u32>(id), static_cast<u32>(id >> 32) };
-    return R_SUCCEEDED(FSUSER_OpenArchive(out, ARCHIVE_USER_SAVEDATA, { PATH_BINARY, 0xC, pathInfo }));
-}
-
-/*
-    bool tryOpenSaveArchive(FS_Archive *out, u64 id, FS_MediaType *mediaTypeOut)
-        => Attempts to open a save file of the specified id from any media.
-            => returns bool successful
-*/
-bool tryOpenSaveArchive(FS_Archive *out, u64 id, FS_MediaType *mediaTypeOut) {
-    if (IsGameCartInserted() && openSaveArchive(out, id, MEDIATYPE_GAME_CARD)) {
-        *mediaTypeOut = MEDIATYPE_GAME_CARD;
-        return true;
-    }
-    else if (IsSDCardInserted() && openSaveArchive(out, id, MEDIATYPE_SD)) {
-        *mediaTypeOut = MEDIATYPE_SD;
-        return true;
-    }
-
-    return false;
-}
-
-/*
-    NLTK_Media_Installed getInstalledTitles(FS_MediaType mediaType)
-        => returns the installed media info for a specific media type.
-*/
-NLTK_Media_Installed getInstalledTitles(FS_MediaType mediaType) {
-    NLTK_Media_Installed installInfo;
-
-    if ((mediaType == MEDIATYPE_SD && IsSDCardInserted()) || (mediaType == MEDIATYPE_GAME_CARD && IsGameCartInserted())) {
-        u32  num_titles;
-        u64* titles;
-
-        AM_GetTitleCount(mediaType, &num_titles); //Get how many titles are installed
-        titles = new u64[num_titles]; //Allocate memory based on amount of titles
-        AM_GetTitleList(NULL, mediaType, num_titles, titles); //Get all installed title ids
-
-        if (num_titles > 0)
-        {
-            for (u32 i = 0; i < num_titles; i++) //Go through each tid and see if it matches an ACNL tid
-            {
-
-                if (titles[i] == JPN_TID)
-                    installInfo.InstalledTitles.ORIG_JPN_installed = true;
-                else if (titles[i] == USA_TID)
-                    installInfo.InstalledTitles.ORIG_USA_installed = true;
-                else if (titles[i] == EUR_TID)
-                    installInfo.InstalledTitles.ORIG_EUR_installed = true;
-                else if (titles[i] == KOR_TID)
-                    installInfo.InstalledTitles.ORIG_KOR_installed = true;
-
-                else if (titles[i] == JPN_WA_TID)
-                    installInfo.InstalledTitles.WA_JPN_installed = true;
-                else if (titles[i] == USA_WA_TID)
-                    installInfo.InstalledTitles.WA_USA_installed = true;
-                else if (titles[i] == EUR_WA_TID)
-                    installInfo.InstalledTitles.WA_EUR_installed = true;
-                else if (titles[i] == KOR_WA_TID)
-                    installInfo.InstalledTitles.WA_KOR_installed = true;
-            }
-        }
-
-        if (titles) {
-            delete[] titles;
-        }
-
-        //Organise what's installed and what isn't
-        if (installInfo.InstalledTitles.ORIG_JPN_installed || installInfo.InstalledTitles.ORIG_USA_installed ||
-            installInfo.InstalledTitles.ORIG_EUR_installed || installInfo.InstalledTitles.ORIG_KOR_installed)
-        {
-            installInfo.InstalledTitles.ORIG_installed = true;
-            installInfo.HasACNLData = true;
-        }
-
-        if (installInfo.InstalledTitles.WA_JPN_installed || installInfo.InstalledTitles.WA_USA_installed ||
-            installInfo.InstalledTitles.WA_EUR_installed || installInfo.InstalledTitles.WA_KOR_installed)
-        {
-            installInfo.InstalledTitles.WA_installed = true;
-            installInfo.HasACNLData = true;
-        }
-    }
-
-    return installInfo;
-}
-
-/*
-    void checkInstalledTitles(void)
-        => Sets global MediaInfo's SD Card & Game Card infos.
-*/
-void checkInstalledTitles(void)
-{
-    MediaInfo.SDCardInfo = getInstalledTitles(FS_MediaType::MEDIATYPE_SD);
-    MediaInfo.GameCartInfo = getInstalledTitles(FS_MediaType::MEDIATYPE_GAME_CARD);
-}
-
-/*
     bool checkGameCartTitleSame(void)
         => Checks if the currently inserted game cart is the same type as the one being edited.
             => Returns bool: IsCardSame
@@ -148,8 +155,7 @@ bool checkGameCartTitleSame(u64 titleId) {
     bool cardInserted = false;
     FSUSER_CardSlotIsInserted(&cardInserted);
 
-    if (!cardInserted)
-        return false;
+    if (!cardInserted) return false;
 
     u32 num_gameCartTitles = 0;
 
