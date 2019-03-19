@@ -23,32 +23,6 @@ struct LoadItem_s
     std::string  ItemName;
 };
 
-//NLTK ACNL Titles Installed struct
-struct NLTK_ACNLs_Installed
-{
-    bool ORIG_installed = false;
-    bool WA_installed = false;
-    bool ORIG_JPN_installed = false;
-    bool ORIG_USA_installed = false;
-    bool ORIG_EUR_installed = false;
-    bool ORIG_KOR_installed = false;
-    bool WA_JPN_installed = false;
-    bool WA_USA_installed = false;
-    bool WA_EUR_installed = false;
-    bool WA_KOR_installed = false;
-
-};
-
-struct NLTK_Media_Installed {
-    bool HasACNLData = false;
-    NLTK_ACNLs_Installed InstalledTitles;
-};
-
-struct NLTK_Titles_Info {
-    NLTK_Media_Installed GameCartInfo;
-    NLTK_Media_Installed SDCardInfo;
-};
-
 struct Point_t {
     u32 X, Y;
 };

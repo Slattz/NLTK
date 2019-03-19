@@ -65,13 +65,15 @@ GameSelect:
         }
     }
 
-    bool successfullyOpenedArchive = openSaveArchive(&saveArch, g_tid, currentMediaType);
-    if (!successfullyOpenedArchive && !(tryOpenSaveArchive(&saveArch, g_tid, &currentMediaType))) {
-        MsgDisp(top, "Unable to Open the Save Archive\nSave file may not have been created!");
-        Editor::Cleanup();
-        return ReturnMode::Exit;
+    Result res = FS::OpenSaveArchive(&saveArch, currentMediaType, g_tid);
+    if (R_FAILED(res)) {
+        if (!(FS::IsSaveAccessible(MEDIATYPE_GAME_CARD, g_tid)) && !(FS::IsSaveAccessible(MEDIATYPE_SD, g_tid))) {
+            MsgDisp(top, "Unable to Open the Save Archive\nSave file may not have been created!");
+            Editor::Cleanup();
+            return ReturnMode::Exit;
+        }
     }
-
+    
     // Set current title id
     currentTitleId = g_tid;
 

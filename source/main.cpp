@@ -1,7 +1,7 @@
 #include <3ds.h>
-#include <sys/stat.h> //For mkdir
 #include "CTRFont.hpp"
 #include "save.h"
+#include "nfs.h"
 #include "gfx.h"
 #include "config.hpp"
 #include "menus.h"
@@ -38,10 +38,10 @@ void __appInit(void)
 
 void InitApp(void) {
     romfsInit();
-    mkdir(WORKDIR, 777);
     amInit();
-    httpc.Init(0);
     cfguInit();
+    httpc.Init(0);
+    FS::Initialize();
     InitGFX();
 }
 

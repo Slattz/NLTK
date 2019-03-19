@@ -88,8 +88,11 @@ std::u16string u8tou16(const char* src)
 */
 bool checkGameCartIsACNL() {
     if (currentTitleId == 0) {
-        return getInstalledTitles(MEDIATYPE_GAME_CARD).HasACNLData;
+        FS::ACNL_TitlesInstalled titles = FS::GetInstalledTitles();
+        if (titles.Cart_Titles == FS::ACNL_Game::NONE) return false;
+        else return true;
     }
+    
     else {
         return checkGameCartTitleSame(currentTitleId);
     }

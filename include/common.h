@@ -7,8 +7,8 @@
 #define TOSTRING(x)    STRINGIFY(x)
 
 #define VERSION        "v" TOSTRING(VERSION_MAJOR) "." TOSTRING(VERSION_MINOR) "." TOSTRING(VERSION_MICRO)
-#define WORKDIR        "sdmc:/NLTK"
 #define TITLE          "NLTK"
+#define WORKDIR        "/NLTK"
 
 //Title IDs
 #define JPN_TID     0x0004000000086200

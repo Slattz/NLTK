@@ -31,8 +31,7 @@ enum class RegionType {
     KOR = 3,
 };
 
-extern NLTK_Titles_Info MediaInfo;
-
+FS::ACNL_TitlesInstalled ACNLTitles;
 MediaType SelectedMedia = MediaType::None;
 GameType SelectedGame = GameType::None;
 RegionType SelectedRegion = RegionType::None;
@@ -92,14 +91,14 @@ void Core::Draw_GameSelectMenu(void) {
         DrawSprite(GameSelect_ss, GAME_CART, 101, 6, GreyFilter); //Grey Filter over Game Cart
     }
     else { //No Media selected yet
-        if (MediaInfo.GameCartInfo.HasACNLData) {
+        if (ACNLTitles.Cart_Titles != FS::ACNL_Game::NONE) {
             DrawSprite(GameSelect_ss, GAME_CART, 101, 6);
         }
         else {
             DrawSprite(GameSelect_ss, GAME_CART, 101, 6, GreyFilter);
         }
 
-        if (MediaInfo.SDCardInfo.HasACNLData) {
+        if (ACNLTitles.SD_Titles != FS::ACNL_Game::NONE) {
             DrawSprite(GameSelect_ss, SD_CARD, 169, 6);
         }
         else {
@@ -107,8 +106,7 @@ void Core::Draw_GameSelectMenu(void) {
         }
     }
 
-    NLTK_Media_Installed mediaInstalled = SelectedMedia == MediaType::SD
-        ? MediaInfo.SDCardInfo : MediaInfo.GameCartInfo;
+    u8 mediaInstalled = (SelectedMedia == MediaType::SD) ? ACNLTitles.SD_Titles : ACNLTitles.Cart_Titles;
 
     /* Grey Outlines */
     if (SelectedGame == GameType::Orig) //Orig ACNL
@@ -139,39 +137,39 @@ void Core::Draw_GameSelectMenu(void) {
     KORIcon->Draw();
     ConfirmText->Draw(); //Confirm Button Text
 
-    if (SelectedMedia == MediaType::None || !mediaInstalled.InstalledTitles.ORIG_installed) //Grey out Orig ACNL Icon if no ORIG ACNL game is found
+    if (SelectedMedia == MediaType::None || !(mediaInstalled & FS::ACNL_Game::ORIG_ANY)) //Grey out Orig ACNL Icon if no ORIG ACNL game is found
     C2D_DrawRectSolid(101, 66, 0, 48, 48, COLOR_GREY_FILTER);
 
-    if (SelectedMedia == MediaType::None || !mediaInstalled.InstalledTitles.WA_installed) //Grey out WA ACNL Icon if no WA ACNL game is found
+    if (SelectedMedia == MediaType::None || !(mediaInstalled & FS::ACNL_Game::WA_ANY)) //Grey out WA ACNL Icon if no WA ACNL game is found
     C2D_DrawRectSolid(169, 66, 0, 48, 48, COLOR_GREY_FILTER);
 
     if (SelectedGame == GameType::Orig)
     {
-        if (!mediaInstalled.InstalledTitles.ORIG_JPN_installed) //Grey out JPN Flag if no orig JPN game is found
+        if (!(mediaInstalled & FS::ACNL_Game::ORIG_JPN)) //Grey out JPN Flag if no orig JPN game is found
             C2D_DrawRectSolid(170, 130, 0, 44, 30, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.ORIG_USA_installed) //Grey out USA Flag if no orig USA game is found
+
+        if (!(mediaInstalled & FS::ACNL_Game::ORIG_USA)) //Grey out USA Flag if no orig USA game is found
             C2D_DrawRectSolid(106, 130, 0, 44, 27, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.ORIG_EUR_installed) //Grey out EUR Flag if no orig EUR game is found
+
+        if (!(mediaInstalled & FS::ACNL_Game::ORIG_EUR)) //Grey out EUR Flag if no orig EUR game is found
             C2D_DrawRectSolid(42, 130, 0, 44, 30, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.ORIG_KOR_installed) //Grey out KOR Flag if no orig KOR game is found
+
+        if (!(mediaInstalled & FS::ACNL_Game::ORIG_KOR)) //Grey out KOR Flag if no orig KOR game is found
             C2D_DrawRectSolid(234, 130, 0, 44, 30, COLOR_GREY_FILTER);
     }
 
     else if (SelectedGame == GameType::WA)
     {
-        if (!mediaInstalled.InstalledTitles.WA_JPN_installed) //Grey out JPN Flag if no WA JPN game is found
+        if (!(mediaInstalled & FS::ACNL_Game::WA_JPN)) //Grey out JPN Flag if no WA JPN game is found
             C2D_DrawRectSolid(170, 130, 0, 44, 30, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.WA_USA_installed) //Grey out USA Flag if no WA USA game is found
+
+        if (!(mediaInstalled & FS::ACNL_Game::WA_USA)) //Grey out USA Flag if no WA USA game is found
             C2D_DrawRectSolid(106, 130, 0, 44, 27, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.WA_EUR_installed) //Grey out EUR Flag if no WA EUR game is found
+
+        if (!(mediaInstalled & FS::ACNL_Game::WA_EUR)) //Grey out EUR Flag if no WA EUR game is found
             C2D_DrawRectSolid(42, 130, 0, 44, 30, COLOR_GREY_FILTER);
-    
-        if (!mediaInstalled.InstalledTitles.WA_KOR_installed) //Grey out KOR Flag if no WA KOR game is found
+
+        if (!(mediaInstalled & FS::ACNL_Game::WA_KOR)) //Grey out KOR Flag if no WA KOR game is found
             C2D_DrawRectSolid(234, 130, 0, 44, 30, COLOR_GREY_FILTER);
     }
 
@@ -190,10 +188,9 @@ void Core::Draw_GameSelectMenu(void) {
 }
 
 u64 Core::Spawn_GameSelectMenu(FS_MediaType &mediaType) {
-    checkInstalledTitles();
+    ACNLTitles = FS::GetInstalledTitles();
 
-    if (MediaInfo.GameCartInfo.HasACNLData == false && MediaInfo.SDCardInfo.HasACNLData == false)
-    {
+    if (ACNLTitles.Cart_Titles == FS::ACNL_Game::NONE && ACNLTitles.SD_Titles == FS::ACNL_Game::NONE) {
         MsgDisp(top, "Error:\nACNL could not be found!");
         return 0;
     }
@@ -218,68 +215,63 @@ u64 Core::Spawn_GameSelectMenu(FS_MediaType &mediaType) {
         if (InputManager::Instance()->IsButtonDown(KEY_START))
             break;
 
-        NLTK_Media_Installed mediaInstalled = SelectedMedia == MediaType::SD
-            ? MediaInfo.SDCardInfo : MediaInfo.GameCartInfo;
+        u8 mediaInstalled = (SelectedMedia == MediaType::SD) ? ACNLTitles.SD_Titles : ACNLTitles.Cart_Titles;
 
-        if (CartIcon->IsActive() && MediaInfo.GameCartInfo.HasACNLData)
-        {
+        if (CartIcon->IsActive() && (ACNLTitles.Cart_Titles != FS::ACNL_Game::NONE)) {
             SelectedMedia = MediaType::Cart;
             SelectedGame = GameType::None;
             SelectedRegion = RegionType::None;
         }
-        else if (SDIcon->IsActive() && MediaInfo.SDCardInfo.HasACNLData)
-        {
+
+        else if (SDIcon->IsActive() && (ACNLTitles.SD_Titles != FS::ACNL_Game::NONE)) {
             SelectedMedia = MediaType::SD;
             SelectedGame = GameType::None;
             SelectedRegion = RegionType::None;
         }
-        else if (SelectedMedia != MediaType::None && OrigIcon->IsActive() && mediaInstalled.InstalledTitles.ORIG_installed)
-        {
+
+        else if (SelectedMedia != MediaType::None && OrigIcon->IsActive() && (mediaInstalled & FS::ACNL_Game::ORIG_ANY)) {
             SelectedGame = GameType::Orig;    //Orig ACNL
             SelectedRegion = RegionType::None; //Reset region, user mightn't have same regions installed for WA ACNL
         }
-        else if (SelectedMedia != MediaType::None && WAIcon->IsActive() && mediaInstalled.InstalledTitles.WA_installed)
-        {
+
+        else if (SelectedMedia != MediaType::None && WAIcon->IsActive() && (mediaInstalled & FS::ACNL_Game::WA_ANY)) {
             SelectedGame = GameType::WA;    //WA ACNL
             SelectedRegion = RegionType::None; //Reset region, user may not have same regions installed for orig ACNL
         }
 
-        else if (JPNIcon->IsActive())
-        {
-            if (SelectedGame == GameType::Orig && mediaInstalled.InstalledTitles.ORIG_JPN_installed) //if orig ACNL
-                SelectedRegion = RegionType::JPN;                                                     //JPN
+        else if (JPNIcon->IsActive()) {
+            if (SelectedGame == GameType::Orig && (mediaInstalled & FS::ACNL_Game::ORIG_JPN)) //if orig ACNL
+                SelectedRegion = RegionType::JPN;                                             //JPN
 
-            else if (SelectedGame == GameType::WA && mediaInstalled.InstalledTitles.WA_JPN_installed) //if WA ACNL
-                SelectedRegion = RegionType::JPN;                                                        //JPN
+            else if (SelectedGame == GameType::WA && (mediaInstalled & FS::ACNL_Game::WA_JPN)) //if WA ACNL
+                SelectedRegion = RegionType::JPN;                                                //JPN
         }
 
-        else if (USAIcon->IsActive())
-        {
-            if (SelectedGame == GameType::Orig && mediaInstalled.InstalledTitles.ORIG_USA_installed) //if orig ACNL
-                SelectedRegion = RegionType::USA;                                                         //USA
+        else if (USAIcon->IsActive()) {
+            if (SelectedGame == GameType::Orig && (mediaInstalled & FS::ACNL_Game::ORIG_USA)) //if orig ACNL
+                SelectedRegion = RegionType::USA;                                             //USA
 
-            else if (SelectedGame == GameType::WA && mediaInstalled.InstalledTitles.WA_USA_installed) //if WA ACNL
-                SelectedRegion = RegionType::USA;                                                          //USA
-        }
-        else if (EURIcon->IsActive())
-        {
-            if (SelectedGame == GameType::Orig && mediaInstalled.InstalledTitles.ORIG_EUR_installed) //if orig ACNL
-                SelectedRegion = RegionType::EUR;                                                         //EUR
-
-            else if (SelectedGame == GameType::WA && mediaInstalled.InstalledTitles.WA_EUR_installed) //if WA ACNL
-                SelectedRegion = RegionType::EUR;                                                          //EUR
-        }
-        else if (KORIcon->IsActive())
-        {
-            if (SelectedGame == GameType::Orig && mediaInstalled.InstalledTitles.ORIG_KOR_installed) //if orig ACNL
-                SelectedRegion = RegionType::KOR;                                                         //KOR
-
-            else if (SelectedGame == GameType::WA && mediaInstalled.InstalledTitles.WA_KOR_installed) //if WA ACNL
-                SelectedRegion = RegionType::KOR;                                                          //KOR
+            else if (SelectedGame == GameType::WA && (mediaInstalled & FS::ACNL_Game::WA_USA)) //if WA ACNL
+                SelectedRegion = RegionType::USA;                                              //USA
         }
 
-        else if (ConfirmText->IsActive()) //Confirm Button
-        {
+        else if (EURIcon->IsActive()) {
+            if (SelectedGame == GameType::Orig && (mediaInstalled & FS::ACNL_Game::ORIG_EUR)) //if orig ACNL
+                SelectedRegion = RegionType::EUR;                                             //EUR
+
+            else if (SelectedGame == GameType::WA && (mediaInstalled & FS::ACNL_Game::WA_EUR)) //if WA ACNL
+                SelectedRegion = RegionType::EUR;                                              //EUR
+        }
+
+        else if (KORIcon->IsActive()) {
+            if (SelectedGame == GameType::Orig && (mediaInstalled & FS::ACNL_Game::ORIG_KOR)) //if orig ACNL
+                SelectedRegion = RegionType::KOR;                                             //KOR
+
+            else if (SelectedGame == GameType::WA && (mediaInstalled & FS::ACNL_Game::WA_KOR)) //if WA ACNL
+                SelectedRegion = RegionType::KOR;                                              //KOR
+        }
+
+        else if (ConfirmText->IsActive()) { //Confirm Button
             if (SelectedMedia == MediaType::None)
                 MsgDisp(top, "Please select a media type!");
 
@@ -289,8 +281,7 @@ u64 Core::Spawn_GameSelectMenu(FS_MediaType &mediaType) {
             else if (SelectedRegion == RegionType::None)
                 MsgDisp(top, "Please select a region!");
 
-            else
-            {
+            else {
                 // Set Media Type
                 mediaType = static_cast<FS_MediaType>(static_cast<u8>(SelectedMedia) + 1);
 
