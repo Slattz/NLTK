@@ -14,30 +14,13 @@
 static FontHandle g_acnlFont;
 u64 g_tid = 0;
 
-// Override ctrulib appInit to check for Rosalina hbl
-void __appInit(void)
-{
-    // Initialize services
-    srvInit();
-    aptInit();
-    hidInit();
-
-    fsInit();
-
-    // Check if we're using Rosalina or not
+Result InitApp(void) {
+    //Check if using Rosalina or Old Hax HB
     s64 out;
-    if (envIsHomebrew() && R_FAILED(svcGetProcessInfo(&out, CUR_PROCESS_HANDLE, 0x10001)))
-    {
-        Handle fsuHandle;
-        srvGetServiceHandleDirect(&fsuHandle, "fs:USER");
-        FSUSER_Initialize(fsuHandle);
-        fsUseSession(fsuHandle);
+    if (envIsHomebrew() && R_FAILED(svcGetProcessInfo(&out, CUR_PROCESS_HANDLE, 0x10001))) {
+        return -1; //Old Hax HB isn't supported
     }
 
-    sdmcInit();
-}
-
-void InitApp(void) {
     if (Utils_IsNew3DS())
         osSetSpeedupEnable(true);
 
@@ -48,13 +31,10 @@ void InitApp(void) {
     FS::Initialize();
     InitGFX();
 
+    return 0;
 }
 
 void PrepareToCloseApp(void) {
-    if (envIsHomebrew()) {
-        fsEndUseSession();
-    }
-
     Config::Instance()->Save();
     FS::Cleanup();
     ExitGFX();
@@ -68,7 +48,10 @@ void PrepareToCloseApp(void) {
 }
 
 int main() {
-    InitApp();
+    if (InitApp() == -1) { //Old Hax HB isn't supported
+        return 0; //No services initilized so no need to uninit
+    }
+
     g_acnlFont = Font::Open("romfs:/ACNL_font.bcfnt");
 
     if (g_acnlFont->IsLoaded()) {
