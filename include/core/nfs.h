@@ -17,6 +17,10 @@ namespace FS {
         WA_KOR = 1 << 7,
 
         
+        JPN = ORIG_JPN | WA_JPN,
+        USA = ORIG_USA | WA_USA,
+        EUR = ORIG_EUR | WA_EUR,
+        KOR = ORIG_KOR | WA_KOR,
         ORIG_ANY = ORIG_JPN | ORIG_USA | ORIG_EUR | ORIG_KOR,
         WA_ANY = WA_JPN | WA_USA | WA_EUR | WA_KOR,
     };

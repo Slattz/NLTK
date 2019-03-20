@@ -11,24 +11,24 @@
 #include "utils.h"
 #include "nfs.h"
 
-enum class MediaType {
-    None = -1,
-    SD = 0,
-    Cart = 1
+enum class MediaType : u8 {
+    SD = 1,
+    Cart = 2,
+    None = 0xFF
 };
 
-enum class GameType {
-    None = -1,
+enum class GameType : u8 {
     Orig = 0,
-    WA = 1
+    WA = 1,
+    None = 0xFF
 };
 
-enum class RegionType {
-    None = -1,
+enum class RegionType : u8 {
     JPN = 0,
     USA = 1,
     EUR = 2,
     KOR = 3,
+    None = 0xFF
 };
 
 FS::ACNL_TitlesInstalled ACNLTitles;
@@ -49,6 +49,29 @@ static ImageButton* EURIcon;
 static ImageButton* KORIcon;
 
 static bool g_Initialized = false; //We only need to initialize once as this screen is static
+
+//SmartSelect - Automatically select GameType/RegionType if user only has one GameType/RegionType (e.g on Cart)
+static void SmartSelect(u8 Type) {
+    if (SelectedGame == GameType::None) {
+        if (Type & FS::ACNL_Game::ORIG_ANY) {
+                if (!(Type & FS::ACNL_Game::WA_ANY)) SelectedGame = GameType::Orig;
+        }
+
+        else if (Type & FS::ACNL_Game::WA_ANY) {
+            if (!(Type & FS::ACNL_Game::ORIG_ANY)) SelectedGame = GameType::WA;
+        }
+    }
+
+    if (SelectedRegion == RegionType::None && SelectedGame != GameType::None) {
+        if (__builtin_popcount(Type) == 1) { //Check if only one bit (i.e. one game) set
+                if (Type & FS::ACNL_Game::JPN) SelectedRegion = RegionType::JPN;
+                else if (Type & FS::ACNL_Game::USA) SelectedRegion = RegionType::USA;
+                else if (Type & FS::ACNL_Game::EUR) SelectedRegion = RegionType::EUR;
+                else if (Type & FS::ACNL_Game::KOR) SelectedRegion = RegionType::KOR;
+                else SelectedRegion = RegionType::None;
+        }
+    }
+}
 
 void Core::GameSelectMenu::Initialize(void) {
     SelectedMedia = MediaType::None;
@@ -199,7 +222,7 @@ u64 Core::Spawn_GameSelectMenu(FS_MediaType &mediaType) {
 
     while (aptMainLoop())
     {
-        if (SelectedMedia == MediaType::Cart && !IsGameCartInserted()) {
+        if (SelectedMedia == MediaType::Cart && !FS::IsGameCartInserted()) {
             DisplayCardError();
         }
 
@@ -221,22 +244,26 @@ u64 Core::Spawn_GameSelectMenu(FS_MediaType &mediaType) {
             SelectedMedia = MediaType::Cart;
             SelectedGame = GameType::None;
             SelectedRegion = RegionType::None;
+            SmartSelect(ACNLTitles.Cart_Titles);
         }
 
         else if (SDIcon->IsActive() && (ACNLTitles.SD_Titles != FS::ACNL_Game::NONE)) {
             SelectedMedia = MediaType::SD;
             SelectedGame = GameType::None;
             SelectedRegion = RegionType::None;
+            SmartSelect(ACNLTitles.SD_Titles);
         }
 
         else if (SelectedMedia != MediaType::None && OrigIcon->IsActive() && (mediaInstalled & FS::ACNL_Game::ORIG_ANY)) {
             SelectedGame = GameType::Orig;    //Orig ACNL
             SelectedRegion = RegionType::None; //Reset region, user mightn't have same regions installed for WA ACNL
+            SmartSelect(mediaInstalled);
         }
 
         else if (SelectedMedia != MediaType::None && WAIcon->IsActive() && (mediaInstalled & FS::ACNL_Game::WA_ANY)) {
             SelectedGame = GameType::WA;    //WA ACNL
             SelectedRegion = RegionType::None; //Reset region, user may not have same regions installed for orig ACNL
+            SmartSelect(mediaInstalled);
         }
 
         else if (JPNIcon->IsActive()) {
@@ -283,7 +310,7 @@ u64 Core::Spawn_GameSelectMenu(FS_MediaType &mediaType) {
 
             else {
                 // Set Media Type
-                mediaType = static_cast<FS_MediaType>(static_cast<u8>(SelectedMedia) + 1);
+                mediaType = static_cast<FS_MediaType>(SelectedMedia);
 
                 if (SelectedGame == GameType::Orig)
                     return JPN_TID + (static_cast<u8>(SelectedRegion) * 0x100); //Form orig TID
