@@ -34,10 +34,10 @@ namespace FS {
     bool IsSaveAccessible(FS_MediaType MediaType, u64 TitleID);
 
     ACNL_TitlesInstalled GetInstalledTitles(void);
+    bool IsSDCardInserted(void);
+    bool IsGameCartInserted(void);
 }
 
-bool IsSDCardInserted(void);
-bool IsGameCartInserted(void);
 int get_file_size(FILE *file);
 bool fileExists(const char *path);
 bool file_write(void *sourcebuf, const char *path, int size);

@@ -4,7 +4,6 @@
 #include <vector>
 #include <array>
 #include <algorithm>
-#include <sys/stat.h>
 #include <unistd.h>
 #include <time.h>
 #include "gfx.h"
@@ -64,9 +63,9 @@ FS_Archive FS::GetSDMCArchive(void)
 }
 
 Result FS::OpenSaveArchive(FS_Archive *archive, FS_MediaType MediaType, u64 TitleID) {
-    u32 path[3] = {MediaType, static_cast<u32>(TitleID), static_cast<u32>(TitleID >> 32)};
-    FS_Path TitlePath = {PATH_BINARY, 12, path};
-    return FSUSER_OpenArchive(archive, ARCHIVE_USER_SAVEDATA, TitlePath);
+        u32 path[3] = {MediaType, static_cast<u32>(TitleID), static_cast<u32>(TitleID >> 32)};
+        FS_Path TitlePath = {PATH_BINARY, 12, path};
+        return FSUSER_OpenArchive(archive, ARCHIVE_USER_SAVEDATA, TitlePath);
 }
 
 bool FS::IsSaveAccessible(FS_MediaType MediaType, u64 TitleID) {
@@ -127,7 +126,7 @@ FS::ACNL_TitlesInstalled FS::GetInstalledTitles(void) {
     bool IsSDCardInserted(void)
         => returns whether or not the SD Card is inserted
 */
-bool IsSDCardInserted() {
+bool FS::IsSDCardInserted(void) {
     bool inserted = false;
     FSUSER_IsSdmcDetected(&inserted);
     return inserted;
@@ -137,7 +136,7 @@ bool IsSDCardInserted() {
     bool IsGameCartInserted(void)
         => returns whether or not a GameCard is inserted
 */
-bool IsGameCartInserted() {
+bool FS::IsGameCartInserted(void) {
     bool inserted = false;
     FSUSER_CardSlotIsInserted(&inserted);
     return inserted;
@@ -225,14 +224,13 @@ bool file_read(void* destbuf, const char *path, int size)
 
 void saveBackup(u64 tid)
 {
-    char       path[250] = {0};
+    char       path[300] = {0};
     char       timestamp[80] = {0};
     time_t     rawtime;
     struct tm *timeinfo;
 
-    snprintf(path, 160, WORKDIR "/saves/%016llX/", tid);
-    mkdir(WORKDIR "/saves", 777);
-    mkdir(path, 777);
+    snprintf(path, 160, WORKDIR "/Saves/%016llX/", tid);
+    FS::CreateDir(path);
 
     // Get timestamp for filename
     time(&rawtime);

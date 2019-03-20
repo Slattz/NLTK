@@ -195,7 +195,7 @@ bool MsgDisp(C3D_RenderTarget *target, std::string message, MsgType Type, u32 bg
 
 void DisplayCardError() {
     // TODO: This shouldn't just check if the card is inserted, but rather, if Animal Crossing is the inserted card.
-    if (IsGameCartInserted() && checkGameCartIsACNL()) {
+    if (FS::IsGameCartInserted() && checkGameCartIsACNL()) {
         return;
     }
 
@@ -211,14 +211,14 @@ void DisplayCardError() {
     while (aptMainLoop())
     {
         InputManager::Instance()->RefreshInput();
-        if (IsGameCartInserted() && checkGameCartIsACNL() && InputManager::Instance()->IsButtonDown(KEY_A)) break;
+        if (FS::IsGameCartInserted() && checkGameCartIsACNL() && InputManager::Instance()->IsButtonDown(KEY_A)) break;
 
         draw_base_interface();
         C2D_SceneBegin(top);
         C2D_DrawRectSolid(50, 33.5, 0, 300, 180, COLOR_BROWN);
         cardRemovedErrorText.Draw();
 
-        if (show || IsGameCartInserted()) {
+        if (show || FS::IsGameCartInserted()) {
             DrawSprite(GameSelect_ss, GAME_CART, 176, 40); // NOTE: Top Screen resolution 400x240, Bottom Screen Resolution: 320x240
         }
         else {

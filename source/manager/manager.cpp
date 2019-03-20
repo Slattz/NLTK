@@ -1,5 +1,4 @@
 #include <3ds.h>
-#include <sys/stat.h> //For mkdir
 #include "gfx.h"
 #include "nfs.h"
 #include "save.h"
@@ -16,7 +15,6 @@ extern FS_MediaType currentMediaType;
 bool m_ManagerInitiated = false;
 
 void InitManager(void) {
-    mkdir(WORKDIR "/TownManager", 777);
     m_ManagerInitiated = true;
 }
 

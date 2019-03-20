@@ -19,7 +19,7 @@
 extern FS_MediaType currentMediaType;
 
 void checkIfCardInserted() {
-    if (currentMediaType == MEDIATYPE_GAME_CARD && !IsGameCartInserted()) {
+    if (currentMediaType == MEDIATYPE_GAME_CARD && !FS::IsGameCartInserted()) {
         DisplayCardError();
     }
 }
