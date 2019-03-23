@@ -2,6 +2,7 @@
 #include <string>
 #include "json.hpp"
 #include "httpc.h"
+#include "file.hpp"
 #include "gfx.h"
 #include "nfs.h"
 #include "config.hpp"
@@ -199,14 +200,17 @@ bool InstallUpdate(void)
 
         if (envIsHomebrew())
         {
-            if (file_write(downloadbuf, "sdmc:/3ds/NLTK/NLTK.3dsx", downloadsize))
+            File HB("sdmc:/3ds/NLTK/NLTK.3dsx", File::RWC|File::SYNC);
+            if (R_SUCCEEDED(HB.Write(downloadbuf, downloadsize)))
             {
+                HB.Close();
                 MsgDisp(top, "The update has been installed!\nNow exiting the app");
                 return true;
             }
 
             else
             {
+                HB.Close();
                 MsgDisp(top, "Failed to write 3dsx!");
                 return false;
             }

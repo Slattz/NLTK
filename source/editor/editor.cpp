@@ -2,6 +2,7 @@
 #include <string>
 #include <map>
 #include "gfx.h"
+#include "file.hpp"
 #include "nfs.h"
 #include "save.h"
 #include "utils.h"
@@ -14,14 +15,14 @@ extern u64 g_tid;
 extern FS_MediaType currentMediaType;
 extern std::map<u16, std::string> g_villagerDatabase;
 
-u8* g_ItemBin;
+File* g_ItemBin;
 u64 currentTitleId;
 bool m_editorInitiated = false;
 
 void Editor::Cleanup(void) {
     if (g_ItemBin) {
-        delete[] g_ItemBin;
-        g_ItemBin = NULL;
+        g_ItemBin->Close();
+        g_ItemBin = nullptr;
     }
     m_editorInitiated = false;
 }
@@ -34,9 +35,13 @@ void Editor::Init(void) {
     LoadVillagerDatabase();
 
     Editor::Player::InitInfoGFX();
-
-    g_ItemBin = new u8[0x2B720];
-    file_read(g_ItemBin, "romfs:/Item.bin", 0x2B720);
+    g_ItemBin = new File();
+    Result res = File::Open(*g_ItemBin, "romfs:/Item.bin", File::RB);
+    if (R_FAILED(res)) {
+        MsgDisp(top, Format("Failed opening Item.bin:\nResult: %X", res));
+        if (g_ItemBin != nullptr) delete g_ItemBin;
+        g_ItemBin = nullptr;
+    }
 
     m_editorInitiated = true;
 }

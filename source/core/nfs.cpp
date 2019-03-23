@@ -4,9 +4,9 @@
 #include <vector>
 #include <array>
 #include <algorithm>
-#include <unistd.h>
 #include <time.h>
 #include "gfx.h"
+#include "file.hpp"
 #include "structs.h"
 #include "utils.h"
 #include "save.h"
@@ -57,8 +57,7 @@ Result FS::CreateDir(const std::string &path) {
     return FSUSER_CreateDirectory(GetSDMCArchive(), fsMakePath(PATH_ASCII, path.c_str()), 0);
 }
 
-FS_Archive FS::GetSDMCArchive(void)
-{
+FS_Archive FS::GetSDMCArchive(void) {
     return sdmcArch;
 }
 
@@ -173,79 +172,31 @@ bool checkGameCartTitleSame(u64 titleId) {
     return false;
 }
 
-int get_file_size(FILE *file)
-{
-    int size = 0;
-    if (fseek(file, 0, SEEK_END) != 0)
-    {
-        MsgDisp(top, "Error in get_file_size: fseek");
-        return -1;
-    }
-    size = ftell(file);
-    rewind(file);
-
-    return size;
-}
-
-bool fileExists(const char *path)
-{
-    if (!path) return false;
-    if (access(path, F_OK) == 0) //-1: doesn't exist, 0: exists
-        return true; 
-    else
-        return false;
-}
-
-bool file_write(void* sourcebuf, const char* path, int size)
-{
-    FILE *file = fopen(path, "wb");
-    if (!file) return false;
-    fwrite(sourcebuf, 1, size, file);
-    fclose(file);
-    return true;
-}
-
-bool file_read(void* destbuf, const char *path, int size)
-{
-    if (fileExists(path))
-    {
-        FILE *file = fopen(path, "rb");
-        if (!file) return false;
-        if (get_file_size(file) == size)
-        {
-            fread(destbuf, size, 1, file);
-            fclose(file);
-            return true;
-        }
-    }
-
-    return false;
-}
-
 void saveBackup(u64 tid)
 {
-    char       path[300] = {0};
-    char       timestamp[80] = {0};
+    std::string path;
+    char timestamp[100] = {0};
     time_t     rawtime;
     struct tm *timeinfo;
 
-    snprintf(path, 160, WORKDIR "/Saves/%016llX/", tid);
+    path += Format(WORKDIR "/Saves/%016llX/", tid);
     FS::CreateDir(path);
 
     // Get timestamp for filename
     time(&rawtime);
     timeinfo = localtime(&rawtime);
 
-    /* String Format: Date (YYYY-MM-DD), Hour (12h format), minute, am/pm */
-    strftime(timestamp, 80, "[%F_%I-%M%p]", timeinfo);
+    /* String Format: DD-Month-YYYY_Hour(12h)-Minute-Secondam/pm */
+    strftime(timestamp, 99, "[%d-%b-%Y_%I-%M-%S%p]", timeinfo);
 
-    strncat(path, "garden_plus", 12);
-    strncat(path, timestamp, 80);
-    strncat(path, ".dat", 5);
-    if (!fileExists(path))
+    path += "garden_plus";
+    path += timestamp;
+    path += ".dat";
+    if (!File::Exists(path))
     {
-        if (!file_write(Save::Instance()->GetRawSaveData() , path, SIZE_SAVE))
-            MsgDisp(top, "Error:\nCouldn't write save backup!");
+        File save(path, File::RWC|File::SYNC);
+        save.Write(Save::Instance()->GetRawSaveData(), Save::Instance()->GetSaveSize());
+        save.Close();
     }
     else
         MsgDisp(top, "Error:\nSave backup somehow already exists!");
