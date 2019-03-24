@@ -1,6 +1,5 @@
 #include <3ds.h>
 #include <string>
-#include <map>
 #include "gfx.h"
 #include "file.hpp"
 #include "nfs.h"
@@ -11,9 +10,7 @@
 #include "InputManager.h"
 #include "core/gui/GameSelectMenu.hpp"
 
-extern u64 g_tid;
 extern FS_MediaType currentMediaType;
-extern std::map<u16, std::string> g_villagerDatabase;
 
 File* g_ItemBin;
 u64 currentTitleId;
@@ -47,67 +44,59 @@ void Editor::Init(void) {
 }
 
 ReturnMode Editor::Main(void) {
+    ReturnMode retMode = ReturnMode::None;
     if (!m_editorInitiated) {
         Editor::Init();
     }
 
-GameSelect:
-    Handle saveHandle;
-    FS_Archive saveArch;
+    while (retMode == ReturnMode::GameSelect || retMode == ReturnMode::None) {
+        FS_Archive saveArch;
 
-    {
         InputManager::Instance()->RefreshInput();
         if (Config::Instance()->Auto_loadprefGame && !InputManager::Instance()->IsButtonDown(KEY_DOWN) && is_ACNL(Config::Instance()->prefGame|0x4000000000000)) {
-            g_tid = Config::Instance()->prefGame|0x4000000000000; // TODO: Support media type in config
+            currentTitleId = Config::Instance()->prefGame|0x4000000000000; // TODO: Support media type in config
         }
         else {
-            g_tid = Core::Spawn_GameSelectMenu(currentMediaType);
+            currentTitleId = Core::Spawn_GameSelectMenu(currentMediaType);
         }
 
-        if (g_tid == 0) {
+        if (currentTitleId == 0) {
             Editor::Cleanup();
             return ReturnMode::Exit;
         }
-    }
 
-    Result res = FS::OpenSaveArchive(&saveArch, currentMediaType, g_tid);
-    if (R_FAILED(res)) {
-        if (!(FS::IsSaveAccessible(MEDIATYPE_GAME_CARD, g_tid)) && !(FS::IsSaveAccessible(MEDIATYPE_SD, g_tid))) {
-            MsgDisp(top, "Unable to Open the Save Archive\nSave file may not have been created!");
+        Result res = FS::OpenSaveArchive(&saveArch, currentMediaType, currentTitleId);
+        if (R_FAILED(res)) {
+            if (!(FS::IsSaveAccessible(MEDIATYPE_GAME_CARD, currentTitleId)) && !(FS::IsSaveAccessible(MEDIATYPE_SD, currentTitleId))) {
+                MsgDisp(top, "Unable to Open the Save Archive\nSave file may not have been created!");
+                Editor::Cleanup();
+                return ReturnMode::Exit;
+            }
+        }
+
+        // Initialize a new Save class
+        Save* saveFile = Save::Initialize(saveArch, true);
+
+        if (saveFile->GetSaveSize() != SIZE_SAVE) {
+            MsgDisp(top, "Save file is the incorrect size!");
             Editor::Cleanup();
+            saveFile->Close();
             return ReturnMode::Exit;
         }
-    }
-    
-    // Set current title id
-    currentTitleId = g_tid;
 
-    // Initialize a new Save class
-    Save* saveFile = Save::Initialize(saveArch, &saveHandle, true);
+        if (Config::Instance()->Auto_SaveBackup) {
+            saveBackup(currentTitleId);
+        }
 
-    if (saveFile->GetSaveSize() != SIZE_SAVE) {
-        MsgDisp(top, "Save file is the incorrect size!");
-        Editor::Cleanup();
+        saveFile->FixSaveRegion();		//Update Region of the Save
+        saveFile->FixInvalidBuildings(); //Fix any invalid buildings in save
+
+        retMode = Editor::Spawn_MainMenu();
         saveFile->Close();
-        return ReturnMode::Exit;
     }
-
-    if (Config::Instance()->Auto_SaveBackup) {
-        saveBackup(g_tid);
-    }
-
-    saveFile->FixSaveRegion();		//Update Region of the Save
-    saveFile->FixInvalidBuildings(); //Fix any invalid buildings in save
-
-    ReturnMode mode = Editor::Spawn_MainMenu();
-
-    saveFile->Close();
-
-    if (mode == ReturnMode::GameSelect) //Game Select
-        goto GameSelect;
 
     Editor::Cleanup();
-    return mode; //mode is always 0 when exiting the editor
+    return retMode;
 }
 
 void Editor::Draw() {

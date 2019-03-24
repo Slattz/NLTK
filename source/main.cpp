@@ -12,7 +12,6 @@
 #include "InputManager.h"
 
 static FontHandle g_acnlFont;
-u64 g_tid = 0;
 
 Result InitApp(void) {
     //Check if using Rosalina or Old Hax HB

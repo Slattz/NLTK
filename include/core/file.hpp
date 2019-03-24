@@ -98,7 +98,7 @@ public:
         if (!(m_Mode&File::WRITE)) return OPResult::INVALID_MODE;
 
         (*m_File) << data;
-        m_File->write((char *)&data, sizeof(buf));
+        m_File->write((char *)&data, sizeof(data));
         if (m_File->good()) {
             if (m_Mode&File::SYNC) m_File->flush();
             return OPResult::SUCCESS;

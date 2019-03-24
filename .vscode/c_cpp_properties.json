@@ -13,7 +13,7 @@
             "intelliSenseMode": "gcc-x64",
             "includePath": [
                 "${default}",
-                "C:/devkitPro/devkitARM/arm-none-eabi/include/c++/8.2.0",
+                "C:/devkitPro/devkitARM/arm-none-eabi/include/c++/8.3.0",
                 "C:/devkitPro/libctru/include",
                 "C:/devkitPro/portlibs/3ds/include",
                 "${workspaceFolder}/build",
@@ -21,7 +21,6 @@
                 "${workspaceFolder}/include/core",
                 "${workspaceFolder}/include/editor",
                 "${workspaceFolder}/source/libs/CTRFont/include",
-                "${workspaceFolder}/source/libs/jsmn",
                 "${workspaceFolder}/source/libs/httpc-curl"
             ]
         }

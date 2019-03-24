@@ -47,21 +47,6 @@ struct C2D_SpriteSheet_s
     C3D_Tex        tex;
 };
 
-//std::vector<Text> DebugText;
-/*
-    if (!TextInit) {
-        ButtonText.push_back(Text(COLOR_GREY, "Town", TextSize, TextSize, 37.f, 147.f));
-    }
-
-    if (Config::Instance()->IsDebug)
-    {
-        Text Cursor()
-        DrawText(100, 120, 0.5, 0.5, COLOR_GREY, Format("Cursor X: %d, Cursor Y: %d", g_cursorpos.x, g_cursorpos.y).c_str());
-        DrawText(100, 140, 0.5, 0.5, COLOR_GREY, Format("Game + Region: 0x%016llX", g_tid).c_str());
-        DrawText(100, 160, 0.5, 0.5, COLOR_GREY, Format("Is ACNL: %d", is_ACNL(g_tid)).c_str());
-        DrawText(100, 180, 0.5, 0.5, COLOR_GREY, Format("ItemBin allocated: %d", (g_ItemBin==NULL) ? 0:1).c_str());
-    }*/
-
 void InitGFX(void)
 {
     gfxInitDefault();

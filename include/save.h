@@ -18,7 +18,7 @@ class Player;
 
 class Save {
 public:
-    static Save* Initialize(FS_Archive archive, Handle *handle, bool init);
+    static Save* Initialize(FS_Archive archive, bool init);
     static Save* Instance();
 
     s8 ReadS8(u32 offset);
@@ -66,7 +66,7 @@ private:
     u8 *m_saveBuffer = nullptr;
     u64 m_saveSize;
     FS_Archive m_archive;
-    Handle *m_handle = nullptr;
+    Handle m_handle = 0;
     bool m_changesMade;
 
     Save(void);

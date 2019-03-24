@@ -69,4 +69,5 @@ build/
 *.db
 *.opendb
 *.ipch
+.vscode/ipch
 Debug

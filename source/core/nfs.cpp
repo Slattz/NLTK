@@ -117,7 +117,7 @@ static void SetACNLTitlesOnSD(void) {
 }
 
 FS::ACNL_TitlesInstalled FS::GetInstalledTitles(void) {
-    //SetACNLTitlesOnCart(); //Set the ACNL on cart again incase changed
+    SetACNLTitlesOnCart(); //Set the ACNL on cart again incase changed
     return InstalledTitles;
 }
 
