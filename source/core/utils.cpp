@@ -34,14 +34,19 @@ bool is_ACNL(u64 tid)
     else return false;
 }
 
-void Sleep(u64 nanoseconds)
+void Sleep(s64 nanoseconds)
 {
     svcSleepThread(nanoseconds);
 }
 
-s64 Seconds(float amount)
+inline s64 Seconds(float amount)
 {
     return (s64)(amount*1000000000);
+}
+
+inline s64 MicroSeconds(float amount)
+{
+    return (s64)(amount*1000000);
 }
 
 u32 UTF8_StringSize(std::string str) {
@@ -121,6 +126,8 @@ inline u16 strToU16(std::string str) {
 
 void loadItemDatabase() {
     g_itemDatabase.clear();
+    g_sortedItemDatabase.clear();
+
     std::string currentLine;
     std::ifstream itemDatabase("romfs:/Items_en.txt", std::ifstream::in);
     std::string itemIdStr;
@@ -162,13 +169,6 @@ void LoadVillagerDatabase() {
     }
 
     villagerDatabase.close();
-}
-
-// abort override
-void abort(void)
-{
-    for (;;)
-        MsgDisp(top, "Abort has been called");
 }
 
 static inline u32   Pow2(u32 x)

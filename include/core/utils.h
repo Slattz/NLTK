@@ -5,8 +5,9 @@
 
 bool            is_ACNL(u64 tid);
 bool            DebugCode(bool complete);
-void            Sleep(u64 nanoseconds);
+void            Sleep(s64 nanoseconds);
 s64             Seconds(float amount);
+s64             MicroSeconds(float amount);
 u32             UTF8_StringSize(std::string str);
 void            UTF8_String_PopBack(std::string& str);
 std::string     u16tou8(std::u16string src);
