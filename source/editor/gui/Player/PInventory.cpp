@@ -34,7 +34,7 @@ static void Draw_PlayerMenu_Inventory(int selectedplayer)
             x = 42;
         }
 
-        Item item = Save::Instance()->players[selectedplayer].Pockets[i];
+        Item item = Save::Instance()->players[selectedplayer]->Pockets[i];
         DrawSprite(Common_ss, ITEM_HOLE, x - 16, y - 16);
 
         if (inventoryData[i].second > -1)
@@ -78,7 +78,7 @@ void Editor::Player::Spawn_PlayerMenu_Inventory() {
                 if (EditorConfig.SelectedPlayer > 3)
                     EditorConfig.SelectedPlayer = 0;
 
-                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists()) {
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer]->Exists()) {
                     break;
                 }
             }
@@ -95,7 +95,7 @@ void Editor::Player::Spawn_PlayerMenu_Inventory() {
                 if (EditorConfig.SelectedPlayer < 0)
                     EditorConfig.SelectedPlayer = 3;
 
-                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists()) {
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer]->Exists()) {
                     break;
                 }
             }

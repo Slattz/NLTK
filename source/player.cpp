@@ -4,12 +4,18 @@
 #include "gfx.h"
 #include "pattern.h"
 #include "jpeg.h"
+#include "utils.h"
 #include "player.h"
 
 Player::Player() { }
 
 Player::~Player()
 {
+    if (m_TPCPic.tex != nullptr) {
+        C2D_ImageDelete(this->m_TPCPic);
+        m_TPCPic.tex = nullptr;
+        m_TPCPic.subtex = nullptr;
+    }
     if (this->m_TPCData != nullptr)
         delete[] this->m_TPCData;
 }
@@ -82,6 +88,12 @@ void Player::Write() {
 }
 
 u8* Player::RefreshTPC() {
+
+    if (m_TPCPic.tex != nullptr) {
+        C2D_ImageDelete(this->m_TPCPic);
+        m_TPCPic.tex = nullptr;
+        m_TPCPic.subtex = nullptr;
+    }
 
     if (Save::Instance()->ReadU16(this->m_offset + 0x5738) == 0xD8FF) { // 0xFFD8 = JPEG File Marker
         if (this->m_TPCData == nullptr)

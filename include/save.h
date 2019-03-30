@@ -58,7 +58,7 @@ public:
     bool Commit(bool close);
     void Close(void);
 
-    Player *players = nullptr;
+    Player *players[4];
     Villager* villagers[10];
     Region_Lock RegionLock;
 

@@ -27,8 +27,8 @@ void Editor::Player::Draw_PlayerMenuTop(int selectedplayer) {
         LButton = Text(COLOR_GREY, FONT_NDS_L, 1.3f, 1.3f, 5.f, 210.f);
         RButton = Text(COLOR_GREY, FONT_NDS_R, 1.3f, 1.3f, 375.f, 210.f);
         for (int i = 0; i < 4; i++) {
-            if (Save::Instance()->players[i].Exists()) {
-                PlayerNameText.push_back(Text(COLOR_GREY, u16tou8(Save::Instance()->players[i].Name).c_str(), 0.5f, 0.5f));
+            if (Save::Instance()->players[i]->Exists()) {
+                PlayerNameText.push_back(Text(COLOR_GREY, u16tou8(Save::Instance()->players[i]->Name).c_str(), 0.5f, 0.5f));
                 PlayerNameText[i].CenterInBounds(18.f + (i * 100.f), 150.f, 64.f, 15.f);
 
                 PlayerNumText.push_back(Text(COLOR_GREY, Format("Player %d", i + 1).c_str(), 0.5f, 0.5f));
@@ -41,8 +41,8 @@ void Editor::Player::Draw_PlayerMenuTop(int selectedplayer) {
     draw_base_interface();
 
     for (int i = 0; i < 4; i++) {
-        if (Save::Instance()->players[i].Exists()) {
-            C2D_DrawImageAt(Save::Instance()->players[i].m_TPCPic, (float)(100 * i) + 18.f, 45.f, 0.5f, nullptr, 1.f, 1.f);  //WxH: 64x104
+        if (Save::Instance()->players[i]->Exists()) {
+            C2D_DrawImageAt(Save::Instance()->players[i]->m_TPCPic, (float)(100 * i) + 18.f, 45.f, 0.5f, nullptr, 1.f, 1.f);  //WxH: 64x104
 
             if (i == selectedplayer)
                 Ptext_colour = COLOR_WHITE;
@@ -149,7 +149,7 @@ void Editor::Spawn_PlayerMenu()
                 if (EditorConfig.SelectedPlayer > 3)
                     EditorConfig.SelectedPlayer = 0;
 
-                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists())
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer]->Exists())
                 {
                     break;
                 }
@@ -165,7 +165,7 @@ void Editor::Spawn_PlayerMenu()
                 if (EditorConfig.SelectedPlayer < 0)
                     EditorConfig.SelectedPlayer = 3;
 
-                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists())
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer]->Exists())
                 {
                     break;
                 }

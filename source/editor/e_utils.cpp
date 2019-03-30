@@ -18,7 +18,7 @@ static const int	iconIdTable[] = { 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 2, 2, 2, 2, 
 std::vector<std::pair<std::string, s32>> load_player_invitems(int selectedplayer) {
     std::vector<std::pair<std::string, s32>> inventoryItemData;
     for (int num = 0; num < 16; num++) {
-        Item* item = &Save::Instance()->players[selectedplayer].Pockets[num];
+        Item* item = &Save::Instance()->players[selectedplayer]->Pockets[num];
         inventoryItemData.push_back(std::make_pair(GetItemName(item), GetItemIcon(item)));
     }
 

@@ -29,7 +29,7 @@ static void Draw_PlayerMenu_Patterns(int selectedPlayer)
             x += 40;
         }
 
-        C2D_DrawImageAt(Save::Instance()->players[selectedPlayer].Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
+        C2D_DrawImageAt(Save::Instance()->players[selectedPlayer]->Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
     }
 
     InputManager::Instance()->DrawCursor();
@@ -63,7 +63,7 @@ void Editor::Player::Spawn_PlayerMenu_Patterns() {
                 if (EditorConfig.SelectedPlayer > 3)
                     EditorConfig.SelectedPlayer = 0;
 
-                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists()) {
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer]->Exists()) {
                     break;
                 }
             }
@@ -78,7 +78,7 @@ void Editor::Player::Spawn_PlayerMenu_Patterns() {
                 if (EditorConfig.SelectedPlayer < 0)
                     EditorConfig.SelectedPlayer = 3;
 
-                if (Save::Instance()->players[EditorConfig.SelectedPlayer].Exists()) {
+                if (Save::Instance()->players[EditorConfig.SelectedPlayer]->Exists()) {
                     break;
                 }
             }

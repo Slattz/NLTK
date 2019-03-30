@@ -12,10 +12,18 @@ Save* Save::m_pSave = nullptr;
 Save::Save() { }
 
 Save::~Save() {
-    /*if (players)
-        delete[] players;
-    if (m_saveBuffer)
-        delete[] m_saveBuffer;*/
+    for (auto player : players) {  
+        delete player;
+        player = nullptr;
+    }
+
+    for (auto villager : villagers) {   
+        delete villager;
+        villager = nullptr;
+    }
+
+    delete[] m_saveBuffer;
+    m_saveBuffer = nullptr;
 }
 
 Save* Save::Initialize(FS_Archive archive, bool init) {
@@ -42,10 +50,9 @@ Save* Save::Initialize(FS_Archive archive, bool init) {
     }
 
     // Load Players
-    m_pSave->players = new Player[4];
     for (int i = 0; i < 4; i++) {
         u32 PlayerOffset = 0xA0 + (i * 0xA480);
-        m_pSave->players[i] = Player(PlayerOffset, i);
+        m_pSave->players[i] = new Player(PlayerOffset, i);
     }
 
     // Load Villagers
@@ -269,7 +276,7 @@ void Save::SetChangesMade(bool changesMade) {
 bool Save::Commit(bool close) {
     // Save Players
     for (int i = 0; i < 4; i++) {
-        players[i].Write();
+        players[i]->Write();
     }
 
     // Save Villagers
@@ -305,5 +312,8 @@ void Save::Close(void) {
     }
 
     FSUSER_CloseArchive(m_archive);
-    m_pSave = nullptr;
+    if (m_pSave != nullptr) {
+        delete m_pSave;
+        m_pSave = nullptr;
+    }
 }

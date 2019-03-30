@@ -39,7 +39,7 @@ public:
     u32 m_offset;
     u32 m_index;
     u8 *m_TPCData = nullptr;
-    C2D_Image m_TPCPic;
+    C2D_Image m_TPCPic = {nullptr, nullptr};
 };
 
 #endif
