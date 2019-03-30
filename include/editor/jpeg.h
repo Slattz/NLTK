@@ -3,9 +3,15 @@
 #ifndef JPEG_H
 #define JPEG_H
 
-struct jpeg_info decompress_jpeg(const void* buffer, long jpegSize);
+struct JPEGInfo
+{
+    u32 width;
+    u32 height;
+    void *image;
+};
+
+JPEGInfo DecompressJPEG(const void * jpegSrc, const u32 jpegSize);
 C2D_Image LoadPlayerPicture(const void *tpcData);
-void C2D_Image_Destroy(C2D_Image image);
 
 
 #endif
