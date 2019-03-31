@@ -53,6 +53,10 @@ void Editor::Player::InitInfoGFX(void)
     editorPlayerInfoControls.push_back(&playerCouponsLabel);
 }
 
+void Editor::Player::CleanupInfoGFX(void) {
+    editorPlayerInfoControls.clear();
+}
+
 static void Draw_PlayerMenu_Info(int selectedPlayer) {
     Editor::Player::Draw_PlayerMenuTop(selectedPlayer);
     C2D_SceneBegin(bottom);

@@ -17,6 +17,7 @@ u64 currentTitleId;
 bool m_editorInitiated = false;
 
 void Editor::Cleanup(void) {
+    Editor::Player::CleanupInfoGFX();
     if (g_ItemBin) {
         g_ItemBin->Close();
         g_ItemBin = nullptr;
@@ -55,6 +56,7 @@ ReturnMode Editor::Main(void) {
         InputManager::Instance()->RefreshInput();
         if (Config::Instance()->Auto_loadprefGame && !InputManager::Instance()->IsButtonDown(KEY_DOWN) && is_ACNL(Config::Instance()->prefGame|0x4000000000000)) {
             currentTitleId = Config::Instance()->prefGame|0x4000000000000; // TODO: Support media type in config
+            currentMediaType = MEDIATYPE_GAME_CARD;
         }
         else {
             currentTitleId = Core::Spawn_GameSelectMenu(currentMediaType);

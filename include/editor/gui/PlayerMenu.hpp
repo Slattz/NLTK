@@ -23,6 +23,7 @@ namespace Editor
     namespace Player
     {
         void InitInfoGFX(void);
+        void CleanupInfoGFX(void);
         void Draw_PlayerMenuTop(int selectedplayer);
         void Spawn_PlayerMenu_Info(void);
         void Spawn_PlayerMenu_Inventory(void);

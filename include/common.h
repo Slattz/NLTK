@@ -3,6 +3,18 @@
 #ifndef COMMON_H
 #define COMMON_H
 
+#ifndef VERSION_MAJOR
+    #define VERSION_MAJOR 0
+#endif
+
+#ifndef VERSION_MINOR
+    #define VERSION_MINOR 0
+#endif
+
+#ifndef VERSION_MICRO
+    #define VERSION_MICRO 0
+#endif
+
 #define STRINGIFY(x)   #x
 #define TOSTRING(x)    STRINGIFY(x)
 

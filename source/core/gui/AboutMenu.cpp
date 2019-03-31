@@ -10,6 +10,9 @@
 #include "menus.h"
 
 #define ABOUT_CREDITSCOUNT 5
+#ifndef GIT_REV
+    #define GIT_REV "NOGIT"
+#endif
 
 static const char* NameStrings[ABOUT_CREDITSCOUNT] = {
     "Slattz & Cuyler:", "Marc_Max:", "WemI0:", "Nanquitas:", "PabloMK7:"

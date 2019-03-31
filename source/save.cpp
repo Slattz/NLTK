@@ -45,6 +45,10 @@ Save* Save::Initialize(FS_Archive archive, bool init) {
 
     m_pSave->m_changesMade = false;
 
+    m_pSave->RegionLock.RawByte = m_pSave->ReadU8(0x621CE);
+    m_pSave->RegionLock.DerivedID = m_pSave->RegionLock.RawByte & 0xF;
+    m_pSave->RegionLock.RegionID = static_cast<CFG_Region>(m_pSave->RegionLock.RawByte >> 4);
+
     if (!init) {
         return m_pSave;
     }
@@ -59,10 +63,6 @@ Save* Save::Initialize(FS_Archive archive, bool init) {
     for (int i = 0; i < 10; i++) {
         m_pSave->villagers[i] = new Villager(0x292D0 + (i * sizeof(Villager::Villager_s)), i);
     }
-
-    m_pSave->RegionLock.RawByte = m_pSave->ReadU8(0x621CE);
-    m_pSave->RegionLock.DerivedID = m_pSave->RegionLock.RawByte & 0xF;
-    m_pSave->RegionLock.RegionID = static_cast<CFG_Region>(m_pSave->RegionLock.RawByte >> 4);
 
     return m_pSave;
 }

@@ -7,10 +7,14 @@
 
 namespace Editor
 {
-    bool SaveCheck(void);
-    void Draw_MainMenu(void);
-    void Init_MainMenu(void);
     ReturnMode Spawn_MainMenu(void);
+    namespace MainMenu 
+    {
+        void Draw(void);
+        bool SaveCheck(void);
+        void Initialize(void);
+        void Cleanup(void);
+    }
 } // namespace Editor
 
 #endif

@@ -16,8 +16,21 @@ Player::~Player()
         m_TPCPic.tex = nullptr;
         m_TPCPic.subtex = nullptr;
     }
-    if (this->m_TPCData != nullptr)
+
+    if (this->m_TPCData != nullptr) {
         delete[] this->m_TPCData;
+        this->m_TPCData = nullptr;
+    }
+
+    if (this->Pockets != nullptr) {
+        delete[] this->Pockets;
+        this->Pockets = nullptr;
+    }
+
+    for (auto pattern : Patterns) {  
+        delete pattern;
+        pattern = nullptr;
+    }
 }
 
 Player::Player(u32 offset, u32 index) {
