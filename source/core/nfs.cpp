@@ -13,8 +13,8 @@
 #include "common.h"
 #include "nfs.h"
 
-static void SetACNLTitlesOnCart(void);
-static void SetACNLTitlesOnSD(void);
+static Result SetACNLTitlesOnCart(void);
+static Result SetACNLTitlesOnSD(void);
 
 FS_MediaType currentMediaType;
 static FS::ACNL_TitlesInstalled InstalledTitles;
@@ -42,8 +42,8 @@ Result FS::Initialize(void) {
     CreateDir(WORKDIR "/Saves");
     CreateDir(WORKDIR "/TownManager");
 
-    SetACNLTitlesOnCart();
-    SetACNLTitlesOnSD();
+    if (R_FAILED(res = SetACNLTitlesOnCart())) return res;
+    if (R_FAILED(res = SetACNLTitlesOnSD())) return res;
 
     return res;
 }
@@ -77,14 +77,18 @@ bool FS::IsSaveAccessible(FS_MediaType MediaType, u64 TitleID) {
     return false;
 }
 
-static void SetACNLTitlesOnCart(void) {
+static Result SetACNLTitlesOnCart(void) {
+    Result res = 0;
     u32 amount = 0;
     u64 TitleID = 0;
     InstalledTitles.Cart_Titles = FS::ACNL_Game::NONE; //Set ACNL_Game values
 
+    if (!FS::IsGameCartInserted()) return res;
+
     AM_GetTitleCount(MEDIATYPE_GAME_CARD, &amount); //Get amount of titles on cart (should only be 1)
-    if (amount > 0) {
-        AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, amount, &TitleID); //Get all installed title ids
+    if (R_SUCCEEDED(res) && amount == 1) {
+        res = AM_GetTitleList(NULL, MEDIATYPE_GAME_CARD, 1, &TitleID); //Get all installed title ids
+        if (R_FAILED(res)) return res;
 
         for(u32 i = 0; i < ACNLTitleIDs.size(); i++)
         {
@@ -95,17 +99,25 @@ static void SetACNLTitlesOnCart(void) {
             }
         }
     }
+    return res;
 }
 
-static void SetACNLTitlesOnSD(void) {
+static Result SetACNLTitlesOnSD(void) {
+    Result res = 0;
     u32 amount = 0;
     InstalledTitles.SD_Titles = FS::ACNL_Game::NONE; //Set ACNL_Game values
 
-    AM_GetTitleCount(MEDIATYPE_SD, &amount); //Get how many titles are installed on SD
-    if (amount > 0) {
+    if (!FS::IsSDCardInserted()) return res;
+
+    res = AM_GetTitleCount(MEDIATYPE_SD, &amount); //Get how many titles are installed on SD
+    if (R_SUCCEEDED(res) && amount > 0) {
         std::vector<u64> titles(amount);
         u64 *ptr = titles.data();
-        AM_GetTitleList(NULL, MEDIATYPE_SD, amount, ptr); //Get all installed title ids
+        res = AM_GetTitleList(NULL, MEDIATYPE_SD, amount, ptr); //Get all installed title ids
+        if (R_FAILED(res)) {
+            titles.clear();
+            return res;
+        }
 
         for(u32 i = 0; i < ACNLTitleIDs.size(); i++) {
             u64 ID = ACNLTitleIDs.at(i);
@@ -113,7 +125,9 @@ static void SetACNLTitlesOnSD(void) {
                 InstalledTitles.SD_Titles |= (1 << i); //Set ACNL_Game values
             }
         }
+        titles.clear();
     }
+    return res;
 }
 
 FS::ACNL_TitlesInstalled FS::GetInstalledTitles(void) {
@@ -150,10 +164,7 @@ bool checkGameCartTitleSame(u64 titleId) {
     if (currentMediaType != MEDIATYPE_GAME_CARD)
         return true; // We don't need to check if we aren't editing the game cart save file
 
-    bool cardInserted = false;
-    FSUSER_CardSlotIsInserted(&cardInserted);
-
-    if (!cardInserted) return false;
+    if (!FS::IsGameCartInserted()) return false;
 
     u32 num_gameCartTitles = 0;
 
