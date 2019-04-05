@@ -5,7 +5,7 @@
 #include "gfx.h"
 #include "utils.h"
 #include "config.hpp"
-#include "menus.h"
+#include "core/gui/MainMenu.hpp"
 #include "core/updater.hpp"
 #include "editor/editor.h"
 #include "libs/httpc-curl/httpc.h"
@@ -68,7 +68,7 @@ int main() {
         }
     }
 
-    spawn_main_menu();
+    Core::Spawn_MainMenu();
 
     PrepareToCloseApp();
     return 0;

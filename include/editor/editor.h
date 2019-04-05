@@ -4,7 +4,7 @@
 #define EDITOR_H
 
 #include <vector>
-#include "gui/MainMenu.hpp"
+#include "gui/EditorMenu.hpp"
 #include "gui/PlayerMenu.hpp"
 #include "menus.h"
 

@@ -6,9 +6,6 @@
 #include "common.h"
 #include "save.h"
 
-class ImageButton;
-class Button;
-
 enum class ReturnMode {
     None = -1,
     Exit = 0,
@@ -19,6 +16,5 @@ enum class ReturnMode {
 };
 
 void checkIfCardInserted(void);
-ReturnMode spawn_main_menu(void);
 
 #endif

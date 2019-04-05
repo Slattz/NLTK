@@ -5,16 +5,18 @@
 
 #include "menus.h"
 
-namespace Editor
+class ImageButton;
+class Button;
+
+namespace Core
 {
     ReturnMode Spawn_MainMenu(void);
-    namespace MainMenu 
-    {
-        void Draw(void);
-        bool SaveCheck(void);
+    void Draw_MainMenu(void);
+
+    namespace MainMenu {
         void Initialize(void);
         void Cleanup(void);
     }
-} // namespace Editor
+}
 
 #endif

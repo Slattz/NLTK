@@ -12,7 +12,7 @@
 #include "menus.h"
 #include "core/gui/ConfigMenu.hpp"
 #include "core/gui/AboutMenu.hpp"
-#include "gui/MainMenu.hpp"
+#include "gui/EditorMenu.hpp"
 #include "gui/PlayerMenu.hpp"
 #include "gui/AcreMenu.hpp"
 #include "gui/ShopsMenu.hpp"
