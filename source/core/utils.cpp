@@ -39,12 +39,12 @@ void Sleep(s64 nanoseconds)
     svcSleepThread(nanoseconds);
 }
 
-inline s64 Seconds(float amount)
+s64 Seconds(float amount)
 {
     return (s64)(amount*1000000000);
 }
 
-inline s64 MicroSeconds(float amount)
+s64 MicroSeconds(float amount)
 {
     return (s64)(amount*1000000);
 }

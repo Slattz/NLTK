@@ -11,8 +11,6 @@
 #include "libs/httpc-curl/httpc.h"
 #include "InputManager.h"
 
-static FontHandle g_acnlFont;
-
 Result InitApp(void) {
     //Check if using Rosalina or Old Hax HB
     s64 out;
@@ -51,13 +49,13 @@ int main() {
         return 0; //No services initilized so no need to uninit
     }
 
-    g_acnlFont = Font::Open("romfs:/ACNL_font.bcfnt");
+    static FontHandle acnlFont = Font::Open("romfs:/ACNL_font.bcfnt");
 
-    if (g_acnlFont->IsLoaded()) {
+    if (acnlFont->IsLoaded()) {
         MsgDisp(top, "Error: ACNL font failed to open.\n", MsgTypeAccept);
     }
 
-    Text::SetDefaultFont(g_acnlFont);
+    Text::SetDefaultFont(acnlFont);
 
     InputManager::Instance()->RefreshInput();
     if (InputManager::Instance()->IsButtonActive(KEY_SELECT)) {

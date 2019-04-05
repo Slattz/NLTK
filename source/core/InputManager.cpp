@@ -11,7 +11,7 @@ InputManager::InputManager(void) {
 }
 
 InputManager* InputManager::Instance() {
-    if (!m_pInputManager) {
+    if (m_pInputManager == nullptr) {
         m_pInputManager = new InputManager;
     }
 
