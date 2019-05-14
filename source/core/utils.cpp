@@ -17,11 +17,7 @@
 
 extern u64 currentTitleId;
 
-std::map<u16, std::string> g_itemDatabase;
 std::map<u16, std::string> g_villagerDatabase;
-
-// TODO: We should probably just use one item database.
-std::map<std::string, std::map<u16, std::string>> g_sortedItemDatabase;
 
 bool is_ACNL(u64 tid)
 {
@@ -115,43 +111,13 @@ std::string Format(const char* fmt, ...)
     return (std::string(buffer));
 }
 
-inline u16 strToU16(std::string str) {
+u16 strToU16(std::string str) {
     u16 out;
     std::stringstream ss;
     ss << std::hex << str;
     ss >> out;
 
     return out;
-}
-
-void loadItemDatabase() {
-    g_itemDatabase.clear();
-    g_sortedItemDatabase.clear();
-
-    std::string currentLine;
-    std::ifstream itemDatabase("romfs:/Items_en.txt", std::ifstream::in);
-    std::string itemIdStr;
-    std::string itemName;
-    std::string sectionName = "None";
-
-    while (std::getline(itemDatabase, currentLine)) {
-        if (currentLine.find("//") == 0) {
-            sectionName = currentLine.substr(2);
-        }
-        else if (currentLine.size() > 8 && currentLine.find("//") == std::string::npos) { // confirm we don't have any comments
-            itemIdStr = currentLine.substr(2, 4); // skip the 0x hex specifier
-            itemName = currentLine.substr(8, currentLine.size() - 9);
-
-            // Convert itemIdStr to a u16
-            u16 itemId = strToU16(itemIdStr);
-
-            // Add item to the database
-            g_itemDatabase.insert(std::make_pair(itemId, itemName));
-            g_sortedItemDatabase[sectionName][itemId] = itemName;
-        }
-    }
-
-    itemDatabase.close();
 }
 
 void LoadVillagerDatabase() {

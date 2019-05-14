@@ -5,41 +5,32 @@
 #include "nfs.h"
 #include "save.h"
 #include "utils.h"
+#include "item.h"
 #include "config.hpp"
 #include "editor/editor.h"
 #include "InputManager.h"
 #include "core/gui/GameSelectMenu.hpp"
 
 extern FS_MediaType currentMediaType;
-
-File* g_ItemBin;
 u64 currentTitleId;
 bool m_editorInitiated = false;
 
 void Editor::Cleanup(void) {
     Editor::Player::CleanupInfoGFX();
-    if (g_ItemBin) {
-        g_ItemBin->Close();
-        g_ItemBin = nullptr;
-    }
+    Item::UnloadItemBins();
     m_editorInitiated = false;
 }
 
 void Editor::Init(void) {
-    // Load Item Database
-    loadItemDatabase();
+    // Load Item Database & Item.bin
+    Item::LoadDatabase();
+    Item::LoadItemBins();
 
     // Load Villager Database
     LoadVillagerDatabase();
 
     Editor::Player::InitInfoGFX();
-    g_ItemBin = new File();
-    Result res = File::Open(*g_ItemBin, "romfs:/Item.bin", File::RB);
-    if (R_FAILED(res)) {
-        MsgDisp(top, Format("Failed opening Item.bin:\nResult: %X", res));
-        if (g_ItemBin != nullptr) delete g_ItemBin;
-        g_ItemBin = nullptr;
-    }
+
 
     m_editorInitiated = true;
 }

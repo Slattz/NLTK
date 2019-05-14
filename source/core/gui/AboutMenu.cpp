@@ -98,8 +98,6 @@ void Core::Spawn_AboutMenu(void) {
 
     while (aptMainLoop())
     {
-        checkIfCardInserted();
-
         Draw_AboutMenu();
         InputManager::Instance()->RefreshInput();
 

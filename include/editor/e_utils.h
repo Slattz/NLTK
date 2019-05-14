@@ -9,9 +9,6 @@
 
 std::vector<std::pair<std::string, s32>> load_player_invitems(int selectedplayer);
 bool  CheckUnreadMail(int selectedplayer);
-Item  GetItemFromSave(u32 offset);
-int   CheckItemValidity(Item *item);
-u32   CheckIfValidItem(Item *item);
 u16   GetAxeDamageValue(Item *item);
 u16   GetAxeDamageIcon(Item *item, u16 ItemIcon);
 u8    GetItemCategory(Item *item);
