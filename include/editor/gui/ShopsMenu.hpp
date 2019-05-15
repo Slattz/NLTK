@@ -19,10 +19,7 @@ namespace Editor
 
     namespace Shops
     {
-        void InitInfoGFX(void);
-        void Spawn_PlayerMenu_Info();
-        void Spawn_PlayerMenu_Inventory();
-        void Spawn_PlayerMenu_Patterns();
+
     }
 
 } // namespace Editor

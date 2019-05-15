@@ -36,3 +36,7 @@ void Label::SetTextColor(u32 color) {
 void Label::SetTextPos(float posX, float posY) {
     myText.SetPos(posX, posY);
 }
+
+void Label::CenterInBounds(float left, float top, float width, float height) {
+    myText.CenterInBounds(left, top, width, height);
+}

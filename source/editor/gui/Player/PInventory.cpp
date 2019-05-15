@@ -13,12 +13,12 @@
 
 static std::vector<std::pair<std::string, s32>> inventoryData; // TODO: I dislike this. Find someother way of doing. Perhaps an item container class?
 
-static void Draw_PlayerMenu_Inventory(int selectedplayer)
+static void Draw_PlayerMenu_Inventory(void)
 {
     int x = 42;
     int y = 63;
 
-    Editor::Player::Draw_PlayerMenuTop(selectedplayer);
+    Editor::Player::Draw_PlayerMenuTop();
     C2D_SceneBegin(bottom);
 
     for (int i = 0; i < 16; ++i)
@@ -34,7 +34,7 @@ static void Draw_PlayerMenu_Inventory(int selectedplayer)
             x = 42;
         }
 
-        Item item = Save::Instance()->players[selectedplayer]->Pockets[i];
+        Item item = Save::Instance()->players[PlayerConfig.SelectedPlayer]->Pockets[i];
         DrawSprite(Common_ss, ITEM_HOLE, x - 16, y - 16);
 
         if (inventoryData[i].second > -1)
@@ -50,59 +50,61 @@ static void Draw_PlayerMenu_Inventory(int selectedplayer)
 }
 
 void Editor::Player::Spawn_PlayerMenu_Inventory() {
-    if (EditorConfig.DrawingSubmenu)
+    if (PlayerConfig.DrawingSubmenu)
         return;
 
-    EditorConfig.DrawingSubmenu = true;
+    PlayerConfig.DrawingSubmenu = true;
 
-    inventoryData = load_player_invitems(EditorConfig.SelectedPlayer);
+    inventoryData = load_player_invitems(PlayerConfig.SelectedPlayer);
 
     while (aptMainLoop())
     {
         checkIfCardInserted();
 
-        Draw_PlayerMenu_Inventory(EditorConfig.SelectedPlayer);
+        Draw_PlayerMenu_Inventory();
         InputManager::Instance()->RefreshInput();
 
-        EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
+        PlayerConfig.LColor = PlayerConfig.RColor = COLOR_GREY;
 
         if (InputManager::Instance()->IsButtonDown(KEY_B))
             break;
 
+        if (InputManager::Instance()->IsButtonHeld(KEY_R))
+            PlayerConfig.RColor = COLOR_WHITE;
+
+        if (InputManager::Instance()->IsButtonHeld(KEY_L))
+            PlayerConfig.LColor = COLOR_WHITE;
+
         if (InputManager::Instance()->IsButtonDown(KEY_R))
-        {   
-            EditorConfig.RColor = COLOR_WHITE;
-
+        {
             while (true) {
-                EditorConfig.SelectedPlayer++;
-                if (EditorConfig.SelectedPlayer > 3)
-                    EditorConfig.SelectedPlayer = 0;
+                PlayerConfig.SelectedPlayer++;
+                if (PlayerConfig.SelectedPlayer > 3)
+                    PlayerConfig.SelectedPlayer = 0;
 
-                if (Save::Instance()->players[EditorConfig.SelectedPlayer]->Exists()) {
+                if (Save::Instance()->players[PlayerConfig.SelectedPlayer]->Exists()) {
                     break;
                 }
             }
 
-            load_player_invitems(EditorConfig.SelectedPlayer);
+            inventoryData = load_player_invitems(PlayerConfig.SelectedPlayer);
         }
 
         if (InputManager::Instance()->IsButtonDown(KEY_L))
-        {    
-            EditorConfig.LColor = COLOR_WHITE;
-
+        {
             while (true) {
-                EditorConfig.SelectedPlayer--;
-                if (EditorConfig.SelectedPlayer < 0)
-                    EditorConfig.SelectedPlayer = 3;
+                PlayerConfig.SelectedPlayer--;
+                if (PlayerConfig.SelectedPlayer < 0)
+                    PlayerConfig.SelectedPlayer = 3;
 
-                if (Save::Instance()->players[EditorConfig.SelectedPlayer]->Exists()) {
+                if (Save::Instance()->players[PlayerConfig.SelectedPlayer]->Exists()) {
                     break;
                 }
             }
 
-            load_player_invitems(EditorConfig.SelectedPlayer);
+            inventoryData = load_player_invitems(PlayerConfig.SelectedPlayer);
         }
     }
 
-    EditorConfig.DrawingSubmenu = false;
+    PlayerConfig.DrawingSubmenu = false;
 }

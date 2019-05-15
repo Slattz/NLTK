@@ -11,9 +11,9 @@
 #include "menus.h"
 #include "gui/PlayerMenu.hpp"
 
-static void Draw_PlayerMenu_Patterns(int selectedPlayer)
+static void Draw_PlayerMenu_Patterns(void)
 {
-    Editor::Player::Draw_PlayerMenuTop(selectedPlayer);
+    Editor::Player::Draw_PlayerMenuTop();
     C2D_SceneBegin(bottom);
 
     float x = 20;
@@ -29,7 +29,7 @@ static void Draw_PlayerMenu_Patterns(int selectedPlayer)
             x += 40;
         }
 
-        C2D_DrawImageAt(Save::Instance()->players[selectedPlayer]->Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
+        C2D_DrawImageAt(Save::Instance()->players[PlayerConfig.SelectedPlayer]->Patterns[i]->Images[0], x, y, 0.5f, nullptr, 1.0f, 1.0f);
     }
 
     InputManager::Instance()->DrawCursor();
@@ -37,33 +37,37 @@ static void Draw_PlayerMenu_Patterns(int selectedPlayer)
 }
 
 void Editor::Player::Spawn_PlayerMenu_Patterns() {
-    if (EditorConfig.DrawingSubmenu)
+    if (PlayerConfig.DrawingSubmenu)
         return;
 
-    EditorConfig.DrawingSubmenu = true;
+    PlayerConfig.DrawingSubmenu = true;
 
     while (aptMainLoop())
     {
         checkIfCardInserted();
 
-        Draw_PlayerMenu_Patterns(EditorConfig.SelectedPlayer);
+        Draw_PlayerMenu_Patterns();
         InputManager::Instance()->RefreshInput();
 
-        EditorConfig.LColor = EditorConfig.RColor = COLOR_GREY;
+        PlayerConfig.LColor = PlayerConfig.RColor = COLOR_GREY;
 
         if (InputManager::Instance()->IsButtonDown(KEY_B))
             break;
 
+        if (InputManager::Instance()->IsButtonHeld(KEY_R))
+            PlayerConfig.RColor = COLOR_WHITE;
+
+        if (InputManager::Instance()->IsButtonHeld(KEY_L))
+            PlayerConfig.LColor = COLOR_WHITE;
+
         if (InputManager::Instance()->IsButtonDown(KEY_R))
         {
-            EditorConfig.RColor = COLOR_WHITE;
-
             while (true) {
-                EditorConfig.SelectedPlayer++;
-                if (EditorConfig.SelectedPlayer > 3)
-                    EditorConfig.SelectedPlayer = 0;
+                PlayerConfig.SelectedPlayer++;
+                if (PlayerConfig.SelectedPlayer > 3)
+                    PlayerConfig.SelectedPlayer = 0;
 
-                if (Save::Instance()->players[EditorConfig.SelectedPlayer]->Exists()) {
+                if (Save::Instance()->players[PlayerConfig.SelectedPlayer]->Exists()) {
                     break;
                 }
             }
@@ -71,19 +75,17 @@ void Editor::Player::Spawn_PlayerMenu_Patterns() {
 
         if (InputManager::Instance()->IsButtonDown(KEY_L))
         {
-            EditorConfig.LColor = COLOR_WHITE;
-
             while (true) {
-                EditorConfig.SelectedPlayer--;
-                if (EditorConfig.SelectedPlayer < 0)
-                    EditorConfig.SelectedPlayer = 3;
+                PlayerConfig.SelectedPlayer--;
+                if (PlayerConfig.SelectedPlayer < 0)
+                    PlayerConfig.SelectedPlayer = 3;
 
-                if (Save::Instance()->players[EditorConfig.SelectedPlayer]->Exists()) {
+                if (Save::Instance()->players[PlayerConfig.SelectedPlayer]->Exists()) {
                     break;
                 }
             }
         }
     }
 
-    EditorConfig.DrawingSubmenu = false;
+    PlayerConfig.DrawingSubmenu = false;
 }
