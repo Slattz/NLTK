@@ -51,11 +51,10 @@ int main() {
 
     static FontHandle acnlFont = Font::Open("romfs:/ACNL_font.bcfnt");
 
-    if (acnlFont->IsLoaded()) {
+    if (acnlFont->IsLoaded())
         MsgDisp(top, "Error: ACNL font failed to open.\n", MsgTypeAccept);
-    }
 
-    Text::SetDefaultFont(acnlFont);
+    else Text::SetDefaultFont(acnlFont);
 
     InputManager::Instance()->RefreshInput();
     if (InputManager::Instance()->IsButtonActive(KEY_SELECT)) {

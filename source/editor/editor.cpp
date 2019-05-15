@@ -12,7 +12,7 @@
 #include "core/gui/GameSelectMenu.hpp"
 
 extern FS_MediaType currentMediaType;
-u64 currentTitleId;
+u64 currentTitleId = 0;
 bool m_editorInitiated = false;
 
 void Editor::Cleanup(void) {
@@ -45,10 +45,11 @@ ReturnMode Editor::Main(void) {
         FS_Archive saveArch;
 
         InputManager::Instance()->RefreshInput();
-        if (Config::Instance()->Auto_loadprefGame && !InputManager::Instance()->IsButtonDown(KEY_DOWN) && is_ACNL(Config::Instance()->prefGame|0x4000000000000)) {
-            currentTitleId = Config::Instance()->prefGame|0x4000000000000; // TODO: Support media type in config
-            currentMediaType = MEDIATYPE_GAME_CARD;
+        if (Config::Instance()->Auto_loadprefGame && !InputManager::Instance()->IsButtonActive(KEY_DOWN)) {
+            if (!SetupAutoLoad(currentTitleId, currentMediaType))
+                currentTitleId = Core::Spawn_GameSelectMenu(currentMediaType);
         }
+
         else {
             currentTitleId = Core::Spawn_GameSelectMenu(currentMediaType);
         }

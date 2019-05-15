@@ -9,6 +9,7 @@
 #include <sstream>
 #include <iostream>
 #include <map>
+#include "config.hpp"
 #include "gfx.h"
 #include "nfs.h"
 #include "structs.h"
@@ -214,3 +215,103 @@ bool Utils_IsNew3DS(void) {
 
     return false;
 }
+
+bool SetupAutoLoad(u64 &TID, FS_MediaType &MediaType) {
+    switch (Config::Instance()->prefGame) {
+        case FS::ORIG_JPN:
+            TID = JPN_TID;
+            break;
+        case FS::ORIG_USA:
+            TID = USA_TID;
+            break;
+        case FS::ORIG_EUR:
+            TID = EUR_TID;
+            break;
+        case FS::ORIG_KOR:
+            TID = KOR_TID;
+            break;
+        case FS::WA_JPN:
+            TID = JPN_WA_TID;
+            break;
+        case FS::WA_USA:
+            TID = USA_WA_TID;
+            break;
+        case FS::WA_EUR:
+            TID = EUR_WA_TID;
+            break;
+        case FS::WA_KOR:
+            TID = KOR_WA_TID;
+            break;
+        default:
+            return false;
+    }
+
+    switch (Config::Instance()->prefGameMediaType) {
+        case 1:
+            MediaType = MEDIATYPE_SD;
+            break;
+        case 2:
+            MediaType = MEDIATYPE_GAME_CARD;
+            break;
+        default:
+            return false;
+    }
+
+    return true;
+}
+
+void SaveAutoLoad(u64 TID, FS_MediaType MediaType) {
+    u8 Game = 0;
+    u8 MT = 0;
+    switch (TID) {
+        case JPN_TID:
+            Game = FS::ORIG_JPN;
+            break;
+        case USA_TID:
+            Game = FS::ORIG_USA;
+            break;
+        case EUR_TID:
+            Game = FS::ORIG_EUR;
+            break;
+        case KOR_TID:
+            Game = FS::ORIG_KOR;
+            break;
+        case JPN_WA_TID:
+            Game = FS::WA_JPN;
+            break;
+        case USA_WA_TID:
+            Game = FS::WA_USA;
+            break;
+        case EUR_WA_TID:
+            Game = FS::WA_EUR;
+            break;
+        case KOR_WA_TID:
+            Game = FS::WA_KOR;
+            break;
+
+        default:
+            Game = 0;
+            break;
+    }
+
+    switch (MediaType) {
+        case MEDIATYPE_SD:
+            MT = 1;
+            break;
+        case MEDIATYPE_GAME_CARD:
+            MT = 2;
+            break;
+        default:
+            MT = 0;
+            break;
+    }
+
+    if (Game == 0 || MT == 0) {
+        MT = 0;
+        Game = 0;
+    }
+
+    Config::Instance()->prefGame = Game;
+    Config::Instance()->prefGameMediaType = MT;
+}
+

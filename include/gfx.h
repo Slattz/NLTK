@@ -98,6 +98,7 @@ extern const u32 COLOR_TRANSPARENT;
 #define NLTK_ICON           Common_ss_icon_idx
 #define CHECKBOX_EMPTY      Common_ss_checkbox_idx
 #define CHECKBOX_FILLED     Common_ss_checkbox_c_idx
+#define EDIT_ICON           Common_ss_edit_idx
 #define CURSOR_POINT        Common_ss_hand_point_idx
 #define CURSOR_SELECT       Common_ss_hand_select_idx
 #define EDITOR_ICON         Common_ss_Editor_idx
