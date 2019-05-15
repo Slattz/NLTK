@@ -71,9 +71,9 @@ void UTF8_String_PopBack(std::string& str) {
 
 std::string u16tou8(std::u16string src)
 {
-    static std::wstring_convert<std::codecvt_utf8_utf16<char16_t>, char16_t> convert;
-    std::string dst = convert.to_bytes(src);
-    return dst;
+    char tmp[256] = {0};
+    utf16_to_utf8((uint8_t *)tmp, (uint16_t *)src.data(), 256);
+    return std::string(tmp);
 }
 
 std::u16string u8tou16(const char* src)
