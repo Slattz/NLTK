@@ -475,6 +475,10 @@ KeyboardRetCode Keyboard::_Open(std::string &output)
     while (aptMainLoop() && m_KeyboardStatus == KeyboardStatus::Loop) {
         Update();
         Draw();
+        if (m_KeyboardStatus == KeyboardStatus::Close && m_StringSize == 0) { //Can't exit if there is no input
+            MsgDisp(top, std::string("Input is currently empty!"));
+            m_KeyboardStatus = KeyboardStatus::Loop;
+        }
     }
 
     if (m_KeyboardStatus == KeyboardStatus::Close) {    
