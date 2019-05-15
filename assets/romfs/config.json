@@ -1,4 +1,5 @@
 {
+    "version": 1,
     "debug": false,
     "auto_update": true,
     "auto_savebackup": false,

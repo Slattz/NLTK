@@ -13,7 +13,11 @@ public:
     int Save(void);
     bool Reset(void);
 
-
+    /*
+    * Version number is needed incase we make app breaking changes to how the config.json works.
+    * It allows us to reset all users configs if necessary.
+    */
+    int  Version = 0;
     bool IsDebug = false;
     bool Auto_Update = false;
     bool Auto_SaveBackup = false;

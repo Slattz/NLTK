@@ -12,10 +12,18 @@ Config::Config(void) : Json(configRomPath) {
 
     if (m_json && m_jsonInit)
     {
+        this->GetValue("version", &Version);
+        int SDVersion = 0;
+
         json_t *sd_config = json_load_file(configPath, 0, m_jsonError); //load config from sd
         if (sd_config) //If sd config existed
         {
-            json_object_update_existing(m_json, sd_config); //update loaded romfs config json with the values from sd config
+            json_t *jsn = json_object_get(sd_config, "version");
+            if (jsn != NULL) SDVersion = json_integer_value(jsn);
+
+            //This means config will be reset to romfs default each time config version is bumped
+            if (SDVersion == Version)
+                json_object_update_existing(m_json, sd_config); //update loaded romfs config json with the values from sd config
             json_decref(sd_config);
         }
         this->SetupValues(); //Setup the values
