@@ -41,7 +41,7 @@ void Editor::Player::InitializeTop(void) {
     for (int i = 0; i < 4; i++) {
         if (Save::Instance()->players[i]->Exists()) {
             Label *NameText = new Label({0, 0}, {0, 0}, COLOR_TRANSPARENT, COLOR_GREY, u16tou8(Save::Instance()->players[i]->Name).c_str());
-            NameText->SetTextSize(0.5f, 0.5f);
+            NameText->SetTextSize(0.45f, 0.45f);
             NameText->CenterInBounds(18.f + (i * 100.f), 150.f, 64.f, 15.f);
             PlayerNameText.push_back(NameText);
 
@@ -52,6 +52,11 @@ void Editor::Player::InitializeTop(void) {
         }
     }
     PlayerConfig.TopMenuInit = true;
+}
+
+void Editor::Player::UpdateTopInfo(void) {
+    PlayerNameText[PlayerConfig.SelectedPlayer]->myText = u16tou8(Save::Instance()->players[PlayerConfig.SelectedPlayer]->Name);
+    PlayerNameText[PlayerConfig.SelectedPlayer]->CenterInBounds(18.f + (PlayerConfig.SelectedPlayer * 100.f), 150.f, 64.f, 15.f);
 }
 
 void Editor::Player::Initialize(void) {

@@ -147,6 +147,7 @@ void Editor::Player::Spawn_PlayerMenu_Info() {
                 Save::Instance()->Write(offset + 2, Save::Instance()->players[PlayerConfig.SelectedPlayer]->Name, 8);
             }
 
+            Editor::Player::UpdateTopInfo();
             Save::Instance()->SetChangesMade(true);
         }
 

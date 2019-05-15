@@ -27,6 +27,8 @@ namespace Editor
         void CleanupTop(void);
         void Initialize(void);
         void Cleanup(void);
+        
+        void UpdateTopInfo(void);
 
         void InitInfoGFX(void);
         void CleanupInfoGFX(void);
