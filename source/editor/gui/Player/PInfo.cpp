@@ -96,7 +96,7 @@ void Editor::Player::Spawn_PlayerMenu_Info() {
 
         PlayerConfig.LColor = PlayerConfig.RColor = COLOR_GREY;
 
-        if (InputManager::Instance()->IsButtonActive(KEY_B))
+        if (InputManager::Instance()->IsButtonDown(KEY_B))
             break;
 
         if (InputManager::Instance()->IsButtonHeld(KEY_R))

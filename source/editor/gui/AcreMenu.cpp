@@ -153,7 +153,7 @@ void Editor::Spawn_AcresMenu()
         Draw_AcresMenu();
         InputManager::Instance()->RefreshInput();
 
-        if (InputManager::Instance()->IsButtonActive(KEY_B)) {
+        if (InputManager::Instance()->IsButtonDown(KEY_B)) {
             break;
         }
 
