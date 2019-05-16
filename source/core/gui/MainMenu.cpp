@@ -65,15 +65,15 @@ void Core::Draw_MainMenu(void)
     DrawSprite(Common_ss, NLTK_ICON, 126.f, 10.f); //NLTK's Icon
     AboutBtn->Draw();
     OptionsBtn->Draw();
-    ManagerTempLbl->Visible = Config::Instance()->IsDebug;
-    ManagerIcon->Visible = Config::Instance()->IsDebug;
+    ManagerTempLbl->Visible = false;
+    ManagerIcon->Visible = false;
 
     for (const auto labels : MenuText) {
         labels->Draw();
     }
 
     EditorIcon->Draw(); //Editor Icon
-    ManagerIcon->Draw(); //Manager Icon
+    //ManagerIcon->Draw(); //Manager Icon
 
     InputManager::Instance()->DrawCursor();
     C3D_FrameEnd(0);
@@ -93,10 +93,10 @@ ReturnMode Core::Spawn_MainMenu(void) {
 
         if (EditorIcon->IsActive()) //Editor Icon
             ret = Editor::Main();
-
+/*
         else if (ManagerIcon->IsActive() && Config::Instance()->IsDebug) //Manager Icon
             ret = manager_main();
-
+*/
         else if (AboutBtn->IsActive()) //About Menu
             Core::Spawn_AboutMenu();
 
