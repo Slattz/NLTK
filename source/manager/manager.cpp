@@ -30,9 +30,11 @@ ReturnMode manager_main(void) {
         FS_Archive saveArch;
 
         InputManager::Instance()->RefreshInput();
-        if (Config::Instance()->Auto_loadprefGame && !InputManager::Instance()->IsButtonDown(KEY_DOWN) && is_ACNL(Config::Instance()->prefGame|0x4000000000000)) {
-            g_tid = Config::Instance()->prefGame|0x4000000000000; // TODO: Support media type in config
+        if (Config::Instance()->Auto_loadprefGame && !InputManager::Instance()->IsButtonActive(KEY_DOWN)) {
+            if (!SetupAutoLoad(g_tid, currentMediaType))
+                g_tid = Core::Spawn_GameSelectMenu(currentMediaType);
         }
+
         else {
             g_tid = Core::Spawn_GameSelectMenu(currentMediaType);
         }
