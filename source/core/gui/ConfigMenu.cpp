@@ -101,7 +101,7 @@ void Core::Spawn_ConfigMenu(void) {
 
         if (PrefGameEditButton->IsDown()) {
             FS_MediaType MT = MEDIATYPE_NAND;
-            u64 TID = Core::Spawn_GameSelectMenu(MT);
+            u64 TID = Core::Spawn_GameSelectMenu(MT, true);
             if (TID != 0 && MT != MEDIATYPE_NAND) {
                 SaveAutoLoad(TID, MT);
             }

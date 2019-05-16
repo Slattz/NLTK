@@ -210,7 +210,8 @@ void Core::Draw_GameSelectMenu(void) {
     C3D_FrameEnd(0);
 }
 
-u64 Core::Spawn_GameSelectMenu(FS_MediaType &mediaType) {
+u64 Core::Spawn_GameSelectMenu(FS_MediaType &mediaType, bool ResetonExit) {
+    u64 tid = 0;
     ACNLTitles = FS::GetInstalledTitles();
 
     if (ACNLTitles.Cart_Titles == FS::ACNL_Game::NONE && ACNLTitles.SD_Titles == FS::ACNL_Game::NONE) {
@@ -312,20 +313,31 @@ u64 Core::Spawn_GameSelectMenu(FS_MediaType &mediaType) {
                 // Set Media Type
                 mediaType = static_cast<FS_MediaType>(SelectedMedia);
 
-                if (SelectedGame == GameType::Orig)
-                    return JPN_TID + (static_cast<u8>(SelectedRegion) * 0x100); //Form orig TID
+                if (SelectedGame == GameType::Orig) {
+                    tid = JPN_TID + (static_cast<u8>(SelectedRegion) * 0x100); //Form orig TID
+                    break;
+                }
 
-                else if (SelectedGame == GameType::WA)
-                    return JPN_WA_TID + (static_cast<u8>(SelectedRegion) * 0x100); //Form WA TID
+                else if (SelectedGame == GameType::WA) {
+                    tid = JPN_WA_TID + (static_cast<u8>(SelectedRegion) * 0x100); //Form WA TID
+                    break;
+                }
 
                 else
                 {
                     MsgDisp(top, Format("Error:\nSelected Media Type is: %d\nSelected Game is: %d\nSelected Region is: %d",
                             static_cast<u8>(SelectedMedia), static_cast<u8>(SelectedGame), static_cast<u8>(SelectedRegion)));
-                    return 0;
+                    tid = 0;
+                    break;
                 }
             }
         }
     }
-    return 0;
+    
+    if (ResetonExit) {
+        SelectedMedia = MediaType::None;
+        SelectedGame = GameType::None;
+        SelectedRegion = RegionType::None;
+    }
+    return tid;
 }
