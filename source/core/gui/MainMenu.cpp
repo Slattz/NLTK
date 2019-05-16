@@ -112,7 +112,9 @@ ReturnMode Core::Spawn_MainMenu(void) {
         }
 
         else if (ret == ReturnMode::Manager) {
-            ret = manager_main();
+            MsgDisp(top, "Town Manager is currently disabled.");
+            ret = ReturnMode::MainMenu;
+            //ret = manager_main();
         }
     }
     Core::MainMenu::Cleanup();

@@ -210,7 +210,8 @@ ReturnMode Editor::Spawn_MainMenu()
             return ReturnMode::GameSelect;
 
         else if (TownManagerButton->IsActive()) //Town Manager Column
-            return ReturnMode::Manager;
+            MsgDisp(top, "Town Manager is currently disabled.");
+            //return ReturnMode::Manager;
 
         else if (SaveButton->IsActive()) //Save Column
         {
