@@ -85,12 +85,17 @@ void VillagerEditor::Draw() {
         const u32 idx = m_currentlySelectedVillager->GetIndex();
 
         // Draw previous first
-        if (newVillagerId != 0xFFFF) {
+        if (newVillagerId == 0xFFFF) {
+            DrawVillagerSprite(398, { 43 + (idx % 5) * 58, 40 + (idx / 5) * 58 }, 0.5f, 0.5);
+        }
+
+        else if (newVillagerId <= 398) {
             DrawVillagerSprite(newVillagerId == 0 ? 0xFFFF : newVillagerId - 1, { 43 + (idx % 5) * 58, 40 + (idx / 5) * 58 }, 0.5f, 0.5);
         }
 
+
         // Draw next
-        if (newVillagerId < 0x398 || newVillagerId == 0xFFFF) {
+        if (newVillagerId <= 398 || newVillagerId == 0xFFFF) {
             DrawVillagerSprite(newVillagerId == 0xFFFF ? 0 : newVillagerId + 1, { 43 + (idx % 5) * 58, 109 + (idx / 5) * 58 }, 0.5f, 0.5);
         }
     }
@@ -134,9 +139,10 @@ bool VillagerEditor::ProcessInput() {
             selectingNewVillager = false;
             //Reset Villager ID
             newVillagerId = m_currentlySelectedVillager->GetId();
+            u32 clampedIdx = newVillagerId > 399 ? 399 : newVillagerId;
             //Reset Villager Pic
-            m_villagerEditorButtons[idx]->SetSpriteSheet(newVillagerId < 200 ? Villagers_ss : Villagers2_ss);
-            m_villagerEditorButtons[idx]->SetImageId(newVillagerId < 200 ? newVillagerId : newVillagerId - 200);
+            m_villagerEditorButtons[idx]->SetSpriteSheet(clampedIdx < 200 ? Villagers_ss : Villagers2_ss);
+            m_villagerEditorButtons[idx]->SetImageId(clampedIdx < 200 ? clampedIdx : clampedIdx - 200);
             ignoreB = true;
         }
 
@@ -148,9 +154,14 @@ bool VillagerEditor::ProcessInput() {
                 newVillagerId = 0;
             }
 
-            m_villagerEditorButtons[idx]->SetSpriteSheet(newVillagerId < 200 ? Villagers_ss : Villagers2_ss);
-            m_villagerEditorButtons[idx]->SetImageId(newVillagerId < 200 ? newVillagerId : newVillagerId - 200);
-            *m_villagerNameText = g_villagerDatabase[newVillagerId];
+            else if (newVillagerId >= 398) newVillagerId = 0xFFFF;
+
+
+            u32 clampedIdx = newVillagerId > 399 ? 399 : newVillagerId;
+
+            m_villagerEditorButtons[idx]->SetSpriteSheet(clampedIdx < 200 ? Villagers_ss : Villagers2_ss);
+            m_villagerEditorButtons[idx]->SetImageId(clampedIdx < 200 ? clampedIdx : clampedIdx - 200);
+            *m_villagerNameText = g_villagerDatabase[clampedIdx];
             m_villagerNameText->SetPos((412 - m_villagerNameText->GetWidth()) / 2, 126);
         }
         
@@ -158,11 +169,15 @@ bool VillagerEditor::ProcessInput() {
             if (newVillagerId == 0) {
                 newVillagerId = 0xFFFF;
             }
+            else if (newVillagerId == 0xFFFF) { //No villager case
+                newVillagerId = 398;
+            }
+
             else if (newVillagerId > 0 && newVillagerId != 0xFFFF) {
                 newVillagerId--;
             }
 
-            u32 clampedIdx = newVillagerId > 0x399 ? 399 : newVillagerId;
+            u32 clampedIdx = newVillagerId > 399 ? 399 : newVillagerId;
 
             m_villagerEditorButtons[idx]->SetSpriteSheet(clampedIdx < 200 ? Villagers_ss : Villagers2_ss);
             m_villagerEditorButtons[idx]->SetImageId(clampedIdx < 200 ? clampedIdx : clampedIdx - 200);
