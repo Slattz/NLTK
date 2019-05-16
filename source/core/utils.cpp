@@ -217,30 +217,47 @@ bool Utils_IsNew3DS(void) {
 }
 
 bool SetupAutoLoad(u64 &TID, FS_MediaType &MediaType) {
+    if (Config::Instance()->prefGame < FS::ORIG_JPN) return false;
+    else if (Config::Instance()->prefGame > (FS::WA_ANY|FS::ORIG_ANY)) return false;
+    else if (Config::Instance()->prefGameMediaType < MEDIATYPE_SD) return false;
+    else if (Config::Instance()->prefGameMediaType > MEDIATYPE_GAME_CARD) return false;
+
+    FS::ACNL_TitlesInstalled ACNLTitles = FS::GetInstalledTitles();
+    u8 install = (Config::Instance()->prefGameMediaType == MEDIATYPE_SD) ? ACNLTitles.SD_Titles : ACNLTitles.Cart_Titles;
+
     switch (Config::Instance()->prefGame) {
         case FS::ORIG_JPN:
-            TID = JPN_TID;
+            if (install&FS::ORIG_JPN) TID = JPN_TID;
+            else return false;
             break;
         case FS::ORIG_USA:
-            TID = USA_TID;
+            if (install&FS::ORIG_USA) TID = USA_TID;
+            else return false;
             break;
         case FS::ORIG_EUR:
-            TID = EUR_TID;
+            if (install&FS::ORIG_EUR) TID = EUR_TID;
+            else return false;
             break;
         case FS::ORIG_KOR:
-            TID = KOR_TID;
+            if (install&FS::ORIG_KOR) TID = KOR_TID;
+            else return false;
             break;
+
         case FS::WA_JPN:
-            TID = JPN_WA_TID;
+            if (install&FS::WA_JPN) TID = JPN_WA_TID;
+            else return false;
             break;
         case FS::WA_USA:
-            TID = USA_WA_TID;
+            if (install&FS::WA_USA) TID = USA_WA_TID;
+            else return false;
             break;
         case FS::WA_EUR:
-            TID = EUR_WA_TID;
+            if (install&FS::WA_EUR) TID = EUR_WA_TID;
+            else return false;
             break;
         case FS::WA_KOR:
-            TID = KOR_WA_TID;
+            if (install&FS::WA_KOR) TID = KOR_WA_TID;
+            else return false;
             break;
         default:
             return false;
@@ -248,10 +265,12 @@ bool SetupAutoLoad(u64 &TID, FS_MediaType &MediaType) {
 
     switch (Config::Instance()->prefGameMediaType) {
         case 1:
-            MediaType = MEDIATYPE_SD;
+            if (FS::IsSDCardInserted()) MediaType = MEDIATYPE_SD;
+            else return false;
             break;
         case 2:
-            MediaType = MEDIATYPE_GAME_CARD;
+            if (FS::IsGameCartInserted()) MediaType = MEDIATYPE_GAME_CARD;
+            else return false;
             break;
         default:
             return false;
