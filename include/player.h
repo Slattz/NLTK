@@ -38,6 +38,7 @@ public:
 
     u32 m_offset;
     u32 m_index;
+    bool m_HasTPC = false;
     u8 *m_TPCData = nullptr;
     C2D_Image m_TPCPic = {nullptr, nullptr};
 };

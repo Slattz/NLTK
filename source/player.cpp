@@ -11,10 +11,11 @@ Player::Player() { }
 
 Player::~Player()
 {
-    if (m_TPCPic.tex != nullptr) {
+    if (m_HasTPC && m_TPCPic.tex != nullptr) {
         C2D_ImageDelete(this->m_TPCPic);
         m_TPCPic.tex = nullptr;
         m_TPCPic.subtex = nullptr;
+        m_HasTPC = false;
     }
 
     if (this->m_TPCData != nullptr) {
@@ -102,25 +103,29 @@ void Player::Write() {
 
 u8* Player::RefreshTPC() {
 
-    if (m_TPCPic.tex != nullptr) {
+    if (m_HasTPC && m_TPCPic.tex != nullptr) {
         C2D_ImageDelete(this->m_TPCPic);
         m_TPCPic.tex = nullptr;
         m_TPCPic.subtex = nullptr;
     }
 
-    if (Save::Instance()->ReadU16(this->m_offset + 0x5738) == 0xD8FF) { // 0xFFD8 = JPEG File Marker
-        if (this->m_TPCData == nullptr)
-            this->m_TPCData = new u8[0x1400];
-        Save::Instance()->ReadArray(this->m_TPCData, this->m_offset + 0x5738, 0x1400);
-        this->m_TPCPic = LoadPlayerPicture(this->m_TPCData);
+    if (Save::Instance()->ReadU32(this->m_offset + 0x5734) == 1) {
+        if (Save::Instance()->ReadU16(this->m_offset + 0x5738) == 0xD8FF) { // 0xFFD8 = JPEG File Marker
+            if (this->m_TPCData == nullptr)
+                this->m_TPCData = new u8[0x1400];
+            Save::Instance()->ReadArray(this->m_TPCData, this->m_offset + 0x5738, 0x1400);
+            this->m_TPCPic = LoadPlayerPicture(this->m_TPCData);
+            m_HasTPC = true;
+        }
     }
+
     else { //No TPC
-        if (this->m_TPCData != nullptr)
-        {
+        if (this->m_TPCData != nullptr) {
             delete[] this->m_TPCData;
             this->m_TPCData = nullptr;
         }
         this->m_TPCPic = C2D_SpriteSheetGetImage(Players_ss, NO_TPC_PIC);
+        m_HasTPC = false;
     }
 
     return this->m_TPCData;
