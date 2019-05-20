@@ -79,7 +79,7 @@ LOGO            :=	assets/meta/logo.bin
 
 # If left blank, makerom will use default values (0xff3ff and CTR-P-CTAP, respectively)
 UNIQUE_ID		:=	0x4E4C0
-PRODUCT_CODE	:=	CTR-P-NLTK
+PRODUCT_CODE	:=	CTR-HB-NLTK
 
 # Don't really need to change this
 ICON_FLAGS          :=	nosavebackups,visible
