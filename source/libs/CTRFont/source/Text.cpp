@@ -325,8 +325,8 @@ static void  AppendVtx(C2Di_Context* ctx, float x, float y, float u, float v, u3
     vtx->pos[2]      = 0.5f;
     vtx->texcoord[0] = u;
     vtx->texcoord[1] = v;
-    vtx->blend[0]    = 0.0f;
-    vtx->blend[1]    = 1.0f;
+    vtx->ptcoord[0]  = 0.0f;
+    vtx->ptcoord[1]  = 1.0f;
     vtx->color       = color;
 }
 

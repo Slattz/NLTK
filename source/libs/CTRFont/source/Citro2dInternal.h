@@ -7,10 +7,10 @@ extern "C" {
 
 typedef struct
 {
-    float pos[3];
-    float texcoord[2];
-    float blend[2];
-    u32 color;
+	float pos[3];
+	float texcoord[2];
+	float ptcoord[2];
+	u32 color;
 } C2Di_Vertex;
 
 typedef struct
@@ -39,55 +39,81 @@ typedef struct
 
 enum
 {
-    C2DiF_Active    = BIT(0),
-    C2DiF_DirtyProj = BIT(1),
-    C2DiF_DirtyMdlv = BIT(2),
-    C2DiF_DirtyTex  = BIT(3),
-    C2DiF_DirtySrc  = BIT(4),
-    C2DiF_DirtyFade = BIT(5),
+	C2DiF_Active       = BIT(0),
+	C2DiF_DirtyProj    = BIT(1),
+	C2DiF_DirtyMdlv    = BIT(2),
+	C2DiF_DirtyTex     = BIT(3),
+	C2DiF_DirtySrc     = BIT(4),
+	C2DiF_DirtyFade    = BIT(5),
+	C2DiF_DirtyProcTex = BIT(6),
 
-    C2DiF_Src_None  = 0,
-    C2DiF_Src_Tex   = BIT(31),
-    C2DiF_Src_Mask  = BIT(31),
+	C2DiF_Src_None  = 0,
+	C2DiF_Src_Tex   = BIT(31),
+	C2DiF_Src_Mask  = BIT(31),
 
-    C2DiF_DirtyAny = C2DiF_DirtyProj | C2DiF_DirtyMdlv | C2DiF_DirtyTex | C2DiF_DirtySrc | C2DiF_DirtyFade,
+	C2DiF_ProcTex_Circle = BIT(30),
+
+	C2DiF_DirtyAny = C2DiF_DirtyProj | C2DiF_DirtyMdlv | C2DiF_DirtyTex | C2DiF_DirtySrc | C2DiF_DirtyFade | C2DiF_DirtyProcTex,
+};
+
+struct C2D_Font_s
+{
+	CFNT_s* cfnt;
+	C3D_Tex* glyphSheets;
+	float textScale;
 };
 
 static inline C2Di_Context* C2Di_GetContext(void)
 {
-    extern C2Di_Context __C2Di_Context;
-    return &__C2Di_Context;
+	extern C2Di_Context __C2Di_Context;
+	return &__C2Di_Context;
 }
 
 static inline void C2Di_SetSrc(u32 src)
 {
-    C2Di_Context* ctx = C2Di_GetContext();
-    src &= C2DiF_Src_Mask;
-    if ((ctx->flags & C2DiF_Src_Mask) != src)
-        ctx->flags = C2DiF_DirtySrc | (ctx->flags &~ C2DiF_Src_Mask) | src;
+	C2Di_Context* ctx = C2Di_GetContext();
+	src &= C2DiF_Src_Mask;
+	if ((ctx->flags & C2DiF_Src_Mask) != src)
+		ctx->flags = C2DiF_DirtySrc | (ctx->flags &~ C2DiF_Src_Mask) | src;
 }
 
 static inline void C2Di_SetTex(C3D_Tex* tex)
 {
-    C2Di_Context* ctx = C2Di_GetContext();
-    C2Di_SetSrc(C2DiF_Src_Tex);
-    if (tex != ctx->curTex)
-    {
-        ctx->flags |= C2DiF_DirtyTex;
-        ctx->curTex = tex;
-    }
+	C2Di_Context* ctx = C2Di_GetContext();
+	C2Di_SetSrc(C2DiF_Src_Tex);
+	if (tex != ctx->curTex)
+	{
+		ctx->flags |= C2DiF_DirtyTex;
+		ctx->curTex = tex;
+	}
+}
+
+static inline void C2Di_SetCircle(bool iscircle)
+{
+	C2Di_Context* ctx = C2Di_GetContext();
+	if (iscircle && !(ctx->flags & C2DiF_ProcTex_Circle))
+	{
+		ctx->flags |= C2DiF_DirtyProcTex;
+		ctx->flags |= C2DiF_ProcTex_Circle;
+	}
+	else if (!iscircle && (ctx->flags & C2DiF_ProcTex_Circle))
+	{
+		ctx->flags |= C2DiF_DirtyProcTex;
+		ctx->flags &= ~C2DiF_ProcTex_Circle;
+	}
+
 }
 
 typedef struct
 {
-    float topLeft[2];
-    float topRight[2];
-    float botLeft[2];
-    float botRight[2];
+	float topLeft[2];
+	float topRight[2];
+	float botLeft[2];
+	float botRight[2];
 } C2Di_Quad;
 
 void C2Di_CalcQuad(C2Di_Quad* quad, const C2D_DrawParams* params);
-void C2Di_AppendVtx(float x, float y, float z, float u, float v, float blend, u32 color);
+void C2Di_AppendVtx(float x, float y, float z, float u, float v, float ptx, float pty, u32 color);
 void C2Di_FlushVtxBuf(void);
 void C2Di_Update(void);
 

@@ -3,6 +3,7 @@
 #include <3ds/types.h>
 #include <memory>
 #include <vector>
+#include <string>
 
 #include "Color.hpp"
 #include "Font.hpp"
